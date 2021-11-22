@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/shakki4.dir/main.cpp.o CMakeFiles/shakki4.dir/PieceColor.cpp.o CMakeFiles/shakki4.dir/Board.cpp.o CMakeFiles/shakki4.dir/PieceSet.cpp.o CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o CMakeFiles/shakki4.dir/BitboardOperations.cpp.o -o shakki4 
