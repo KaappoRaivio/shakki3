@@ -129,6 +129,30 @@ shakki4/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/build
 .PHONY : shakki4/fast
 
+Bitboard.o: Bitboard.cpp.o
+.PHONY : Bitboard.o
+
+# target to build an object file
+Bitboard.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Bitboard.cpp.o
+.PHONY : Bitboard.cpp.o
+
+Bitboard.i: Bitboard.cpp.i
+.PHONY : Bitboard.i
+
+# target to preprocess a source file
+Bitboard.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Bitboard.cpp.i
+.PHONY : Bitboard.cpp.i
+
+Bitboard.s: Bitboard.cpp.s
+.PHONY : Bitboard.s
+
+# target to generate assembly for a file
+Bitboard.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Bitboard.cpp.s
+.PHONY : Bitboard.cpp.s
+
 BitboardOperations.o: BitboardOperations.cpp.o
 .PHONY : BitboardOperations.o
 
@@ -177,29 +201,77 @@ Board.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Board.cpp.s
 .PHONY : Board.cpp.s
 
-PieceColor.o: PieceColor.cpp.o
-.PHONY : PieceColor.o
+KingAttacks.o: KingAttacks.cpp.o
+.PHONY : KingAttacks.o
 
 # target to build an object file
-PieceColor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/PieceColor.cpp.o
-.PHONY : PieceColor.cpp.o
+KingAttacks.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/KingAttacks.cpp.o
+.PHONY : KingAttacks.cpp.o
 
-PieceColor.i: PieceColor.cpp.i
-.PHONY : PieceColor.i
+KingAttacks.i: KingAttacks.cpp.i
+.PHONY : KingAttacks.i
 
 # target to preprocess a source file
-PieceColor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/PieceColor.cpp.i
-.PHONY : PieceColor.cpp.i
+KingAttacks.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/KingAttacks.cpp.i
+.PHONY : KingAttacks.cpp.i
 
-PieceColor.s: PieceColor.cpp.s
-.PHONY : PieceColor.s
+KingAttacks.s: KingAttacks.cpp.s
+.PHONY : KingAttacks.s
 
 # target to generate assembly for a file
-PieceColor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/PieceColor.cpp.s
-.PHONY : PieceColor.cpp.s
+KingAttacks.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/KingAttacks.cpp.s
+.PHONY : KingAttacks.cpp.s
+
+KnightAttacks.o: KnightAttacks.cpp.o
+.PHONY : KnightAttacks.o
+
+# target to build an object file
+KnightAttacks.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/KnightAttacks.cpp.o
+.PHONY : KnightAttacks.cpp.o
+
+KnightAttacks.i: KnightAttacks.cpp.i
+.PHONY : KnightAttacks.i
+
+# target to preprocess a source file
+KnightAttacks.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/KnightAttacks.cpp.i
+.PHONY : KnightAttacks.cpp.i
+
+KnightAttacks.s: KnightAttacks.cpp.s
+.PHONY : KnightAttacks.s
+
+# target to generate assembly for a file
+KnightAttacks.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/KnightAttacks.cpp.s
+.PHONY : KnightAttacks.cpp.s
+
+Move.o: Move.cpp.o
+.PHONY : Move.o
+
+# target to build an object file
+Move.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Move.cpp.o
+.PHONY : Move.cpp.o
+
+Move.i: Move.cpp.i
+.PHONY : Move.i
+
+# target to preprocess a source file
+Move.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Move.cpp.i
+.PHONY : Move.cpp.i
+
+Move.s: Move.cpp.s
+.PHONY : Move.s
+
+# target to generate assembly for a file
+Move.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Move.cpp.s
+.PHONY : Move.cpp.s
 
 PieceSet.o: PieceSet.cpp.o
 .PHONY : PieceSet.o
@@ -249,6 +321,30 @@ SlidingPieceRays.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.s
 .PHONY : SlidingPieceRays.cpp.s
 
+Square.o: Square.cpp.o
+.PHONY : Square.o
+
+# target to build an object file
+Square.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Square.cpp.o
+.PHONY : Square.cpp.o
+
+Square.i: Square.cpp.i
+.PHONY : Square.i
+
+# target to preprocess a source file
+Square.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Square.cpp.i
+.PHONY : Square.cpp.i
+
+Square.s: Square.cpp.s
+.PHONY : Square.s
+
+# target to generate assembly for a file
+Square.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Square.cpp.s
+.PHONY : Square.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -282,21 +378,33 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... shakki4"
+	@echo "... Bitboard.o"
+	@echo "... Bitboard.i"
+	@echo "... Bitboard.s"
 	@echo "... BitboardOperations.o"
 	@echo "... BitboardOperations.i"
 	@echo "... BitboardOperations.s"
 	@echo "... Board.o"
 	@echo "... Board.i"
 	@echo "... Board.s"
-	@echo "... PieceColor.o"
-	@echo "... PieceColor.i"
-	@echo "... PieceColor.s"
+	@echo "... KingAttacks.o"
+	@echo "... KingAttacks.i"
+	@echo "... KingAttacks.s"
+	@echo "... KnightAttacks.o"
+	@echo "... KnightAttacks.i"
+	@echo "... KnightAttacks.s"
+	@echo "... Move.o"
+	@echo "... Move.i"
+	@echo "... Move.s"
 	@echo "... PieceSet.o"
 	@echo "... PieceSet.i"
 	@echo "... PieceSet.s"
 	@echo "... SlidingPieceRays.o"
 	@echo "... SlidingPieceRays.i"
 	@echo "... SlidingPieceRays.s"
+	@echo "... Square.o"
+	@echo "... Square.i"
+	@echo "... Square.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

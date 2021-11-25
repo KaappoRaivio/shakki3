@@ -30,34 +30,47 @@
 //    return buffer;
 //}
 
-PieceSet::PieceSet (const PieceColor& color) : color{color} {
-    rooks   = 0b10000001;
-    knights = 0b01000010;
-    bishops = 0b00100100;
-    queen   = 0b00001000;
-    king    = 0b00010000;
-    pawns   = 0b1111111100000000;
+PieceSet::PieceSet (const PieceColor& color) : color{color}, boards{}, all{} {
+    boards[ROOK]   = 0b10000001;
+    boards[KNIGHT] = 0b01000010;
+    boards[BISHOP] = 0b00100100;
+    boards[QUEEN]  = 0b00001000;
+    boards[KING]   = 0b00010000;
+    boards[PAWN]  = 0b1111111100000000;
+
+    for (auto board : boards) {
+        all |= board;
+    }
+
 
     if (color == PieceColor::BLACK) {
-        rooks = BitboardOperations::flipVertical(rooks);
-        knights = BitboardOperations::flipVertical(knights);
-        bishops = BitboardOperations::flipVertical(bishops);
-        queen = BitboardOperations::flipVertical(queen);
-        king = BitboardOperations::flipVertical(king);
-        pawns = BitboardOperations::flipVertical(pawns);
+        for (auto & board : boards) {
+            board = board.flipVertical();
+        }
     }
+
 }
 
 
 
 
 std::string& PieceSet::burn (std::string& buffer) const {
-    BitboardOperations::burnBitboard(buffer, rooks, color == WHITE ? 'r' : 'R');
-    BitboardOperations::burnBitboard(buffer, knights, color == WHITE ? 'n' : 'N');
-    BitboardOperations::burnBitboard(buffer, bishops, color == WHITE ? 'b' : 'B');
-    BitboardOperations::burnBitboard(buffer, queen, color == WHITE ? 'q' : 'Q');
-    BitboardOperations::burnBitboard(buffer, king, color == WHITE ? 'k' : 'K');
-    BitboardOperations::burnBitboard(buffer, pawns, color == WHITE ? 'p' : 'P');
+//    BitboardOperations::burnBitboard(buffer, rooks, color == WHITE ? 'r' : 'R');
+//    BitboardOperations::burnBitboard(buffer, knights, color == WHITE ? 'n' : 'N');
+//    BitboardOperations::burnBitboard(buffer, bishops, color == WHITE ? 'b' : 'B');
+//    BitboardOperations::burnBitboard(buffer, queen, color == WHITE ? 'q' : 'Q');
+//    BitboardOperations::burnBitboard(buffer, king, color == WHITE ? 'k' : 'K');
+//    BitboardOperations::burnBitboard(buffer, pawns, color == WHITE ? 'p' : 'P');
+    for (int i = 0; i < AMOUNT_OF_BOARDS; ++i) {
+        boards[i].burnTo(buffer, color == WHITE ? pieceTypeToSymbol(i) : std::toupper(pieceTypeToSymbol(i)));
+    }
+
+//    rooks.burnTo(buffer, color == WHITE ? 'r' : 'R');
+//    knights.burnTo(buffer, color == WHITE ? 'n' : 'N');
+//    bishops.burnTo(buffer, color == WHITE ? 'b' : 'B');
+//    queen.burnTo(buffer, color == WHITE ? 'q' : 'Q');
+//    king.burnTo(buffer, color == WHITE ? 'k' : 'K');
+//    pawns.burnTo(buffer, color == WHITE ? 'p' : 'P');
 
     return buffer;
 }
@@ -65,4 +78,8 @@ std::string& PieceSet::burn (std::string& buffer) const {
 std::ostream& operator<< (std::ostream& os, const PieceSet& set) {
     os << "color: " << set.color;
     return os;
+}
+
+bool PieceSet::hasPiece (Square square) const {
+    return bool(all & (1 << square.getValue()));
 }

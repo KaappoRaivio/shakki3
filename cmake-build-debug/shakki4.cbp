@@ -82,6 +82,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/kaappo/git/shakki4/Bitboard.cpp">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/Bitboard.h">
+			<Option target="shakki4"/>
+		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/BitboardOperations.cpp">
 			<Option target="shakki4"/>
 		</Unit>
@@ -94,10 +100,22 @@
 		<Unit filename="/home/kaappo/git/shakki4/Board.h">
 			<Option target="shakki4"/>
 		</Unit>
-		<Unit filename="/home/kaappo/git/shakki4/PieceColor.cpp">
+		<Unit filename="/home/kaappo/git/shakki4/KingAttacks.cpp">
 			<Option target="shakki4"/>
 		</Unit>
-		<Unit filename="/home/kaappo/git/shakki4/PieceColor.h">
+		<Unit filename="/home/kaappo/git/shakki4/KingAttacks.h">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/KnightAttacks.cpp">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/KnightAttacks.h">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/Move.cpp">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/Move.h">
 			<Option target="shakki4"/>
 		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/PieceSet.cpp">
@@ -110,6 +128,9 @@
 			<Option target="shakki4"/>
 		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/SlidingPieceRays.h">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/Square.cpp">
 			<Option target="shakki4"/>
 		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/Square.h">

@@ -8,22 +8,19 @@
 #include <string>
 #include <ostream>
 #include "Square.h"
-#include "PieceColor.h"
 #include "BitboardOperations.h"
 #include "mytypes.h"
 
+#define AMOUNT_OF_BOARDS 6
 
-class PieceSet {
-private:
+
+struct PieceSet {
     PieceColor color;
-    Bitboard rooks;
-    Bitboard knights;
-    Bitboard bishops;
-    Bitboard queen;
-    Bitboard king;
-    Bitboard pawns;
+    Bitboard boards[AMOUNT_OF_BOARDS];
+    Bitboard all;
 
-public:
+    bool hasPiece (Square square) const;
+
     explicit PieceSet (const PieceColor& color);
 
     friend std::ostream& operator<< (std::ostream& os, const PieceSet& set);

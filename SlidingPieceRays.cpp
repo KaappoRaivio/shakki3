@@ -18,25 +18,26 @@ void SlidingPieceRays::populateRookSlides () {
                 Bitboard other = start;
                 while (true) {
                     if (direction == NORTH) {
-                        if (start & SquareMasks::eighthRank) {
+                        if (start & SquareMasks::rank8) {
                             break;
                         }
                     } else if (direction == SOUTH) {
-                        if (start & SquareMasks::firstRank) {
+                        if (start & SquareMasks::rank1) {
                             break;
                         }
                     } else if (direction == EAST) {
-                        if (start & SquareMasks::hFile) {
+                        if (start & SquareMasks::fileH) {
                             break;
                         }
                     } else if (direction == WEST) {
-                        if (start & SquareMasks::aFile) {
+                        if (start & SquareMasks::fileA) {
                             break;
                         }
                     } else {
                         throw std::runtime_error("Wrong ray!");
                     }
-                    other = move(other, direction);
+//                    other = move(other, direction);
+                    other = other.move(direction);
                     start |= other;
                 }
                 rookSlides[direction][y * 8 + x] = start ^ originalStart;
@@ -54,25 +55,25 @@ void SlidingPieceRays::populateBishopSlides () {
                 Bitboard other = start;
                 while (true) {
                     if (direction == NORTH_EAST) {
-                        if (start & (SquareMasks::eighthRank | SquareMasks::hFile)) {
+                        if (start & (SquareMasks::rank8 | SquareMasks::fileH)) {
                             break;
                         }
                     } else if (direction == SOUTH_EAST) {
-                        if (start & (SquareMasks::firstRank | SquareMasks::hFile)) {
+                        if (start & (SquareMasks::rank1 | SquareMasks::fileH)) {
                             break;
                         }
                     } else if (direction == SOUTH_WEST) {
-                        if (start & (SquareMasks::aFile | SquareMasks::firstRank)) {
+                        if (start & (SquareMasks::fileA | SquareMasks::rank1)) {
                             break;
                         }
                     } else if (direction == NORTH_WEST) {
-                        if (start & (SquareMasks::aFile | SquareMasks::eighthRank)) {
+                        if (start & (SquareMasks::fileA | SquareMasks::rank8)) {
                             break;
                         }
                     } else {
                         throw std::runtime_error("Wrong ray!");
                     }
-                    other = move(other, direction);
+                    other = other.move(direction);
                     start |= other;
                 }
                 bishopSlides[direction][y * 8 + x] = start ^ originalStart;
@@ -118,9 +119,9 @@ Bitboard SlidingPieceRays::getRookMoveBoard (Bitboard blockerBoard, int y, int x
         if (blockers) {
             int firstBlockPosition;
             if (direction == NORTH || direction == EAST) {
-                firstBlockPosition = __builtin_ctzl(blockers);
+                firstBlockPosition = blockers.ls1b();
             } else if (direction == SOUTH || direction == WEST) {
-                firstBlockPosition = 64 - __builtin_clzl(blockers) - 1;
+                firstBlockPosition = blockers.ms1b();
             } else {
                 throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
             }
@@ -144,9 +145,9 @@ Bitboard SlidingPieceRays::getBishopMoveBoard (Bitboard blockerBoard, int y, int
         if (blockers) {
             int firstBlockPosition;
             if (direction == NORTH_EAST || direction == NORTH_WEST) {
-                firstBlockPosition = __builtin_ctzl(blockers);
+                firstBlockPosition = blockers.ls1b();
             } else if (direction == SOUTH_EAST || direction == SOUTH_WEST) {
-                firstBlockPosition = 64 - __builtin_clzl(blockers) - 1;
+                firstBlockPosition = blockers.ms1b();
             } else {
                 throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
             }

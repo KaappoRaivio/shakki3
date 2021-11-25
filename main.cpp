@@ -2,6 +2,8 @@
 #include "BitboardOperations.h"
 #include "Board.h"
 #include "SlidingPieceRays.h"
+#include "KnightAttacks.h"
+#include "KingAttacks.h"
 
 int main () {
     Board board;
@@ -9,13 +11,15 @@ int main () {
 
 
     SlidingPieceRays slidingPieceRays;
+    KingAttacks attacks;
 
-//    std::cout << BitboardOperations::bitboardToString(slidingPieceRays.getBishopBlockerMask(2, 6)) << std::endl;
     Bitboard occupancy = 0x1e4000e640e04800;
-    std::cout << BitboardOperations::bitboardToString(occupancy) << std::endl;
-
-    std::cout << BitboardOperations::bitboardToString(slidingPieceRays.getBishopBlockerMask(5, 5)) << std::endl;
-    std::cout << BitboardOperations::bitboardToString(slidingPieceRays.getBishopMoveBoard(occupancy, 5, 5)) << std::endl;
+    std::cout << occupancy << std::endl;
+//    std::cout << BitboardOperations::bitboardToString(occupancy) << std::endl;
+//
+//    std::cout << BitboardOperations::bitboardToString(slidingPieceRays.getBishopBlockerMask(5, 5)) << std::endl;
+    std::cout << attacks.getKingAttackAt(5, 5) << std::endl;
+//    std::cout << attacks.getKingAttackAt(2, 1) << std::endl;
     std::cout << "done\n";
 
 //    std::cout << SlidingPieceRays::rookSlides[NORTH][10] << std::endl;

@@ -8,11 +8,15 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/kaappo/git/shakki4/Bitboard.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/Bitboard.cpp.o"
   "/home/kaappo/git/shakki4/BitboardOperations.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/BitboardOperations.cpp.o"
   "/home/kaappo/git/shakki4/Board.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/Board.cpp.o"
-  "/home/kaappo/git/shakki4/PieceColor.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/PieceColor.cpp.o"
+  "/home/kaappo/git/shakki4/KingAttacks.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/KingAttacks.cpp.o"
+  "/home/kaappo/git/shakki4/KnightAttacks.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/KnightAttacks.cpp.o"
+  "/home/kaappo/git/shakki4/Move.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/Move.cpp.o"
   "/home/kaappo/git/shakki4/PieceSet.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/PieceSet.cpp.o"
   "/home/kaappo/git/shakki4/SlidingPieceRays.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o"
+  "/home/kaappo/git/shakki4/Square.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/Square.cpp.o"
   "/home/kaappo/git/shakki4/main.cpp" "/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles/shakki4.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

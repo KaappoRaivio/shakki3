@@ -6,11 +6,31 @@
 
 #IncludeRegexTransform: 
 
-/home/kaappo/git/shakki4/BitboardOperations.h
+/home/kaappo/git/shakki4/Bitboard.h
 cstdint
+-
+ostream
 -
 mytypes.h
 /home/kaappo/git/shakki4/mytypes.h
+Square.h
+/home/kaappo/git/shakki4/Square.h
+
+/home/kaappo/git/shakki4/BitboardOperations.h
+cstdint
+-
+string
+-
+mytypes.h
+/home/kaappo/git/shakki4/mytypes.h
+Bitboard.h
+/home/kaappo/git/shakki4/Bitboard.h
+
+/home/kaappo/git/shakki4/Board.cpp
+iostream
+-
+Board.h
+/home/kaappo/git/shakki4/Board.h
 
 /home/kaappo/git/shakki4/Board.h
 cstdint
@@ -22,8 +42,6 @@ sstream
 PieceSet.h
 /home/kaappo/git/shakki4/PieceSet.h
 
-/home/kaappo/git/shakki4/PieceColor.h
-
 /home/kaappo/git/shakki4/PieceSet.h
 string
 -
@@ -31,28 +49,20 @@ ostream
 -
 Square.h
 /home/kaappo/git/shakki4/Square.h
-PieceColor.h
-/home/kaappo/git/shakki4/PieceColor.h
 BitboardOperations.h
 /home/kaappo/git/shakki4/BitboardOperations.h
 mytypes.h
 /home/kaappo/git/shakki4/mytypes.h
 
-/home/kaappo/git/shakki4/SlidingPieceRays.h
-BitboardOperations.h
-/home/kaappo/git/shakki4/BitboardOperations.h
-
 /home/kaappo/git/shakki4/Square.h
-
-/home/kaappo/git/shakki4/main.cpp
-iostream
+cstdint
 -
-BitboardOperations.h
-/home/kaappo/git/shakki4/BitboardOperations.h
-Board.h
-/home/kaappo/git/shakki4/Board.h
-SlidingPieceRays.h
-/home/kaappo/git/shakki4/SlidingPieceRays.h
+mytypes.h
+/home/kaappo/git/shakki4/mytypes.h
 
 /home/kaappo/git/shakki4/mytypes.h
+cstdint
+-
+iostream
+-
 

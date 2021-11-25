@@ -79,22 +79,9 @@ CMakeFiles/shakki4.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/main.cpp -o CMakeFiles/shakki4.dir/main.cpp.s
 
-CMakeFiles/shakki4.dir/PieceColor.cpp.o: CMakeFiles/shakki4.dir/flags.make
-CMakeFiles/shakki4.dir/PieceColor.cpp.o: ../PieceColor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/shakki4.dir/PieceColor.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/PieceColor.cpp.o -c /home/kaappo/git/shakki4/PieceColor.cpp
-
-CMakeFiles/shakki4.dir/PieceColor.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shakki4.dir/PieceColor.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kaappo/git/shakki4/PieceColor.cpp > CMakeFiles/shakki4.dir/PieceColor.cpp.i
-
-CMakeFiles/shakki4.dir/PieceColor.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/PieceColor.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/PieceColor.cpp -o CMakeFiles/shakki4.dir/PieceColor.cpp.s
-
 CMakeFiles/shakki4.dir/Board.cpp.o: CMakeFiles/shakki4.dir/flags.make
 CMakeFiles/shakki4.dir/Board.cpp.o: ../Board.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/shakki4.dir/Board.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/shakki4.dir/Board.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/Board.cpp.o -c /home/kaappo/git/shakki4/Board.cpp
 
 CMakeFiles/shakki4.dir/Board.cpp.i: cmake_force
@@ -107,7 +94,7 @@ CMakeFiles/shakki4.dir/Board.cpp.s: cmake_force
 
 CMakeFiles/shakki4.dir/PieceSet.cpp.o: CMakeFiles/shakki4.dir/flags.make
 CMakeFiles/shakki4.dir/PieceSet.cpp.o: ../PieceSet.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/shakki4.dir/PieceSet.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/shakki4.dir/PieceSet.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/PieceSet.cpp.o -c /home/kaappo/git/shakki4/PieceSet.cpp
 
 CMakeFiles/shakki4.dir/PieceSet.cpp.i: cmake_force
@@ -120,7 +107,7 @@ CMakeFiles/shakki4.dir/PieceSet.cpp.s: cmake_force
 
 CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o: CMakeFiles/shakki4.dir/flags.make
 CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o: ../SlidingPieceRays.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o -c /home/kaappo/git/shakki4/SlidingPieceRays.cpp
 
 CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.i: cmake_force
@@ -133,7 +120,7 @@ CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.s: cmake_force
 
 CMakeFiles/shakki4.dir/BitboardOperations.cpp.o: CMakeFiles/shakki4.dir/flags.make
 CMakeFiles/shakki4.dir/BitboardOperations.cpp.o: ../BitboardOperations.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/shakki4.dir/BitboardOperations.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/shakki4.dir/BitboardOperations.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/BitboardOperations.cpp.o -c /home/kaappo/git/shakki4/BitboardOperations.cpp
 
 CMakeFiles/shakki4.dir/BitboardOperations.cpp.i: cmake_force
@@ -144,27 +131,100 @@ CMakeFiles/shakki4.dir/BitboardOperations.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/BitboardOperations.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/BitboardOperations.cpp -o CMakeFiles/shakki4.dir/BitboardOperations.cpp.s
 
+CMakeFiles/shakki4.dir/KnightAttacks.cpp.o: CMakeFiles/shakki4.dir/flags.make
+CMakeFiles/shakki4.dir/KnightAttacks.cpp.o: ../KnightAttacks.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/shakki4.dir/KnightAttacks.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/KnightAttacks.cpp.o -c /home/kaappo/git/shakki4/KnightAttacks.cpp
+
+CMakeFiles/shakki4.dir/KnightAttacks.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shakki4.dir/KnightAttacks.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kaappo/git/shakki4/KnightAttacks.cpp > CMakeFiles/shakki4.dir/KnightAttacks.cpp.i
+
+CMakeFiles/shakki4.dir/KnightAttacks.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/KnightAttacks.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/KnightAttacks.cpp -o CMakeFiles/shakki4.dir/KnightAttacks.cpp.s
+
+CMakeFiles/shakki4.dir/KingAttacks.cpp.o: CMakeFiles/shakki4.dir/flags.make
+CMakeFiles/shakki4.dir/KingAttacks.cpp.o: ../KingAttacks.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/shakki4.dir/KingAttacks.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/KingAttacks.cpp.o -c /home/kaappo/git/shakki4/KingAttacks.cpp
+
+CMakeFiles/shakki4.dir/KingAttacks.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shakki4.dir/KingAttacks.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kaappo/git/shakki4/KingAttacks.cpp > CMakeFiles/shakki4.dir/KingAttacks.cpp.i
+
+CMakeFiles/shakki4.dir/KingAttacks.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/KingAttacks.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/KingAttacks.cpp -o CMakeFiles/shakki4.dir/KingAttacks.cpp.s
+
+CMakeFiles/shakki4.dir/Bitboard.cpp.o: CMakeFiles/shakki4.dir/flags.make
+CMakeFiles/shakki4.dir/Bitboard.cpp.o: ../Bitboard.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/shakki4.dir/Bitboard.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/Bitboard.cpp.o -c /home/kaappo/git/shakki4/Bitboard.cpp
+
+CMakeFiles/shakki4.dir/Bitboard.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shakki4.dir/Bitboard.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kaappo/git/shakki4/Bitboard.cpp > CMakeFiles/shakki4.dir/Bitboard.cpp.i
+
+CMakeFiles/shakki4.dir/Bitboard.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/Bitboard.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/Bitboard.cpp -o CMakeFiles/shakki4.dir/Bitboard.cpp.s
+
+CMakeFiles/shakki4.dir/Move.cpp.o: CMakeFiles/shakki4.dir/flags.make
+CMakeFiles/shakki4.dir/Move.cpp.o: ../Move.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/shakki4.dir/Move.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/Move.cpp.o -c /home/kaappo/git/shakki4/Move.cpp
+
+CMakeFiles/shakki4.dir/Move.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shakki4.dir/Move.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kaappo/git/shakki4/Move.cpp > CMakeFiles/shakki4.dir/Move.cpp.i
+
+CMakeFiles/shakki4.dir/Move.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/Move.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/Move.cpp -o CMakeFiles/shakki4.dir/Move.cpp.s
+
+CMakeFiles/shakki4.dir/Square.cpp.o: CMakeFiles/shakki4.dir/flags.make
+CMakeFiles/shakki4.dir/Square.cpp.o: ../Square.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/shakki4.dir/Square.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/shakki4.dir/Square.cpp.o -c /home/kaappo/git/shakki4/Square.cpp
+
+CMakeFiles/shakki4.dir/Square.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shakki4.dir/Square.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/kaappo/git/shakki4/Square.cpp > CMakeFiles/shakki4.dir/Square.cpp.i
+
+CMakeFiles/shakki4.dir/Square.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shakki4.dir/Square.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/kaappo/git/shakki4/Square.cpp -o CMakeFiles/shakki4.dir/Square.cpp.s
+
 # Object files for target shakki4
 shakki4_OBJECTS = \
 "CMakeFiles/shakki4.dir/main.cpp.o" \
-"CMakeFiles/shakki4.dir/PieceColor.cpp.o" \
 "CMakeFiles/shakki4.dir/Board.cpp.o" \
 "CMakeFiles/shakki4.dir/PieceSet.cpp.o" \
 "CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o" \
-"CMakeFiles/shakki4.dir/BitboardOperations.cpp.o"
+"CMakeFiles/shakki4.dir/BitboardOperations.cpp.o" \
+"CMakeFiles/shakki4.dir/KnightAttacks.cpp.o" \
+"CMakeFiles/shakki4.dir/KingAttacks.cpp.o" \
+"CMakeFiles/shakki4.dir/Bitboard.cpp.o" \
+"CMakeFiles/shakki4.dir/Move.cpp.o" \
+"CMakeFiles/shakki4.dir/Square.cpp.o"
 
 # External object files for target shakki4
 shakki4_EXTERNAL_OBJECTS =
 
 shakki4: CMakeFiles/shakki4.dir/main.cpp.o
-shakki4: CMakeFiles/shakki4.dir/PieceColor.cpp.o
 shakki4: CMakeFiles/shakki4.dir/Board.cpp.o
 shakki4: CMakeFiles/shakki4.dir/PieceSet.cpp.o
 shakki4: CMakeFiles/shakki4.dir/SlidingPieceRays.cpp.o
 shakki4: CMakeFiles/shakki4.dir/BitboardOperations.cpp.o
+shakki4: CMakeFiles/shakki4.dir/KnightAttacks.cpp.o
+shakki4: CMakeFiles/shakki4.dir/KingAttacks.cpp.o
+shakki4: CMakeFiles/shakki4.dir/Bitboard.cpp.o
+shakki4: CMakeFiles/shakki4.dir/Move.cpp.o
+shakki4: CMakeFiles/shakki4.dir/Square.cpp.o
 shakki4: CMakeFiles/shakki4.dir/build.make
 shakki4: CMakeFiles/shakki4.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX executable shakki4"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kaappo/git/shakki4/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable shakki4"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/shakki4.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

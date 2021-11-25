@@ -7,6 +7,7 @@
 
 
 #include "BitboardOperations.h"
+#include "Bitboard.h"
 
 class SlidingPieceRays {
 private:

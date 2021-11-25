@@ -7,7 +7,7 @@
 
 using namespace BitboardOperations::Directions;
 
-std::string& BitboardOperations::burnBitboard (std::string& buffer, Bitboard pieces, char legend) {
+std::string& BitboardOperations::burnBitboard (std::string& buffer, Bitboard_raw pieces, char legend) {
     while (pieces != 0) {
         buffer[__builtin_ctzl(pieces)] = legend;
         pieces &= pieces - 1;
@@ -16,7 +16,7 @@ std::string& BitboardOperations::burnBitboard (std::string& buffer, Bitboard pie
     return buffer;
 }
 
-std::string BitboardOperations::bitboardToString (Bitboard b) {
+std::string BitboardOperations::bitboardToString (Bitboard_raw b) {
     std::string buffer{"................................................................"};
     BitboardOperations::burnBitboard(buffer, b, '1');
     std::string result;
@@ -45,19 +45,19 @@ std::string BitboardOperations::bitboardToString (Bitboard b) {
     return result;
 }
 
-Bitboard BitboardOperations::flipVertical (Bitboard x) {
-    return  ( (x << 56)                           ) |
-            ( (x << 40) & (Bitboard)(0x00ff000000000000) ) |
-            ( (x << 24) & (Bitboard)(0x0000ff0000000000) ) |
-            ( (x <<  8) & (Bitboard)(0x000000ff00000000) ) |
-            ( (x >>  8) & (Bitboard)(0x00000000ff000000) ) |
-            ( (x >> 24) & (Bitboard)(0x0000000000ff0000) ) |
-            ( (x >> 40) & (Bitboard)(0x000000000000ff00) ) |
-            ( (x >> 56) );
+Bitboard_raw BitboardOperations::flipVertical (Bitboard_raw x) {
+    return ((x << 56)) |
+           ((x << 40) & (Bitboard_raw) (0x00ff000000000000)) |
+           ((x << 24) & (Bitboard_raw) (0x0000ff0000000000)) |
+           ((x << 8) & (Bitboard_raw) (0x000000ff00000000)) |
+           ((x >> 8) & (Bitboard_raw) (0x00000000ff000000)) |
+           ((x >> 24) & (Bitboard_raw) (0x0000000000ff0000)) |
+           ((x >> 40) & (Bitboard_raw) (0x000000000000ff00)) |
+           ((x >> 56));
 }
 
-Bitboard BitboardOperations::move (Bitboard b, ::RayDirection direction) {
-    int8_t shift = rayDirectionToShift(direction);
+
+Bitboard_raw BitboardOperations::shift (Bitboard_raw b, int shift) {
     if (shift == 0) {
         return b;
     } else if (shift > 0) {
@@ -67,30 +67,57 @@ Bitboard BitboardOperations::move (Bitboard b, ::RayDirection direction) {
     }
 }
 
-int8_t BitboardOperations::rayDirectionToShift (::RayDirection d) {
+//Bitboard_raw BitboardOperations::move (Bitboard_raw b, RayDirection direction) {
+//    return move(b, direction, 1);
+//}
+//
+//Bitboard_raw BitboardOperations::move(Bitboard_raw b, RayDirection direction, uint8_t amount) {
+//    return move(b, direction, amount, true);
+//}
+//
+//
+//Bitboard_raw BitboardOperations::move (Bitboard_raw b, RayDirection direction, uint8_t amount, bool wrapAround) {
+//
+//}
+
+int8_t BitboardOperations::rayDirectionToShift (RayDirection d, PieceColor color) {
+    int8_t shift;
     switch (d) {
         case NORTH:
-            return 8;
+            shift = 8;
+            break;
         case NORTH_EAST:
-            return 9;
+            shift = 9;
+            break;
         case EAST:
-            return 1;
+            shift = 1;
+            break;
         case SOUTH_EAST:
-            return -7;
+            shift = -7;
+            break;
         case SOUTH:
-            return -8;
+            shift = -8;
+            break;
         case SOUTH_WEST:
-            return -9;
+            shift = -9;
+            break;
         case WEST:
-            return -1;
+            shift = -1;
+            break;
         case NORTH_WEST:
-            return 7;
-
+            shift = 7;
+            break;
         default:
             throw std::runtime_error("Shouldn't happen");
+    }
 
+    if (color == WHITE) return shift;
+    else if (color == BLACK) return -shift;
+    else {
+        throw std::runtime_error("Invalid color!");
     }
 }
+
 
 namespace BitboardOperations::Directions {
 //    uint8_t NORTH = 0;
@@ -104,12 +131,20 @@ namespace BitboardOperations::Directions {
 };
 
 namespace BitboardOperations::SquareMasks {
-        Bitboard aFile            = 0x0101010101010101;
-        Bitboard hFile            = 0x8080808080808080;
-        Bitboard firstRank        = 0x00000000000000FF;
-        Bitboard eighthRank       = 0xFF00000000000000;
-        Bitboard a1h8Diagonal     = 0x8040201008040201;
-        Bitboard h1a8AntiDiagonal = 0x0102040810204080;
-        Bitboard lightSquares     = 0x55AA55AA55AA55AA;
-        Bitboard darkSquares      = 0xAA55AA55AA55AA55;
-    }
+    Bitboard fileA = 0x0101010101010101;
+    Bitboard fileH = 0x8080808080808080;
+
+    Bitboard rank1 = 0x00000000000000FF;
+    Bitboard rank2 = 0x000000000000FF00;
+    Bitboard rank3 = 0x0000000000FF0000;
+    Bitboard rank4 = 0x00000000FF000000;
+    Bitboard rank5 = 0x000000FF00000000;
+    Bitboard rank6 = 0x0000FF0000000000;
+    Bitboard rank7 = 0x00FF000000000000;
+    Bitboard rank8 = 0xFF00000000000000;
+
+    Bitboard a1h8Diagonal = 0x8040201008040201;
+    Bitboard h1a8AntiDiagonal = 0x0102040810204080;
+    Bitboard lightSquares = 0x55AA55AA55AA55AA;
+    Bitboard darkSquares = 0xAA55AA55AA55AA55;
+}

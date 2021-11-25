@@ -5,7 +5,9 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 #include "mytypes.h"
+#include "Bitboard.h"
 
 
 namespace BitboardOperations {
@@ -21,22 +23,31 @@ namespace BitboardOperations {
         constexpr uint8_t NORTH_WEST = 7;
     };
 
-    int8_t rayDirectionToShift (::RayDirection d);
+    int8_t rayDirectionToShift (RayDirection d, PieceColor color);
 
-    Bitboard move (Bitboard b, ::RayDirection direction);
+//    Bitboard_raw move (Bitboard_raw b, RayDirection direction);
+//    Bitboard_raw move (Bitboard_raw b, RayDirection direction, uint8_t amount);
+//    Bitboard_raw move (Bitboard_raw b, RayDirection direction, uint8_t amount, bool wrapAround);
+    Bitboard_raw shift(Bitboard_raw b, int shift);
 
-    Bitboard flipVertical (Bitboard x);
+    Bitboard_raw flipVertical (Bitboard_raw x);
 
-    std::string& burnBitboard (std::string& buffer, Bitboard pieces, char legend);
+    std::string& burnBitboard (std::string& buffer, Bitboard_raw pieces, char legend);
 
-    std::string bitboardToString (Bitboard b);
+    std::string bitboardToString (Bitboard_raw b);
 
 
     namespace SquareMasks {
-        extern Bitboard aFile;
-        extern Bitboard hFile;
-        extern Bitboard firstRank;
-        extern Bitboard eighthRank;
+        extern Bitboard fileA;
+        extern Bitboard fileH;
+        extern Bitboard rank1;
+        extern Bitboard rank2;
+        extern Bitboard rank3;
+        extern Bitboard rank4;
+        extern Bitboard rank5;
+        extern Bitboard rank6;
+        extern Bitboard rank7;
+        extern Bitboard rank8;
         extern Bitboard a1h8Diagonal;
         extern Bitboard h1a8AntiDiagonal;
         extern Bitboard lightSquares;
