@@ -18,6 +18,18 @@ CMakeFiles/shakki4.dir/Board.cpp.o: \
  ../BitboardOperations.h \
  ../Board.cpp \
  ../Board.h \
+ ../BoardUtils.h \
+ ../Move.h \
+ ../PieceSet.h \
+ ../Square.h \
+ ../mytypes.h
+CMakeFiles/shakki4.dir/BoardUtils.cpp.o: \
+ ../Bitboard.h \
+ ../BitboardOperations.h \
+ ../Board.h \
+ ../BoardUtils.cpp \
+ ../BoardUtils.h \
+ ../Move.h \
  ../PieceSet.h \
  ../Square.h \
  ../mytypes.h
@@ -39,6 +51,7 @@ CMakeFiles/shakki4.dir/Move.cpp.o: \
  ../Bitboard.h \
  ../BitboardOperations.h \
  ../Board.h \
+ ../BoardUtils.h \
  ../Move.cpp \
  ../Move.h \
  ../PieceSet.h \
@@ -66,10 +79,15 @@ CMakeFiles/shakki4.dir/main.cpp.o: \
  ../Bitboard.h \
  ../BitboardOperations.h \
  ../Board.h \
+ ../BoardUtils.h \
  ../KingAttacks.h \
  ../KnightAttacks.h \
+ ../Move.h \
  ../PieceSet.h \
  ../SlidingPieceRays.h \
  ../Square.h \
  ../main.cpp \
+ ../mytypes.h
+CMakeFiles/shakki4.dir/mytypes.cpp.o: \
+ ../mytypes.cpp \
  ../mytypes.h

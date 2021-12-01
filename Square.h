@@ -7,20 +7,32 @@
 
 
 #include <cstdint>
+#include <ostream>
 #include "mytypes.h"
 
-class Square {
-private:
+struct Square {
     uint8_t value;
 
 public:
-    explicit Square (Square_raw square);
-    explicit Square (int square);
+    Square (Square_raw square);
+    Square (int square);
     Square (int y, int x);
 
     uint8_t getX () const;
     uint8_t getY () const;
     uint8_t getValue () const;
+
+    const Square& operator+= (const Square& other) const;
+    friend Square operator+ (Square square, const Square& other);
+
+    const Square& operator-= (const Square& other);
+    friend Square operator- (Square square, Square other);
+
+    operator int () const;
+
+    uint8_t diffY (Square square) const;
+
+    friend std::ostream& operator<< (std::ostream& os, const Square& square);
 };
 
 

@@ -26,12 +26,6 @@ mytypes.h
 Bitboard.h
 /home/kaappo/git/shakki4/Bitboard.h
 
-/home/kaappo/git/shakki4/Board.cpp
-iostream
--
-Board.h
-/home/kaappo/git/shakki4/Board.h
-
 /home/kaappo/git/shakki4/Board.h
 cstdint
 -
@@ -39,8 +33,36 @@ ostream
 -
 sstream
 -
+memory
+-
 PieceSet.h
 /home/kaappo/git/shakki4/PieceSet.h
+Move.h
+/home/kaappo/git/shakki4/Move.h
+BoardUtils.h
+/home/kaappo/git/shakki4/BoardUtils.h
+
+/home/kaappo/git/shakki4/BoardUtils.cpp
+BoardUtils.h
+/home/kaappo/git/shakki4/BoardUtils.h
+
+/home/kaappo/git/shakki4/BoardUtils.h
+stack
+-
+mytypes.h
+/home/kaappo/git/shakki4/mytypes.h
+Move.h
+/home/kaappo/git/shakki4/Move.h
+
+/home/kaappo/git/shakki4/Move.h
+cstdint
+-
+mytypes.h
+/home/kaappo/git/shakki4/mytypes.h
+Square.h
+/home/kaappo/git/shakki4/Square.h
+Board.h
+/home/kaappo/git/shakki4/Board.h
 
 /home/kaappo/git/shakki4/PieceSet.h
 string
@@ -57,6 +79,8 @@ mytypes.h
 /home/kaappo/git/shakki4/Square.h
 cstdint
 -
+ostream
+-
 mytypes.h
 /home/kaappo/git/shakki4/mytypes.h
 
@@ -64,5 +88,7 @@ mytypes.h
 cstdint
 -
 iostream
+-
+vector
 -
 

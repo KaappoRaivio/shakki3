@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <iostream>
+#include <vector>
 
 typedef uint64_t Bitboard_raw;
 typedef uint8_t RayDirection;
@@ -25,31 +26,47 @@ enum PieceColor {
     WHITE = 0, BLACK = 1, EMPTY = 2
 };
 
-enum PieceType {
-    KNIGHT = 0,
-    BISHOP = 1,
-    ROOK = 2,
-    QUEEN = 3,
-    PAWN = 4,
-    KING = 5
+class PieceType {
+    char symbol;
+    uint8_t index;
+
+public:
+    explicit PieceType (char symbol, uint8_t index);
+
+
+    char getSymbol (PieceColor color) const;
+    operator int () const;
+
+    friend std::ostream& operator<< (std::ostream& os, const PieceType& type);
 };
-static char pieceTypeToSymbol (PieceType pieceType) {
-    switch (pieceType) {
-        case ROOK: return 'r';
-        case BISHOP: return 'b';
-        case KNIGHT: return 'n';
-        case QUEEN: return 'q';
-        case KING: return 'k';
-        case PAWN: return 'p';
-        default: return 'x';
-    }
+
+namespace PieceTypes {
+    extern const PieceType KNIGHT;
+    extern const PieceType BISHOP;
+    extern const PieceType ROOK  ;
+    extern const PieceType QUEEN ;
+    extern const PieceType PAWN  ;
+    extern const PieceType KING  ;
+    extern const PieceType NO_PIECE;
+    extern const std::vector<PieceType> pieces;
 }
 
-static char pieceTypeToSymbol (int pieceType) {
-    if (pieceType >= 0 && pieceType < 7) return pieceTypeToSymbol(static_cast<PieceType>(pieceType));
-    else throw std::runtime_error("Invalid pieceType!");
-}
+struct Piece {
+    PieceType type;
+    PieceColor color;
 
+    Piece (PieceType type, PieceColor color);
+
+    bool operator== (const Piece& rhs) const;
+
+    bool operator!= (const Piece& rhs) const;
+
+    friend std::ostream& operator<< (std::ostream& os, const Piece& piece);
+};
+
+namespace Pieces {
+    extern Piece NO_PIECE;
+}
 
 static PieceColor flip (const PieceColor color) {
     switch (color) {

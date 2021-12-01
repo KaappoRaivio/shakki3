@@ -11,12 +11,15 @@
 #include "mytypes.h"
 #include "Square.h"
 
+
+
 class Bitboard {
 private:
     Bitboard_raw value;
 public:
     Bitboard (uint64_t value); // NOLINT(google-explicit-constructor)
     Bitboard (Square_raw square);
+    Bitboard (Square square);
     Bitboard ();
 
     Bitboard move (RayDirection direction) const;
@@ -54,7 +57,41 @@ public:
 
     friend std::ostream& operator<< (std::ostream& os, const Bitboard& bitboard);
 
-    Bitboard (Square square);
+
+    struct Iterator {
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type   = std::ptrdiff_t;
+        using value_type        = Square;
+        using pointer           = Square*;
+        using reference         = Square&;
+
+        reference operator*() {
+//            square = Square{__builtin_ctzl(bitboard)};
+            square.value = __builtin_ctzl(bitboard);
+            return square;
+        }
+        pointer operator->() {
+            square.value = __builtin_ctzl(bitboard);
+//            square = Square{__builtin_ctzl(bitboard)};
+            return &square;
+        }
+
+        Iterator& operator++() { bitboard ^= bitboard & -bitboard; return *this;}
+        Iterator operator++(int) { const Iterator tmp = *this; ++(*this); return tmp; }
+
+        friend bool operator== (const Iterator& a, const Iterator& b) { return a.bitboard == b.bitboard; };
+        friend bool operator!= (const Iterator& a, const Iterator& b) { return a.bitboard != b.bitboard; };
+
+
+        explicit Iterator (const Bitboard& bitboard) : bitboard{bitboard.value}, square{bitboard.ls1b()} { }
+
+    private:
+        Bitboard_raw bitboard;
+        value_type square;
+    };
+
+    Iterator begin () const;
+    static Iterator end () ;
 };
 
 

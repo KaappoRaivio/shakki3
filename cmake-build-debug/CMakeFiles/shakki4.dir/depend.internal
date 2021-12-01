@@ -18,6 +18,18 @@ CMakeFiles/shakki4.dir/Board.cpp.o
  /home/kaappo/git/shakki4/BitboardOperations.h
  /home/kaappo/git/shakki4/Board.cpp
  /home/kaappo/git/shakki4/Board.h
+ /home/kaappo/git/shakki4/BoardUtils.h
+ /home/kaappo/git/shakki4/Move.h
+ /home/kaappo/git/shakki4/PieceSet.h
+ /home/kaappo/git/shakki4/Square.h
+ /home/kaappo/git/shakki4/mytypes.h
+CMakeFiles/shakki4.dir/BoardUtils.cpp.o
+ /home/kaappo/git/shakki4/Bitboard.h
+ /home/kaappo/git/shakki4/BitboardOperations.h
+ /home/kaappo/git/shakki4/Board.h
+ /home/kaappo/git/shakki4/BoardUtils.cpp
+ /home/kaappo/git/shakki4/BoardUtils.h
+ /home/kaappo/git/shakki4/Move.h
  /home/kaappo/git/shakki4/PieceSet.h
  /home/kaappo/git/shakki4/Square.h
  /home/kaappo/git/shakki4/mytypes.h
@@ -39,6 +51,7 @@ CMakeFiles/shakki4.dir/Move.cpp.o
  /home/kaappo/git/shakki4/Bitboard.h
  /home/kaappo/git/shakki4/BitboardOperations.h
  /home/kaappo/git/shakki4/Board.h
+ /home/kaappo/git/shakki4/BoardUtils.h
  /home/kaappo/git/shakki4/Move.cpp
  /home/kaappo/git/shakki4/Move.h
  /home/kaappo/git/shakki4/PieceSet.h
@@ -66,10 +79,15 @@ CMakeFiles/shakki4.dir/main.cpp.o
  /home/kaappo/git/shakki4/Bitboard.h
  /home/kaappo/git/shakki4/BitboardOperations.h
  /home/kaappo/git/shakki4/Board.h
+ /home/kaappo/git/shakki4/BoardUtils.h
  /home/kaappo/git/shakki4/KingAttacks.h
  /home/kaappo/git/shakki4/KnightAttacks.h
+ /home/kaappo/git/shakki4/Move.h
  /home/kaappo/git/shakki4/PieceSet.h
  /home/kaappo/git/shakki4/SlidingPieceRays.h
  /home/kaappo/git/shakki4/Square.h
  /home/kaappo/git/shakki4/main.cpp
+ /home/kaappo/git/shakki4/mytypes.h
+CMakeFiles/shakki4.dir/mytypes.cpp.o
+ /home/kaappo/git/shakki4/mytypes.cpp
  /home/kaappo/git/shakki4/mytypes.h

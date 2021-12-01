@@ -201,6 +201,30 @@ Board.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/Board.cpp.s
 .PHONY : Board.cpp.s
 
+BoardUtils.o: BoardUtils.cpp.o
+.PHONY : BoardUtils.o
+
+# target to build an object file
+BoardUtils.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/BoardUtils.cpp.o
+.PHONY : BoardUtils.cpp.o
+
+BoardUtils.i: BoardUtils.cpp.i
+.PHONY : BoardUtils.i
+
+# target to preprocess a source file
+BoardUtils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/BoardUtils.cpp.i
+.PHONY : BoardUtils.cpp.i
+
+BoardUtils.s: BoardUtils.cpp.s
+.PHONY : BoardUtils.s
+
+# target to generate assembly for a file
+BoardUtils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/BoardUtils.cpp.s
+.PHONY : BoardUtils.cpp.s
+
 KingAttacks.o: KingAttacks.cpp.o
 .PHONY : KingAttacks.o
 
@@ -369,6 +393,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+mytypes.o: mytypes.cpp.o
+.PHONY : mytypes.o
+
+# target to build an object file
+mytypes.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/mytypes.cpp.o
+.PHONY : mytypes.cpp.o
+
+mytypes.i: mytypes.cpp.i
+.PHONY : mytypes.i
+
+# target to preprocess a source file
+mytypes.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/mytypes.cpp.i
+.PHONY : mytypes.cpp.i
+
+mytypes.s: mytypes.cpp.s
+.PHONY : mytypes.s
+
+# target to generate assembly for a file
+mytypes.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/shakki4.dir/build.make CMakeFiles/shakki4.dir/mytypes.cpp.s
+.PHONY : mytypes.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -387,6 +435,9 @@ help:
 	@echo "... Board.o"
 	@echo "... Board.i"
 	@echo "... Board.s"
+	@echo "... BoardUtils.o"
+	@echo "... BoardUtils.i"
+	@echo "... BoardUtils.s"
 	@echo "... KingAttacks.o"
 	@echo "... KingAttacks.i"
 	@echo "... KingAttacks.s"
@@ -408,6 +459,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... mytypes.o"
+	@echo "... mytypes.i"
+	@echo "... mytypes.s"
 .PHONY : help
 
 

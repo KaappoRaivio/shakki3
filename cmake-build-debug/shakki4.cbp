@@ -100,6 +100,12 @@
 		<Unit filename="/home/kaappo/git/shakki4/Board.h">
 			<Option target="shakki4"/>
 		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/BoardUtils.cpp">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/BoardUtils.h">
+			<Option target="shakki4"/>
+		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/KingAttacks.cpp">
 			<Option target="shakki4"/>
 		</Unit>
@@ -137,6 +143,9 @@
 			<Option target="shakki4"/>
 		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/main.cpp">
+			<Option target="shakki4"/>
+		</Unit>
+		<Unit filename="/home/kaappo/git/shakki4/mytypes.cpp">
 			<Option target="shakki4"/>
 		</Unit>
 		<Unit filename="/home/kaappo/git/shakki4/mytypes.h">

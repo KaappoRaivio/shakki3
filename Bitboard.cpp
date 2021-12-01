@@ -178,3 +178,11 @@ Bitboard Bitboard::move (RayDirection direction) const {
 Bitboard::Bitboard (Square square) : Bitboard(square.getValue()) {
 
 }
+
+Bitboard::Iterator Bitboard::begin () const {
+    return Bitboard::Iterator(*this);
+}
+
+Bitboard::Iterator Bitboard::end () {
+    return Bitboard::Iterator(0);
+}

@@ -4,7 +4,9 @@
 
 #include "Move.h"
 
-Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo= KING) : move{0} {
+using namespace PieceTypes;
+
+Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo = KING) : move{0} {
     move |= from.getValue() << 10;
     move |= to.getValue() << 4;
 
@@ -13,10 +15,13 @@ Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromo
     bool isCapture = context.getColorAt(to) == flip(color);
     if (isCapture) {
         move |= 1 << MoveBitmasks::CAPTURE;
-        if (context.is(PAWN, from)) {
 
-        }
     }
+
+    if (context.is(PAWN, from) && from.diffY(to) == 2) {
+        move |= 1 << MoveBitmasks::DOUBLE_PAWN_PUSH;
+    }
+
     move |= 0 << MoveBitmasks::EN_PASSANT;
 
     bool isPromotion = bool(Bitboard{to} & BitboardOperations::SquareMasks::rank8.asColor(color));
@@ -27,4 +32,36 @@ Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromo
         move |= 1 << MoveBitmasks::PROMOTION;
         move |= pieceToPromoteTo;
     }
+}
+
+Square Move::getOrigin () const {
+    return (move >> 10) & 0b0000000000111111;
+}
+
+Square Move::getDestination () const {
+    return (move >> 4) & 0b0000000000111111;
+}
+
+bool Move::isCapture () const {
+    return move & (1 << MoveBitmasks::CAPTURE);
+}
+
+Move::Move (bool NO_MOVE) {
+    if (NO_MOVE) {
+        move = 0xffffull;
+    } else {
+        throw std::runtime_error("NO_MOVE must be true!");
+    }
+}
+
+bool Move::operator== (const Move& rhs) const {
+    return move == rhs.move;
+}
+
+bool Move::operator!= (const Move& rhs) const {
+    return !(rhs == *this);
+}
+
+namespace Moves {
+    Move NO_MOVE{true};
 }

@@ -5,30 +5,7 @@
 #include <iostream>
 #include "PieceSet.h"
 
-
-
-//PieceSet::PieceSet () {
-//    rooks   = 0b10000001;
-//    knights = 0b01000010;
-//    bishops = 0b00100100;
-//    queen   = 0b00001000;
-//    king    = 0b00010000;
-//    pawns   = 0b1111111100000000;
-//
-//    if (color == PieceColor::BLACK) {
-//        rooks ^= 63;
-//        knights ^= 63;
-//        bishops ^= 63;
-//        queen ^= 63;
-//        king ^= 63;
-//        pawns ^= 63;
-//    }
-//}
-
-//const std::string& PieceSet::burn (std::string& buffer) const {
-//    buffer[rooks & (-rooks)] = 'r';
-//    return buffer;
-//}
+using namespace PieceTypes;
 
 PieceSet::PieceSet (const PieceColor& color) : color{color}, boards{}, all{} {
     boards[ROOK]   = 0b10000001;
@@ -62,7 +39,7 @@ std::string& PieceSet::burn (std::string& buffer) const {
 //    BitboardOperations::burnBitboard(buffer, king, color == WHITE ? 'k' : 'K');
 //    BitboardOperations::burnBitboard(buffer, pawns, color == WHITE ? 'p' : 'P');
     for (int i = 0; i < AMOUNT_OF_BOARDS; ++i) {
-        boards[i].burnTo(buffer, color == WHITE ? pieceTypeToSymbol(i) : std::toupper(pieceTypeToSymbol(i)));
+        boards[i].burnTo(buffer, PieceTypes::pieces[i].getSymbol(color));
     }
 
 //    rooks.burnTo(buffer, color == WHITE ? 'r' : 'R');

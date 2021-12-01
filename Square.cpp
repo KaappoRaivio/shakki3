@@ -27,3 +27,42 @@ uint8_t Square::getY () const {
 uint8_t Square::getValue () const {
     return value;
 }
+
+const Square& Square::operator+= (const Square& other) const {
+    value << 8 * other.getY();
+    value << other.getX();
+
+    return *this;
+}
+
+Square operator+ (const Square square, const Square& other) {
+    square += other;
+    return square;
+}
+
+const Square& Square::operator-= (const Square& other) {
+    value >> 8 * other.getY();
+    value >> other.getX();
+
+    return *this;
+}
+
+Square operator- (Square square, Square other) {
+    square += other;
+
+    return square;
+}
+
+uint8_t Square::diffY (Square square) const {
+    return std::abs((int8_t) getY() - (int8_t) square.getY());
+}
+
+std::ostream& operator<< (std::ostream& os, const Square& square) {
+    os << "(" << (int) square.getY() << ", " << (int) square.getX() << ")";
+    return os;
+}
+
+Square::operator int () const {
+    return value;
+}
+

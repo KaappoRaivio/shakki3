@@ -8,6 +8,7 @@
 
 #include <cstdint>
 #include "mytypes.h"
+#include "Square.h"
 #include "Board.h"
 
 
@@ -23,13 +24,27 @@ namespace MoveBitmasks {
 }
 
 
+class Board;
+
 class Move {
 private:
     uint16_t move;
 
 public:
+    explicit Move (bool NO_MOVE);
     Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo);
 
+    Square getOrigin () const;
+    Square getDestination () const;
+
+    bool isCapture () const;
+
+    bool operator == (const Move& rhs) const;
+    bool operator != (const Move& rhs) const;
 };
+
+namespace Moves {
+    extern Move NO_MOVE;
+}
 
 
