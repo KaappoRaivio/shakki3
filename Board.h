@@ -27,18 +27,20 @@ public:
     bool is(PieceType type, Square at) const;
 
     void executeMove (const Move& move);
+    void unmakeMove ();
 
     PieceColor getTurn () const;
 
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
-    const PieceSet pieces[2];
+    PieceSet pieces[2];
     std::unique_ptr<BoardStateHistory> history;
 
     void initializeLetterbox ();
 
     const PieceSet& getWhite () const;
     const PieceSet& getBlack () const;
+
 };
 
 

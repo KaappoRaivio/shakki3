@@ -44,22 +44,22 @@ Bitboard& Bitboard::operator&= (Bitboard other) {
     return *this;
 }
 
-Bitboard operator& (Bitboard bitboard, const Bitboard other) {
+Bitboard operator& (Bitboard bitboard, Bitboard other) {
     bitboard &= other;
     return bitboard;
 }
 
-Bitboard& Bitboard::operator|= (const Bitboard other) {
+Bitboard& Bitboard::operator|= (Bitboard other) {
     value |= other.value;
     return *this;
 }
 
-Bitboard operator| (Bitboard bitboard, const Bitboard other) {
+Bitboard operator| (Bitboard bitboard, Bitboard other) {
     bitboard |= other;
     return bitboard;
 }
 
-Bitboard& Bitboard::operator^= (const Bitboard other) {
+Bitboard& Bitboard::operator^= (Bitboard other) {
     value ^= other.value;
     return *this;
 }
@@ -175,7 +175,7 @@ Bitboard Bitboard::move (RayDirection direction) const {
     return move(direction, WHITE);
 }
 
-Bitboard::Bitboard (Square square) : Bitboard(square.getValue()) {
+Bitboard::Bitboard (Square square) : Bitboard(1ull << square.getValue()) {
 
 }
 

@@ -24,6 +24,8 @@ PieceSet::PieceSet (const PieceColor& color) : color{color}, boards{}, all{} {
         for (auto & board : boards) {
             board = board.flipVertical();
         }
+
+        all = all.flipVertical();
     }
 
 }
@@ -58,5 +60,5 @@ std::ostream& operator<< (std::ostream& os, const PieceSet& set) {
 }
 
 bool PieceSet::hasPiece (Square square) const {
-    return bool(all & (1 << square.getValue()));
+    return bool(all & square);
 }

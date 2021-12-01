@@ -11,6 +11,8 @@
 typedef uint64_t Bitboard_raw;
 typedef uint8_t RayDirection;
 
+typedef uint16_t Move_raw;
+
 enum Square_raw {
     a1, b1, c1, d1, e1, f1, g1, h1,
     a2, b2, c2, d2, e2, f2, g2, h2,

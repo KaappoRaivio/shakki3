@@ -6,15 +6,33 @@
 #include "KingAttacks.h"
 
 int main () {
-
+    std::cout << d5 << std::endl;
 
 
     Board board;
-    Move move = {board, e2, e4, PieceTypes::KING};
-    std::cout << board << std::endl;
+
+    Move move = {board, e2, e4};
     board.executeMove(move);
+
+    Move move2 = {board, d7, d5};
+    board.executeMove(move2);
+
+    Move move3 = {board, e4, d5};
+    board.executeMove(move3);
+
     std::cout << board << std::endl;
 
+    board.unmakeMove();
+    std::cout << board << std::endl;
+
+    board.unmakeMove();
+    std::cout << board << std::endl;
+
+    board.unmakeMove();
+    std::cout << board << std::endl;
+
+//    std::cout << board << std::endl;
+//    std::cout << board << std::endl;
 
 //    SlidingPieceRays slidingPieceRays;
 //    KingAttacks attacks;

@@ -6,7 +6,9 @@
 
 using namespace PieceTypes;
 
-Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo = KING) : move{0} {
+Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo) : move{0} {
+//    std::cout << from << ", " << to << std::endl;
+//    std::cout << context << std::endl;
     move |= from.getValue() << 10;
     move |= to.getValue() << 4;
 
@@ -14,22 +16,21 @@ Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromo
 
     bool isCapture = context.getColorAt(to) == flip(color);
     if (isCapture) {
-        move |= 1 << MoveBitmasks::CAPTURE;
-
+        move |= MoveBitmasks::CAPTURE;
     }
 
     if (context.is(PAWN, from) && from.diffY(to) == 2) {
-        move |= 1 << MoveBitmasks::DOUBLE_PAWN_PUSH;
+        move |= MoveBitmasks::DOUBLE_PAWN_PUSH;
     }
 
-    move |= 0 << MoveBitmasks::EN_PASSANT;
+    move &= ~MoveBitmasks::EN_PASSANT;
 
     bool isPromotion = bool(Bitboard{to} & BitboardOperations::SquareMasks::rank8.asColor(color));
     if (isPromotion) {
         if (pieceToPromoteTo == KING) {
             throw std::runtime_error("You must set pieceToPromote for a promotion move!");
         }
-        move |= 1 << MoveBitmasks::PROMOTION;
+        move |= MoveBitmasks::PROMOTION;
         move |= pieceToPromoteTo;
     }
 }
@@ -61,6 +62,21 @@ bool Move::operator== (const Move& rhs) const {
 bool Move::operator!= (const Move& rhs) const {
     return !(rhs == *this);
 }
+
+std::ostream& operator<< (std::ostream& os, const Move& move) {
+    os << "Move{from:" << move.getOrigin() << ", to:" << move.getDestination() << "}";
+    return os;
+}
+
+Move_raw Move::raw () const {
+    return move;
+}
+
+Move::Move (Move_raw move) : move{move} {
+
+}
+
+Move::Move (const Move& other) = default;
 
 namespace Moves {
     Move NO_MOVE{true};

@@ -7,6 +7,7 @@
 
 
 #include <stack>
+#include <ostream>
 #include "mytypes.h"
 #include "Move.h"
 
@@ -15,9 +16,12 @@ class Move;
 struct BoardState {
     int plysSinceFiftyMoveReset;
     PieceColor turn;
-    Move& previousMove;
+    Move_raw previousMove;
+    Piece capturedPiece;
 
-    BoardState (PieceColor turn, Move& previousMove, int plysSinceFiftyMoveReset);
+    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset);
+
+    friend std::ostream& operator<< (std::ostream& os, const BoardState& state);
 };
 
 class BoardStateHistory {
@@ -29,9 +33,10 @@ public:
     BoardStateHistory ();
 
     const BoardState& getCurrentFrame () const;
-    BoardState& setCurrentFrame ();
+    void pushState (BoardState newFrame);
+
     void createNewFrame ();
-    void popFrame ();
+    const BoardState& popFrame ();
 };
 
 

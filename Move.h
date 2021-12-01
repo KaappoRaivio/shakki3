@@ -7,6 +7,7 @@
 
 
 #include <cstdint>
+#include <ostream>
 #include "mytypes.h"
 #include "Square.h"
 #include "Board.h"
@@ -28,11 +29,13 @@ class Board;
 
 class Move {
 private:
-    uint16_t move;
+    Move_raw move;
 
 public:
     explicit Move (bool NO_MOVE);
-    Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo);
+    Move (Move_raw move);
+    Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo = PieceTypes::KING);
+    Move (const Move& other);
 
     Square getOrigin () const;
     Square getDestination () const;
@@ -41,6 +44,10 @@ public:
 
     bool operator == (const Move& rhs) const;
     bool operator != (const Move& rhs) const;
+
+    friend std::ostream& operator<< (std::ostream& os, const Move& move);
+
+    Move_raw raw () const;
 };
 
 namespace Moves {
