@@ -62,3 +62,21 @@ std::ostream& operator<< (std::ostream& os, const Piece& piece) {
 //    os << "Piece{type: " << piece.type << " color: " << piece.color << "}";
 //    return os;
 }
+
+PieceColor flip (const PieceColor color) {
+    switch (color) {
+        case WHITE:
+            return BLACK;
+        case BLACK:
+            return WHITE;
+        case EMPTY:
+            std::cerr << "Probably shouldn't invert EMPTY color!" << std::endl;
+            return EMPTY;
+        default:
+            throw std::runtime_error("Shouldn't happen!");
+    }
+}
+
+Piece::operator bool () const {
+    return *this != Pieces::NO_PIECE;
+}

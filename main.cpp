@@ -10,26 +10,36 @@ int main () {
 
 
     Board board;
-
+//    std::cout << "moi" << std::endl;
+//    std::cout << moves << std::endl;
+//
     Move move = {board, e2, e4};
     board.executeMove(move);
 
     Move move2 = {board, d7, d5};
     board.executeMove(move2);
+    const auto& moves = board.getMoves();
 
-    Move move3 = {board, e4, d5};
-    board.executeMove(move3);
-
+    for (const auto& m : moves) {
+        std::cout << m << ", ";
+    }
+    std::cout << std::endl;
     std::cout << board << std::endl;
-
-    board.unmakeMove();
-    std::cout << board << std::endl;
-
-    board.unmakeMove();
-    std::cout << board << std::endl;
-
-    board.unmakeMove();
-    std::cout << board << std::endl;
+//
+//
+//    Move move3 = {board, e4, d5};
+//    board.executeMove(move3);
+//
+//    std::cout << board << std::endl;
+//
+//    board.unmakeMove();
+//    std::cout << board << std::endl;
+//
+//    board.unmakeMove();
+//    std::cout << board << std::endl;
+//
+//    board.unmakeMove();
+//    std::cout << board << std::endl;
 
 //    std::cout << board << std::endl;
 //    std::cout << board << std::endl;

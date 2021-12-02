@@ -7,7 +7,7 @@
 #include "Board.h"
 
 
-Board::Board () : pieces{PieceSet{WHITE}, PieceSet{BLACK}}, letterbox{} {
+Board::Board () : letterbox{}, pieces{PieceSet{WHITE}, PieceSet{BLACK}}, history{} {
     initializeLetterbox();
 
     history = std::make_unique<BoardStateHistory>();
@@ -102,12 +102,18 @@ void Board::executeMove (const Move& move) {
 
     // create copy-make frame
 //    history->createNewFrame();
+    int newFiftyMoveReset;
+    if (move.isCapture() || move.getMovingPiece(*this).type == PieceTypes::PAWN) {
+        newFiftyMoveReset = 0;
+    } else {
+        newFiftyMoveReset = history->getCurrentFrame().plysSinceFiftyMoveReset + 1;
+    }
 
     BoardState newState {
         flip(getTurn()),
         move.raw(),
         pieceInDestination,
-        history->getCurrentFrame().plysSinceFiftyMoveReset + 1
+        newFiftyMoveReset
     };
 
     history->pushState(newState);
@@ -140,27 +146,15 @@ void Board::unmakeMove () {
 }
 
 void Board::initializeLetterbox () {
-//    std::cout << "resetting" << std::endl;
-//    for (auto& i: letterbox) i = &Pieces::NO_PIECE;
     for (auto& i: letterbox) i = std::make_unique<Piece>(Pieces::NO_PIECE);
-//    std::cout << "reset" << std::endl;
-
 
     for (int color = WHITE; color < EMPTY; ++color) {
-//        std::cout << "Color: " << color << std::endl;
         for (const PieceType& type : PieceTypes::pieces) {
-//            std::cout << *this << std::endl;
-//            std::cout << "\tType: " << type << std::endl;
             auto pieceSet = pieces[color].boards[type];
 
             for (const Square& square : pieceSet) {
-//                std::cout << "\t\t" << square << std::endl;
-
                 letterbox[square]->type = type;
                 letterbox[square]->color = static_cast<PieceColor>(color);
-
-//                std::cout << "\t\tSetting" << square << " to " << *letterbox[square] << std::endl;
-
             }
         }
     }
@@ -168,5 +162,23 @@ void Board::initializeLetterbox () {
 
 PieceColor Board::getTurn () const {
     return history->getCurrentFrame().turn;
+}
+
+const Piece& Board::getPieceAt (Square square) const {
+    return *letterbox[square];
+}
+
+const PieceSet* Board::getPieces () const {
+    return pieces;
+}
+
+std::vector<Move> Board::getMoves () const {
+//    std::cout << "moi" << std::endl;
+    std::vector<Move> moves;
+    MoveGeneration::addBishopMoves(moves, *this, getTurn());
+    MoveGeneration::addRookMoves(moves, *this, getTurn());
+    MoveGeneration::addKnightMoves(moves, *this, getTurn());
+
+    return moves;
 }
 

@@ -48,6 +48,8 @@ public:
     friend std::ostream& operator<< (std::ostream& os, const Move& move);
 
     Move_raw raw () const;
+
+    const Piece& getMovingPiece (const Board& context) const;
 };
 
 namespace Moves {

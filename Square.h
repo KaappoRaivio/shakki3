@@ -22,7 +22,7 @@ public:
     uint8_t getY () const;
     uint8_t getValue () const;
 
-    const Square& operator+= (const Square& other) const;
+    const Square& operator+= (const Square& other);
     friend Square operator+ (Square square, const Square& other);
 
     const Square& operator-= (const Square& other);

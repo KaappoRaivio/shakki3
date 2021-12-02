@@ -28,7 +28,6 @@ class BoardStateHistory {
 private:
     std::stack<BoardState> states;
 
-
 public:
     BoardStateHistory ();
 
@@ -39,4 +38,9 @@ public:
     const BoardState& popFrame ();
 };
 
-
+class Board;
+namespace MoveGeneration {
+    void addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
+    void addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
+    void addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
+}

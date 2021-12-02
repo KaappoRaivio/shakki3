@@ -76,6 +76,17 @@ Move::Move (Move_raw move) : move{move} {
 
 }
 
+const Piece& Move::getMovingPiece (const Board& context) const {
+    const Piece& piece = context.getPieceAt(getOrigin());
+    if (piece) return piece;
+
+    const Piece& piece2 = context.getPieceAt(getDestination());
+    if (piece2) return piece2;
+
+    std::cerr << context << *this << std::endl;
+    throw std::runtime_error("Problem");
+}
+
 Move::Move (const Move& other) = default;
 
 namespace Moves {

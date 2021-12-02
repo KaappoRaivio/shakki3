@@ -31,6 +31,11 @@ public:
 
     PieceColor getTurn () const;
 
+    std::vector<Move> getMoves () const;
+
+    const Piece& getPieceAt (Square square) const;
+    const PieceSet* getPieces () const;
+
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
     PieceSet pieces[2];

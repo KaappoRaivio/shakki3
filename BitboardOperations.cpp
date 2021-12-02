@@ -38,7 +38,7 @@ std::string BitboardOperations::bitboardToString (Bitboard_raw b) {
     result.insert(54, "\n");
     result.insert(63, "\n");
 
-    for (int i = 0; i < result.size(); i += 2) {
+    for (size_t i = 0; i < result.size(); i += 2) {
         result.insert(i, " ");
     }
 

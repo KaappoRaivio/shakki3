@@ -60,8 +60,9 @@ struct Piece {
     Piece (PieceType type, PieceColor color);
 
     bool operator== (const Piece& rhs) const;
-
     bool operator!= (const Piece& rhs) const;
+
+    operator bool () const;
 
     friend std::ostream& operator<< (std::ostream& os, const Piece& piece);
 };
@@ -70,16 +71,4 @@ namespace Pieces {
     extern Piece NO_PIECE;
 }
 
-static PieceColor flip (const PieceColor color) {
-    switch (color) {
-        case WHITE:
-            return BLACK;
-        case BLACK:
-            return WHITE;
-        case EMPTY:
-            std::cerr << "Probably shouldn't invert EMPTY color!" << std::endl;
-            return EMPTY;
-        default:
-            throw std::runtime_error("Shouldn't happen!");
-    }
-}
+PieceColor flip (PieceColor color);

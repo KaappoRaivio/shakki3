@@ -28,21 +28,21 @@ uint8_t Square::getValue () const {
     return value;
 }
 
-const Square& Square::operator+= (const Square& other) const {
-    value << 8 * other.getY();
-    value << other.getX();
+const Square& Square::operator+= (const Square& other) {
+    value <<= 8 * other.getY();
+    value <<= other.getX();
 
     return *this;
 }
 
-Square operator+ (const Square square, const Square& other) {
+Square operator+ (Square square, const Square& other) {
     square += other;
     return square;
 }
 
 const Square& Square::operator-= (const Square& other) {
-    value >> 8 * other.getY();
-    value >> other.getX();
+    value >>= 8 * other.getY();
+    value >>= other.getX();
 
     return *this;
 }
