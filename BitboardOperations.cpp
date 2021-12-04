@@ -132,7 +132,17 @@ namespace BitboardOperations::Directions {
 
 namespace BitboardOperations::SquareMasks {
     Bitboard fileA = 0x0101010101010101;
+    Bitboard fileB = 0x0202020202020202;
+    Bitboard fileC = 0x0404040404040404;
+    Bitboard fileD = 0x0808080808080808;
+    Bitboard fileE = 0x1010101010101010;
+    Bitboard fileF = 0x2020202020202020;
+    Bitboard fileG = 0x4040404040404040;
     Bitboard fileH = 0x8080808080808080;
+
+    Bitboard files[8] = {
+            fileA, fileB, fileC, fileD, fileE, fileF, fileG, fileH
+    };
 
     Bitboard rank1 = 0x00000000000000FF;
     Bitboard rank2 = 0x000000000000FF00;

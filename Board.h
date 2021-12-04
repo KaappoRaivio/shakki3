@@ -18,6 +18,8 @@ class BoardStateHistory;
 
 class Board {
 public:
+    static Board fromFEN (std::string FEN);
+
     Board ();
 
     PieceSet getPieceSet (PieceColor color) const;
@@ -46,6 +48,7 @@ private:
     const PieceSet& getWhite () const;
     const PieceSet& getBlack () const;
 
+    void initializeBitboards ();
 };
 
 

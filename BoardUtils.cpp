@@ -8,8 +8,10 @@
 #include "KnightAttacks.h"
 //#include "Board.h"
 
-BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset)
-        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, turn{turn}, previousMove{previousMove}, capturedPiece(capturedPiece) {}
+using namespace BitboardOperations;
+
+BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount)
+        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece} {}
 
 std::ostream& operator<< (std::ostream& os, const BoardState& state) {
     os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << "}";
@@ -22,7 +24,7 @@ BoardStateHistory::BoardStateHistory () : states{} {
 
 void BoardStateHistory::createNewFrame () {
     if (states.empty()) {
-        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0});
+        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1});
     } else {
         states.push(BoardState{states.top()});
     }
@@ -44,11 +46,11 @@ void BoardStateHistory::pushState (BoardState newFrame) {
 
 void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {
     const Bitboard& bishops = context.getPieces()[color].boards[PieceTypes::BISHOP];
-    const Bitboard& occupancy = context.getPieceSet(WHITE).all | context.getPieceSet(BLACK).all;
+    const Bitboard& occupancy = context.getPieceSet(WHITE).all | context.getPieceSet(color).all;
 
-    for (const Square& bishopSquare: bishops) {
-        const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator().getBishopMoveBoard(occupancy, bishopSquare)
-                                          & ~context.getPieceSet(color).all;
+    for (const Square& bishopSquare : bishops) {
+        const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator().getBishopMoveBoard(context, bishopSquare, color);
+
         for (const Square& possibleSquare: possibleSquares) {
             moves.emplace_back(context, bishopSquare, possibleSquare);
         }
@@ -59,9 +61,8 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
     const Bitboard& rooks = context.getPieces()[color].boards[PieceTypes::ROOK];
     const Bitboard& occupancy = context.getPieceSet(WHITE).all | context.getPieceSet(BLACK).all;
 
-    for (const Square& rookSquare: rooks) {
-        const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator().getRookMoveBoard(occupancy, rookSquare)
-                                          & ~context.getPieceSet(color).all;
+    for (const Square& rookSquare : rooks) {
+        const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator().getRookMoveBoard(context, rookSquare, color);
 
 //                .getRookMoveBoard(occupancy, rookSquare);
         for (const Square& possibleSquare: possibleSquares) {
@@ -73,8 +74,7 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
 void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {
     const Bitboard& knights = context.getPieces()[color].boards[PieceTypes::KNIGHT];
 
-    for (const Square& knightSquare: knights) {
-//        const Bitboard& possibleSquares = SlidingPieces::instance.getRookMoveBoard(occupancy, knightSquare);
+    for (const Square& knightSquare : knights) {
         const Bitboard& possibleSquares = Attacks::getInstance().getKnightAttackGenerator().getAttackAt(knightSquare)
                                           & ~context.getPieceSet(color).all;
 
@@ -82,4 +82,51 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
             moves.emplace_back(context, knightSquare, possibleSquare);
         }
     }
+}
+
+void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {
+    const Bitboard& occupancy = context.getPieceSet(WHITE).all | context.getPieceSet(BLACK).all;
+    const Bitboard& pawns = context.getPieces()[color].boards[PieceTypes::PAWN];
+
+    // pushes
+    const Bitboard& pushes = Attacks::getInstance()
+            .getPawnAttackGenerator()
+            .getPawnPushes(occupancy, color, pawns);
+
+    for (const Square& pawnSquare : pawns) {
+        const auto& possiblePushSquares = Attacks::getInstance()
+                .getPawnAttackGenerator()
+                .getPossiblePushesOnEmptyBoard(color, pawnSquare);
+
+        for (const Square& destinationSquare : pushes & possiblePushSquares) {
+            moves.emplace_back(context, pawnSquare, destinationSquare);
+        }
+    }
+
+    //captures
+    const Bitboard& captures = Attacks::getInstance()
+            .getPawnAttackGenerator()
+            .getPawnCaptures(context, color, pawns);
+
+    for (const Square& pawnSquare : pawns) {
+        const auto& possibleCaptureSquares = Attacks::getInstance()
+                .getPawnAttackGenerator()
+                .getPossibleCapturesOnEmptyBoard(color, pawnSquare);
+
+        for (const Square& destinationSquare : captures & possibleCaptureSquares) {
+            moves.emplace_back(context, pawnSquare, destinationSquare);
+        }
+    }
+}
+
+bool BoardAnalysis::isSquareAttacked (const Board& board, const Square& square, PieceColor color) {
+    const Attacks& attacks = Attacks::getInstance();
+    if (attacks.getPawnAttackGenerator().getPawnCaptures(board, color, board.getPieces()[color].boards[PieceTypes::PAWN]) & square) return true;
+    if (attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color) & square) return true;
+    if (attacks.getSlidingPieceAttackGenerator().getRookMoveBoard(board, board.getPieces()[color].boards[PieceTypes::ROOK], color) & square) return true;
+    if (attacks.getSlidingPieceAttackGenerator().getQueenMoveBoard(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color) & square) return true;
+    if (attacks.getKnightAttackGenerator().getAttackAt(board.getPieces()[color].boards[PieceTypes::KNIGHT]) & square) return true;
+    if (attacks.getKingAttackGenerator().getKingAttackAt(board.getPieces()[color].boards[PieceTypes::KING].ls1b()) & square) return true;
+
+    return false;
 }

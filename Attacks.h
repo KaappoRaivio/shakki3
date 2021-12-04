@@ -8,6 +8,8 @@
 
 #include "mytypes.h"
 #include "Bitboard.h"
+#include "PieceSet.h"
+#include "Board.h"
 
 
 class KnightAttacks {
@@ -28,6 +30,8 @@ public:
 
     Bitboard getAttackAt (const Square& square) const;
     Bitboard getAttackAt (int y, int x);
+
+    Bitboard getAttackAt (const Bitboard& knights) const;
 };
 
 class SlidingPieceAttacks {
@@ -44,16 +48,56 @@ public:
     Bitboard getRookBlockerMask(int y, int x);
     Bitboard getBishopBlockerMask(int y, int x);
 
-    Bitboard getRookMoveBoard (Bitboard blockerBoard, const Square& square) const;
-    Bitboard getBishopMoveBoard (Bitboard blockerBoard, const Square& square) const;
+    Bitboard getRookMoveBoard (const Board& context, const Square& square, PieceColor color) const;
+    Bitboard getBishopMoveBoard (const Board& context, const Square& square, PieceColor color) const;
 
     SlidingPieceAttacks ();
+
+    Bitboard getQueenMoveBoard (const Board& context, const Square& square, PieceColor color) const;
+
+    Bitboard getBishopMoveBoard (const Board& context, const Bitboard& bishops, PieceColor color) const;
+
+    Bitboard getRookMoveBoard (const Board& context, const Bitboard& rooks, PieceColor color) const;
+
+    Bitboard getQueenMoveBoard (const Board& context, const Bitboard& queens, PieceColor color) const;
 };
+
+class PawnAttacks {
+private:
+    Bitboard possiblePawnPushesOnEmptyBoard[2][64];
+    Bitboard possiblePawnCapturesOnEmptyBoard[2][64];
+
+    void populatePossiblePawnPushes ();
+    void populatePossiblePawnCaptures ();
+public:
+    Bitboard getPawnPushes (const Bitboard& occupancy, PieceColor color, const Bitboard& pawns) const;
+    Bitboard getPawnCaptures (const Board& context, PieceColor color, const Bitboard& pawns) const;
+
+    const Bitboard& getPossiblePushesOnEmptyBoard (PieceColor color, const Square& square) const;
+    const Bitboard& getPossibleCapturesOnEmptyBoard (PieceColor color, const Square& square) const;
+
+    PawnAttacks ();
+
+};
+
+class KingAttacks {
+private:
+    Bitboard attacks[64];
+    void initializeKingAttacks();
+
+public:
+    KingAttacks ();
+    Bitboard getKingAttackAt(const Square& square) const;
+    Bitboard getKingAttackAt(int y, int x);
+};
+
 
 class Attacks {
 private:
     const KnightAttacks knightAttackGenerator;
     const SlidingPieceAttacks slidingPieceAttackGenerator;
+    const PawnAttacks pawnAttackGenerator;
+    const KingAttacks kingAttackGenerator;
 
     Attacks ();
 public:
@@ -68,4 +112,8 @@ public:
         static Attacks instance;
         return instance;
     }
+
+    const PawnAttacks& getPawnAttackGenerator () const;
+
+    const KingAttacks& getKingAttackGenerator () const;
 };

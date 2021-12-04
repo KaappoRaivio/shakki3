@@ -8,9 +8,9 @@
 PieceType::PieceType (char symbol, uint8_t index) : symbol{symbol}, index{index} {}
 
 char PieceType::getSymbol (PieceColor color) const {
-    if (color == WHITE) {
+    if (color == BLACK) {
         return std::tolower(symbol);
-    } else if (color == BLACK) {
+    } else if (color == WHITE) {
         return std::toupper(symbol);
     } else {
         return '.';
@@ -39,6 +39,43 @@ namespace PieceTypes {
 
 namespace Pieces {
     Piece NO_PIECE {PieceTypes::NO_PIECE, EMPTY};
+
+    Piece parsePiece (char asChar) {
+        const PieceType* type = nullptr;
+
+        switch (tolower(asChar)) {
+            case 'p':
+                type = &PieceTypes::PAWN;
+                break;
+            case 'r':
+                type = &PieceTypes::ROOK;
+                break;
+            case 'n':
+                type = &PieceTypes::KNIGHT;
+                break;
+            case 'b':
+                type = &PieceTypes::BISHOP;
+                break;
+            case 'q':
+                type = &PieceTypes::QUEEN;
+                break;
+            case 'k':
+                type = &PieceTypes::KING;
+                break;
+            default:
+                std::cerr << "invalid character" << asChar << "!" << std::endl;
+                throw std::runtime_error("invalid character!");
+        }
+
+        PieceColor color;
+        if (islower(asChar)) {
+            color = BLACK;
+        } else {
+            color = WHITE;
+        }
+
+        return {*type, color};
+    }
 }
 
 Piece::Piece (PieceType type, PieceColor color) : type{type}, color{color} {

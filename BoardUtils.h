@@ -15,11 +15,12 @@ class Move;
 
 struct BoardState {
     int plysSinceFiftyMoveReset;
+    int fullMoveCount;
     PieceColor turn;
     Move_raw previousMove;
     Piece capturedPiece;
 
-    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset);
+    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount);
 
     friend std::ostream& operator<< (std::ostream& os, const BoardState& state);
 };
@@ -43,4 +44,9 @@ namespace MoveGeneration {
     void addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
     void addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
     void addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
+    void addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
+}
+
+namespace BoardAnalysis {
+    bool isSquareAttacked (const Board& board, const Square& square, PieceColor color);
 }

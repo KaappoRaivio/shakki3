@@ -3,13 +3,22 @@
 #include "Board.h"
 #include "SlidingPieceRays.h"
 #include "KnightAttacks.h"
-#include "KingAttacks.h"
+#include "Attacks.h"
 
 int main () {
-    std::cout << d5 << std::endl;
+//    const Bitboard pawns = 0b1110000000000000000000000000000000000000000000000000;
+//    const Bitboard occupancy = 0b1110000000100000010000000000000000000000000000000000;
 
 
-    Board board;
+//    std::cout << Attacks::getInstance().getPawnAttackGenerator().getPossiblePushesOnEmptyBoard(BLACK, a5) << std::endl;
+
+
+//    Board board;
+    Board board = Board::fromFEN("1k6/8/3r4/8/8/3K4/8/8 w - - 0 1");
+    std::cout << board << std::endl;
+    std::cout << board.getTurn() << std::endl;
+    std::cout << BoardAnalysis::isSquareAttacked(board, board.getPieces()[WHITE].boards[PieceTypes::KING].ls1b(), BLACK) << std::endl;
+    std::exit(0);
 //    std::cout << "moi" << std::endl;
 //    std::cout << moves << std::endl;
 //

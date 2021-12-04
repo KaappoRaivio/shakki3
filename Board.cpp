@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <memory>
+#include <cstring>
+#include <regex>
 #include "Board.h"
 
 
@@ -109,12 +111,7 @@ void Board::executeMove (const Move& move) {
         newFiftyMoveReset = history->getCurrentFrame().plysSinceFiftyMoveReset + 1;
     }
 
-    BoardState newState {
-        flip(getTurn()),
-        move.raw(),
-        pieceInDestination,
-        newFiftyMoveReset
-    };
+    BoardState newState{flip(getTurn()), move.raw(), pieceInDestination, newFiftyMoveReset, 0};
 
     history->pushState(newState);
 //    std::cout << history->getCurrentFrame().previousMove << std::endl;
@@ -160,6 +157,24 @@ void Board::initializeLetterbox () {
     }
 }
 
+void Board::initializeBitboards () {
+    for (const PieceType& type : PieceTypes::pieces) {
+        pieces[WHITE].boards[type] = 0;
+        pieces[BLACK].boards[type] = 0;
+    }
+
+    for (int square = 0; square < 64; ++square) {
+        const auto* piece = letterbox[square].get();
+
+        if (*piece != Pieces::NO_PIECE) {
+            pieces[piece->color].boards[piece->type] |= Square{square};
+        }
+    }
+
+    pieces[WHITE].updateOccupancy();
+    pieces[BLACK].updateOccupancy();
+}
+
 PieceColor Board::getTurn () const {
     return history->getCurrentFrame().turn;
 }
@@ -178,7 +193,70 @@ std::vector<Move> Board::getMoves () const {
     MoveGeneration::addBishopMoves(moves, *this, getTurn());
     MoveGeneration::addRookMoves(moves, *this, getTurn());
     MoveGeneration::addKnightMoves(moves, *this, getTurn());
+    MoveGeneration::addPawnMoves(moves, *this, getTurn());
 
     return moves;
+}
+
+
+void split (std::string const& string, const char delimiter, std::vector<std::string>& out)
+{
+    size_t start;
+    size_t end = 0;
+
+    while ((start = string.find_first_not_of(delimiter, end)) != std::string::npos)
+    {
+        end = string.find(delimiter, start);
+        out.push_back(string.substr(start, end - start));
+    }
+}
+
+Board Board::fromFEN (std::string FEN) {
+    Board board;
+
+    std::vector<std::string> parts;
+    split(FEN, ' ', parts);
+
+    const auto position = std::regex_replace(parts[0], std::regex("\\/"), "");
+    std::cout << position.size() << std::endl;
+
+    int square = 0;
+
+    for (auto & i : board.letterbox) i = std::make_unique<Piece>(Pieces::NO_PIECE);
+
+    for (char piece : position) {
+        if (std::isdigit(piece)) {
+            square += piece - '0';
+        } else {
+            board.letterbox[square ^ 56] = std::make_unique<Piece>(Pieces::parsePiece(piece));
+            square += 1;
+        }
+
+    }
+
+    PieceColor turn = parts[1].at(0) == 'w' ? WHITE : BLACK;
+    int plysSinceFiftyMoveReset = std::stoi(parts[4]);
+    int fullMoveCount = std::stoi(parts[5]);
+
+
+    BoardState newState = board.history->getCurrentFrame();
+    newState.turn = turn;
+    newState.plysSinceFiftyMoveReset = plysSinceFiftyMoveReset;
+    newState.fullMoveCount = fullMoveCount;
+    board.history->popFrame();
+    board.history->pushState(newState);
+
+//    std::cout << ranks[1] << std::endl;
+
+
+
+
+//    board.letterbox[3] = std::make_unique<Piece>(PieceTypes::PAWN, WHITE);
+//    board.letterbox[7] = std::make_unique<Piece>(PieceTypes::PAWN, BLACK);
+//    board.letterbox[43] = std::make_unique<Piece>(PieceTypes::KNIGHT, BLACK);
+
+    board.initializeBitboards();
+
+    return board;
 }
 

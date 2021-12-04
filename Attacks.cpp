@@ -4,6 +4,7 @@
 
 #include "Attacks.h"
 #include "BitboardOperations.h"
+#include "PieceSet.h"
 
 
 using namespace BitboardOperations::SquareMasks;
@@ -43,6 +44,16 @@ KnightAttacks::KnightAttacks () : knightAttacks{} {
 
 Bitboard KnightAttacks::getAttackAt (const Square& square) const {
     return knightAttacks[square];
+}
+
+Bitboard KnightAttacks::getAttackAt (const Bitboard& knights) const {
+    Bitboard result{0};
+
+    for (const auto& square : knights) {
+        result |= square;
+    }
+
+    return result;
 }
 
 Bitboard KnightAttacks::getAttackAt (int y, int x) {
@@ -156,12 +167,13 @@ Bitboard SlidingPieceAttacks::getBishopBlockerMask (int y, int x) {
            | getBishopSlideAt(NORTH_WEST, 8 * y + x);
 }
 
-Bitboard SlidingPieceAttacks::getRookMoveBoard (Bitboard blockerBoard, const Square& square) const {
-    Bitboard result = 0;
+Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Square& square, PieceColor color) const {
+    Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+    Bitboard result{0};
     for (RayDirection direction = NORTH; direction <= WEST; ++direction) {
         Bitboard blockerMask = getRookSlideAt(direction, square);
 
-        auto blockers = blockerMask & blockerBoard;
+        auto blockers = blockerMask & occupancy;
 
         if (blockers) {
             int firstBlockPosition;
@@ -179,15 +191,26 @@ Bitboard SlidingPieceAttacks::getRookMoveBoard (Bitboard blockerBoard, const Squ
         result |= blockerMask;
     }
 
+    return result & ~context.getPieceSet(color).all;
+}
+
+Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Bitboard& rooks, PieceColor color) const {
+    Bitboard result{0};
+
+    for (const Square& square : rooks) {
+        result |= getRookMoveBoard(context, square, color);
+    }
+
     return result;
 }
 
-Bitboard SlidingPieceAttacks::getBishopMoveBoard (Bitboard blockerBoard, const Square& square) const {
-    Bitboard result = 0;
+Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Square& square, PieceColor color) const {
+    Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+    Bitboard result{0};
     for (RayDirection direction = NORTH_EAST; direction <= NORTH_WEST; ++direction) {
         Bitboard blockerMask = getBishopSlideAt(direction, square);
 
-        auto blockers = blockerMask & blockerBoard;
+        auto blockers = blockerMask & occupancy;
 
         if (blockers) {
             int firstBlockPosition;
@@ -205,10 +228,30 @@ Bitboard SlidingPieceAttacks::getBishopMoveBoard (Bitboard blockerBoard, const S
         result |= blockerMask;
     }
 
+    return result & ~context.getPieceSet(color).all;
+}
+
+Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Bitboard& bishops, PieceColor color) const {
+    Bitboard result{0};
+
+    for (const auto& square : bishops) {
+        result |= getBishopMoveBoard(context, square, color);
+    }
+
     return result;
 }
 
-Attacks::Attacks () : knightAttackGenerator{}, slidingPieceAttackGenerator{} {
+
+Bitboard SlidingPieceAttacks::getQueenMoveBoard (const Board& context, const Square& square, PieceColor color) const {
+    return getBishopMoveBoard(context, square, color) | getRookMoveBoard(context, square, color);
+}
+
+Bitboard SlidingPieceAttacks::getQueenMoveBoard (const Board& context, const Bitboard& queens, PieceColor color) const {
+    return getBishopMoveBoard(context, queens, color) | getRookMoveBoard(context, queens, color);
+}
+
+
+Attacks::Attacks () : knightAttackGenerator{}, slidingPieceAttackGenerator{}, pawnAttackGenerator{}, kingAttackGenerator{} {
 
 }
 
@@ -218,4 +261,118 @@ const KnightAttacks& Attacks::getKnightAttackGenerator () const {
 
 const SlidingPieceAttacks& Attacks::getSlidingPieceAttackGenerator () const {
     return slidingPieceAttackGenerator;
+}
+
+const PawnAttacks& Attacks::getPawnAttackGenerator () const {
+    return pawnAttackGenerator;
+}
+
+const KingAttacks& Attacks::getKingAttackGenerator () const {
+    return kingAttackGenerator;
+}
+
+PawnAttacks::PawnAttacks () : possiblePawnPushesOnEmptyBoard{}, possiblePawnCapturesOnEmptyBoard{} {
+    populatePossiblePawnPushes();
+    populatePossiblePawnCaptures();
+}
+
+Bitboard PawnAttacks::getPawnPushes (const Bitboard& occupancy, PieceColor color, const Bitboard& pawns) const {
+    const auto& singlePush = pawns.move(NORTH, color) & ~occupancy;
+    const auto& doublePush = singlePush.move(NORTH, color) & SquareMasks::rank4 & ~occupancy;
+
+    return doublePush | singlePush;
+}
+
+Bitboard PawnAttacks::getPawnCaptures (const Board& context, PieceColor color, const Bitboard& pawns) const {
+    const auto& east = pawns.move(NORTH_EAST, color, 1, false) & context.getPieces()[flip(color)].all;
+    const auto& west = pawns.move(NORTH_WEST, color, 1, false) & context.getPieces()[flip(color)].all;
+
+    return east | west;
+}
+
+void PawnAttacks::populatePossiblePawnPushes () {
+    // white
+    for (int y = 1; y < 7; ++y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
+        for (int x = 0; x < 8; ++x) {
+            const Square& square = Square{y, x};
+            Bitboard start = square;
+            start |= start.move(NORTH);
+            if (y == 1) start |= start.move(NORTH);
+
+            possiblePawnPushesOnEmptyBoard[WHITE][square] = start;
+        }
+    }
+
+    // black
+    for (int y = 6; y >= 1; --y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
+        for (int x = 0; x < 8; ++x) {
+            const Square& square = Square{y, x};
+            Bitboard start = square;
+            start |= start.move(SOUTH);
+            if (y == 6) start |= start.move(SOUTH);
+
+            possiblePawnPushesOnEmptyBoard[BLACK][square] = start;
+        }
+    }
+}
+
+void PawnAttacks::populatePossiblePawnCaptures () {
+    // white
+    for (int color = WHITE; color < EMPTY; ++color) {
+        for (int y = 1; y < 7; ++y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
+            for (int x = 0; x < 8; ++x) {
+                const Square& square = Square{y, x};
+                const Bitboard& start = square;
+
+                const Bitboard& east = start.move(NORTH_EAST, static_cast<PieceColor>(color));
+                const Bitboard& west = start.move(NORTH_WEST, static_cast<PieceColor>(color));
+
+                possiblePawnCapturesOnEmptyBoard[color][square] = east | west;
+            }
+        }
+    }
+}
+
+const Bitboard& PawnAttacks::getPossiblePushesOnEmptyBoard (PieceColor color, const Square& square) const {
+    return possiblePawnPushesOnEmptyBoard[color][square];
+}
+
+const Bitboard& PawnAttacks::getPossibleCapturesOnEmptyBoard (PieceColor color, const Square& square) const {
+    return possiblePawnCapturesOnEmptyBoard[color][square];
+}
+
+
+
+
+namespace Directions = BitboardOperations::Directions;
+
+void KingAttacks::initializeKingAttacks () {
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            Bitboard king = 1ull << (8 * y + x);
+//            king |= BitboardOperations::move(king, Directions::EAST, 1, false)
+//                    | BitboardOperations::move(king, Directions::WEST, 1, false);
+
+            king |= king.move(Directions::EAST, WHITE, 1, false)
+                    | king.move(Directions::WEST, WHITE, 1, false);
+
+            king |= king.move(Directions::NORTH)
+                    | king.move(Directions::SOUTH);
+
+
+            attacks[8 * y + x] = king;
+        }
+    }
+}
+
+KingAttacks::KingAttacks () : attacks{} {
+    initializeKingAttacks();
+}
+
+Bitboard KingAttacks::getKingAttackAt (const Square& square) const {
+    return attacks[square];
+}
+
+Bitboard KingAttacks::getKingAttackAt (int y, int x) {
+    return attacks[8 * y + x];
 }

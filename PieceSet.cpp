@@ -15,10 +15,7 @@ PieceSet::PieceSet (const PieceColor& color) : color{color}, boards{}, all{} {
     boards[KING]   = 0b00010000;
     boards[PAWN]  = 0b1111111100000000;
 
-    for (auto board : boards) {
-        all |= board;
-    }
-
+    updateOccupancy();
 
     if (color == PieceColor::BLACK) {
         for (auto & board : boards) {
@@ -27,7 +24,6 @@ PieceSet::PieceSet (const PieceColor& color) : color{color}, boards{}, all{} {
 
         all = all.flipVertical();
     }
-
 }
 
 
@@ -61,4 +57,10 @@ std::ostream& operator<< (std::ostream& os, const PieceSet& set) {
 
 bool PieceSet::hasPiece (Square square) const {
     return bool(all & square);
+}
+
+void PieceSet::updateOccupancy () {
+    for (auto board : boards) {
+        all |= board;
+    }
 }

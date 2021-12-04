@@ -39,7 +39,16 @@ namespace BitboardOperations {
 
     namespace SquareMasks {
         extern Bitboard fileA;
+        extern Bitboard fileB;
+        extern Bitboard fileC;
+        extern Bitboard fileD;
+        extern Bitboard fileE;
+        extern Bitboard fileF;
+        extern Bitboard fileG;
         extern Bitboard fileH;
+
+        extern Bitboard files[8];
+
         extern Bitboard rank1;
         extern Bitboard rank2;
         extern Bitboard rank3;

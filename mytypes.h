@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <iostream>
 #include <vector>
+#include <memory>
 
 typedef uint64_t Bitboard_raw;
 typedef uint8_t RayDirection;
@@ -69,6 +70,8 @@ struct Piece {
 
 namespace Pieces {
     extern Piece NO_PIECE;
+
+    Piece parsePiece (char asChar);
 }
 
 PieceColor flip (PieceColor color);

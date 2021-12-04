@@ -26,6 +26,8 @@ struct PieceSet {
     friend std::ostream& operator<< (std::ostream& os, const PieceSet& set);
 
     std::string& burn (std::string& buffer) const;
+
+    void updateOccupancy ();
 };
 
 
