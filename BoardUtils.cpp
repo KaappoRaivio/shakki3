@@ -124,12 +124,12 @@ Bitboard BoardAnalysis::getAttackMask (const Board& board, PieceColor color) {
 
     const Attacks& attacks = Attacks::getInstance();
 //
-//    attackMask |= attacks.getPawnAttackGenerator().getPawnCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
-//    attackMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
-//    attackMask |= attacks.getSlidingPieceAttackGenerator().getRookMoveBoard(board, board.getPieces()[color].boards[PieceTypes::ROOK], color);
-//    attackMask |= attacks.getSlidingPieceAttackGenerator().getQueenMoveBoard(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
-    attackMask |= attacks.getKnightAttackGenerator().getAttackAt(board.getPieces()[color].boards[PieceTypes::KNIGHT]);
-//    attackMask |= attacks.getKingAttackGenerator().getKingAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
+    attackMask |= attacks.getPawnAttackGenerator().getPawnCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
+    attackMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
+    attackMask |= attacks.getSlidingPieceAttackGenerator().getRookMoveBoard(board, board.getPieces()[color].boards[PieceTypes::ROOK], color);
+    attackMask |= attacks.getSlidingPieceAttackGenerator().getQueenMoveBoard(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
+    attackMask |= attacks.getKnightAttackGenerator().getAttackAt(board, board.getPieces()[color].boards[PieceTypes::KNIGHT], color);
+    attackMask |= attacks.getKingAttackGenerator().getKingAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
 
     return attackMask;
 }

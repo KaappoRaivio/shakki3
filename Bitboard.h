@@ -53,7 +53,8 @@ public:
     friend Bitboard operator^ (Bitboard bitboard, Bitboard other);
 
     friend Bitboard operator~ (Bitboard bitboard);
-    explicit operator bool() const;
+    explicit operator bool () const;
+    explicit operator unsigned long long () const;
 
     friend std::ostream& operator<< (std::ostream& os, const Bitboard& bitboard);
 

@@ -116,10 +116,7 @@ Bitboard Bitboard::move (RayDirection direction, PieceColor perspective) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Bitboard& bitboard) {
-    os << "Bitboard: {";
-    os << BitboardOperations::bitboardToString(bitboard.value);
-    os << "}";
-    return os;
+    return os << "Bitboard(" << bitboard.value << ") {" << BitboardOperations::bitboardToString(bitboard.value) << "\n}";
 }
 
 uint8_t Bitboard::ls1b () const {
@@ -185,4 +182,8 @@ Bitboard::Iterator Bitboard::begin () const {
 
 Bitboard::Iterator Bitboard::end () {
     return Bitboard::Iterator(0);
+}
+
+Bitboard::operator unsigned long long () const {
+    return value;
 }

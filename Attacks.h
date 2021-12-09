@@ -31,7 +31,7 @@ public:
     Bitboard getAttackAt (const Square& square) const;
     Bitboard getAttackAt (int y, int x);
 
-    Bitboard getAttackAt (const Bitboard& knights) const;
+    Bitboard getAttackAt (const Board& context, const Bitboard& knights, PieceColor color) const;
 };
 
 class SlidingPieceAttacks {

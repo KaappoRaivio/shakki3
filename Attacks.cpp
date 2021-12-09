@@ -26,8 +26,8 @@ void KnightAttacks::initializeKnightAttacks () {
             result |= (east | west).move(Directions::NORTH, WHITE, 2)
                       | (east | west).move(Directions::SOUTH, WHITE, 2);
 
-            east = piece.move(Directions::EAST, WHITE, 1, false);
-            west = piece.move(Directions::WEST, WHITE, 1, false);
+            east = east.move(Directions::EAST, WHITE, 1, false);
+            west = west.move(Directions::WEST, WHITE, 1, false);
 
             result |= (east | west).move(Directions::NORTH)
                       | (east | west).move(Directions::SOUTH);
@@ -46,14 +46,16 @@ Bitboard KnightAttacks::getAttackAt (const Square& square) const {
     return knightAttacks[square];
 }
 
-Bitboard KnightAttacks::getAttackAt (const Bitboard& knights) const {
+Bitboard KnightAttacks::getAttackAt (const Board& context, const Bitboard& knights, PieceColor color) const {
     Bitboard result{0};
 
     for (const auto& square : knights) {
         result |= getAttackAt(square);
     }
 
-    return result;
+    const auto& occupancy = context.getPieces()[color].all;
+
+    return result & ~occupancy;
 }
 
 Bitboard KnightAttacks::getAttackAt (int y, int x) {
