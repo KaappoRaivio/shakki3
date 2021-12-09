@@ -60,6 +60,7 @@ bool PieceSet::hasPiece (Square square) const {
 }
 
 void PieceSet::updateOccupancy () {
+    all ^= all;
     for (auto board : boards) {
         all |= board;
     }

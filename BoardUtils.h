@@ -49,4 +49,6 @@ namespace MoveGeneration {
 
 namespace BoardAnalysis {
     bool isSquareAttacked (const Board& board, const Square& square, PieceColor color);
+
+    Bitboard getAttackMask (const Board& board, PieceColor color);
 }

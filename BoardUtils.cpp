@@ -106,7 +106,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     //captures
     const Bitboard& captures = Attacks::getInstance()
             .getPawnAttackGenerator()
-            .getPawnCaptures(context, color, pawns);
+            .getPawnCaptures(context, pawns, color);
 
     for (const Square& pawnSquare : pawns) {
         const auto& possibleCaptureSquares = Attacks::getInstance()
@@ -119,14 +119,21 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     }
 }
 
-bool BoardAnalysis::isSquareAttacked (const Board& board, const Square& square, PieceColor color) {
-    const Attacks& attacks = Attacks::getInstance();
-    if (attacks.getPawnAttackGenerator().getPawnCaptures(board, color, board.getPieces()[color].boards[PieceTypes::PAWN]) & square) return true;
-    if (attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color) & square) return true;
-    if (attacks.getSlidingPieceAttackGenerator().getRookMoveBoard(board, board.getPieces()[color].boards[PieceTypes::ROOK], color) & square) return true;
-    if (attacks.getSlidingPieceAttackGenerator().getQueenMoveBoard(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color) & square) return true;
-    if (attacks.getKnightAttackGenerator().getAttackAt(board.getPieces()[color].boards[PieceTypes::KNIGHT]) & square) return true;
-    if (attacks.getKingAttackGenerator().getKingAttackAt(board.getPieces()[color].boards[PieceTypes::KING].ls1b()) & square) return true;
+Bitboard BoardAnalysis::getAttackMask (const Board& board, PieceColor color) {
+    Bitboard attackMask;
 
-    return false;
+    const Attacks& attacks = Attacks::getInstance();
+//
+//    attackMask |= attacks.getPawnAttackGenerator().getPawnCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
+//    attackMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
+//    attackMask |= attacks.getSlidingPieceAttackGenerator().getRookMoveBoard(board, board.getPieces()[color].boards[PieceTypes::ROOK], color);
+//    attackMask |= attacks.getSlidingPieceAttackGenerator().getQueenMoveBoard(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
+    attackMask |= attacks.getKnightAttackGenerator().getAttackAt(board.getPieces()[color].boards[PieceTypes::KNIGHT]);
+//    attackMask |= attacks.getKingAttackGenerator().getKingAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
+
+    return attackMask;
+}
+
+bool BoardAnalysis::isSquareAttacked (const Board& board, const Square& square, PieceColor color) {
+    return bool(getAttackMask(board, color) & square);
 }

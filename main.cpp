@@ -14,10 +14,16 @@ int main () {
 
 
 //    Board board;
-    Board board = Board::fromFEN("1k6/8/3r4/8/8/3K4/8/8 w - - 0 1");
-    std::cout << board << std::endl;
-    std::cout << board.getTurn() << std::endl;
-    std::cout << BoardAnalysis::isSquareAttacked(board, board.getPieces()[WHITE].boards[PieceTypes::KING].ls1b(), BLACK) << std::endl;
+//    Board board = Board::fromFEN("1k6/8/3r4/8/8/3K4/8/8 w - - 0 1");
+    Board board = Board::fromFEN("rnbqkbnr/ppp1pppp/3p4/8/2B1P3/8/PPPP1PPP/RNBQK1NR w KQkq - 0 1");
+
+//    std::cout << (board.getPieces()[WHITE].all | board.getPieces()[BLACK].all) << std::endl;
+
+//    std::cout << board << std::endl;
+//    std::cout << board.getTurn() << std::endl;
+//    std::cout << BoardAnalysis::isSquareAttacked(board, board.getPieces()[WHITE].boards[PieceTypes::KING].ls1b(), BLACK) << std::endl;
+    std::cout << BoardAnalysis::getAttackMask(board, WHITE) << std::endl;
+
     std::exit(0);
 //    std::cout << "moi" << std::endl;
 //    std::cout << moves << std::endl;

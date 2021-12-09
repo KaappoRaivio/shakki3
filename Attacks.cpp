@@ -50,7 +50,7 @@ Bitboard KnightAttacks::getAttackAt (const Bitboard& knights) const {
     Bitboard result{0};
 
     for (const auto& square : knights) {
-        result |= square;
+        result |= getAttackAt(square);
     }
 
     return result;
@@ -283,7 +283,7 @@ Bitboard PawnAttacks::getPawnPushes (const Bitboard& occupancy, PieceColor color
     return doublePush | singlePush;
 }
 
-Bitboard PawnAttacks::getPawnCaptures (const Board& context, PieceColor color, const Bitboard& pawns) const {
+Bitboard PawnAttacks::getPawnCaptures (const Board& context, const Bitboard& pawns, PieceColor color) const {
     const auto& east = pawns.move(NORTH_EAST, color, 1, false) & context.getPieces()[flip(color)].all;
     const auto& west = pawns.move(NORTH_WEST, color, 1, false) & context.getPieces()[flip(color)].all;
 
@@ -369,8 +369,9 @@ KingAttacks::KingAttacks () : attacks{} {
     initializeKingAttacks();
 }
 
-Bitboard KingAttacks::getKingAttackAt (const Square& square) const {
-    return attacks[square];
+Bitboard KingAttacks::getKingAttackAt (const Board& context, const Square& square, PieceColor color) const {
+    const Bitboard& occupancy = context.getPieces()[color].all;
+    return attacks[square] & ~occupancy;
 }
 
 Bitboard KingAttacks::getKingAttackAt (int y, int x) {
