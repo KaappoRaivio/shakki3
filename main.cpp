@@ -4,8 +4,32 @@
 #include "SlidingPieceRays.h"
 #include "KnightAttacks.h"
 #include "Attacks.h"
+#include "StringUtils.h"
 
 int main () {
+    std::string base{"r n b q k b n r \n"
+                     "p p p . p p p p \n"
+                     ". . . p . . . . \n"
+                     ". . . . . . . . \n"
+                     ". . B . P . . . \n"
+                     ". . . . . . . . \n"
+                     "P P P P . P P P \n"
+                     "R N B Q K . N R"};
+
+    std::string overlay{". . . . . . . . \n"
+                        ". . . . . 1 . . \n"
+                        "1 . . . 1 . . . \n"
+                        ". 1 . 1 . . . 1 \n"
+                        ". . . . . . 1 . \n"
+                        "1 1 1 1 . 1 . 1 \n"
+                        ". . . . 1 . . . \n"
+                        ". . . . . 1 . ."};
+//    std::string base{". . a"};
+//    std::string overlay{"1 . ."};
+
+    std::cout << StringUtils::burnString(base, overlay) << std::endl;
+//    std::exit(0);
+
 //    const Bitboard pawns = 0b1110000000000000000000000000000000000000000000000000;
 //    const Bitboard occupancy = 0b1110000000100000010000000000000000000000000000000000;
 
@@ -26,7 +50,7 @@ int main () {
     const Bitboard& attackMask = BoardAnalysis::getAttackMask(board, WHITE);
     std::cout << attackMask << std::endl;
 
-    std::cout << Attacks::getInstance().getKnightAttackGenerator().getAttackAt((Square )1) << std::endl;
+    std::cout << Attacks::getInstance().getKnightAttackGenerator().getAttackAt((Square) 1) << std::endl;
 
     std::exit(0);
 //    std::cout << "moi" << std::endl;
@@ -39,7 +63,7 @@ int main () {
     board.executeMove(move2);
     const auto& moves = board.getMoves();
 
-    for (const auto& m : moves) {
+    for (const auto& m: moves) {
         std::cout << m << ", ";
     }
     std::cout << std::endl;
