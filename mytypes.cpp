@@ -26,6 +26,15 @@ std::ostream& operator<< (std::ostream& os, const PieceType& type) {
     return os;
 }
 
+bool PieceType::operator== (const PieceType& rhs) const {
+    return symbol == rhs.symbol &&
+           index == rhs.index;
+}
+
+bool PieceType::operator!= (const PieceType& rhs) const {
+    return !(rhs == *this);
+}
+
 namespace PieceTypes {
     const PieceType KNIGHT{'n', 0};
     const PieceType BISHOP{'b', 1};

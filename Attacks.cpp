@@ -193,7 +193,7 @@ Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Squa
         result |= blockerMask;
     }
 
-    return result & ~context.getPieceSet(color).all;
+    return result & ~context.getPieces(color).all;
 }
 
 Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Bitboard& rooks, PieceColor color) const {
@@ -206,7 +206,7 @@ Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Bitb
     return result;
 }
 
-Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Square& square, PieceColor color) const {
+Bitboard SlidingPieceAttacks::getBishopCaptures (const Board& context, const Square& square, PieceColor color) const {
     Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
     Bitboard result{0};
     for (RayDirection direction = NORTH_EAST; direction <= NORTH_WEST; ++direction) {
@@ -224,14 +224,50 @@ Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Sq
                 throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
             }
 
-            blockerMask ^= getBishopSlideAt(direction, firstBlockPosition);
+            result |= (Square) firstBlockPosition;
         }
+    }
+
+    return result & ~context.getPieces(color).all;
+}
+
+Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Square& square, PieceColor color) const {
+    Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+    Bitboard result{0};
+    for (RayDirection direction = NORTH_EAST; direction <= NORTH_WEST; ++direction) {
+        Bitboard blockerMask = getBishopMoveBoard(square, occupancy, direction);
 
         result |= blockerMask;
     }
 
-    return result & ~context.getPieceSet(color).all;
+    return result & ~context.getPieces(color).all;
 }
+
+Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const {
+    Bitboard blockerMask = getBishopSlideAt(direction, square);
+
+    auto blockers = blockerMask & occupancy;
+
+    if (blockers) {
+        int firstBlockPosition;
+        if (direction == NORTH_EAST || direction == NORTH_WEST) {
+            firstBlockPosition = blockers.ls1b();
+        } else if (direction == SOUTH_EAST || direction == SOUTH_WEST) {
+            firstBlockPosition = blockers.ms1b();
+        } else {
+            throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
+        }
+
+        blockerMask ^= getBishopSlideAt(direction, firstBlockPosition);
+    }
+    return blockerMask;
+}
+
+Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Square& square, RayDirection direction) const {
+    Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+    return getBishopMoveBoard(square, occupancy, direction);
+}
+
 
 Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Bitboard& bishops, PieceColor color) const {
     Bitboard result{0};

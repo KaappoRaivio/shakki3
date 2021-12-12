@@ -42,8 +42,8 @@ std::ostream& operator<< (std::ostream& os, const Board& board) {
     return os;
 }
 
-PieceSet Board::getPieceSet (PieceColor color) const {
-    if (color == EMPTY) throw std::runtime_error("No EMPTY in Board::getPieceSet!!");
+PieceSet Board::getPieces (PieceColor color) const {
+    if (color == EMPTY) throw std::runtime_error("No EMPTY in Board::getPieces!!");
     return pieces[color];
 }
 

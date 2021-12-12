@@ -60,6 +60,12 @@ public:
     Bitboard getRookMoveBoard (const Board& context, const Bitboard& rooks, PieceColor color) const;
 
     Bitboard getQueenMoveBoard (const Board& context, const Bitboard& queens, PieceColor color) const;
+
+    Bitboard getBishopCaptures (const Board& context, const Square& square, PieceColor color) const;
+
+    Bitboard getBishopMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const;
+
+    Bitboard getBishopMoveBoard (const Board& context, const Square& square, RayDirection direction) const;
 };
 
 class PawnAttacks {

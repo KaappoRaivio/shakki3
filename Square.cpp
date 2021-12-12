@@ -3,6 +3,9 @@
 //
 
 #include "Square.h"
+#include "BitboardOperations.h"
+
+namespace Directions = BitboardOperations::Directions;
 
 Square::Square (Square_raw square) : value{static_cast<uint8_t>(square)} {
 
@@ -64,5 +67,35 @@ std::ostream& operator<< (std::ostream& os, const Square& square) {
 
 Square::operator int () const {
     return value;
+}
+
+RayDirection Square::getDirection (const Square& other, const PieceType& type) const {
+    if (type == PieceTypes::BISHOP) {
+        if (other.getX() > getX()) {
+            if (other.getY() > getY()) {
+                return Directions::NORTH_EAST;
+            } else {
+                return Directions::SOUTH_EAST;
+            }
+        } else {
+            if (other.getY() > getY()) {
+                return Directions::NORTH_WEST;
+            } else {
+                return Directions::SOUTH_WEST;
+            }
+        }
+    } else if (type == PieceTypes::ROOK) {
+        if (other.getX() > getX()) return Directions::EAST;
+        else if (other.getX() < getX()) return Directions::WEST;
+        else if (other.getY() > getY()) return Directions::NORTH;
+        else if (other.getY() < getY()) return Directions::SOUTH;
+        else {
+            std::cerr << "This: " << *this << ", other: " << other << std::endl;
+            throw std::runtime_error("cannot convert!");
+        }
+    } else {
+        std::cerr << "Invalid piece type " << type << std::endl;
+        throw std::runtime_error("Invalid piece type!");
+    }
 }
 

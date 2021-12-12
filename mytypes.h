@@ -40,6 +40,10 @@ public:
     char getSymbol (PieceColor color) const;
     operator int () const;
 
+    bool operator== (const PieceType& rhs) const;
+
+    bool operator!= (const PieceType& rhs) const;
+
     friend std::ostream& operator<< (std::ostream& os, const PieceType& type);
 };
 

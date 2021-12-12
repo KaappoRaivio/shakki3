@@ -51,4 +51,8 @@ namespace BoardAnalysis {
     bool isSquareAttacked (const Board& board, const Square& square, PieceColor color);
 
     Bitboard getAttackMask (const Board& board, PieceColor color);
+
+    Bitboard getPinMask (const Board& board, PieceColor color);
+
+    Bitboard getCheckMask (const Board& board, PieceColor color);
 }

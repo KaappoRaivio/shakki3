@@ -31,6 +31,7 @@ public:
     operator int () const;
 
     uint8_t diffY (Square square) const;
+    RayDirection getDirection (const Square& other, const PieceType& type) const;
 
     friend std::ostream& operator<< (std::ostream& os, const Square& square);
 };

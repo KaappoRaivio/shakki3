@@ -22,7 +22,7 @@ public:
 
     Board ();
 
-    PieceSet getPieceSet (PieceColor color) const;
+    PieceSet getPieces (PieceColor color) const;
     friend std::ostream& operator<< (std::ostream& os, const Board& board);
 
     PieceColor getColorAt (Square square) const;
