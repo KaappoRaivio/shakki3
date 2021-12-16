@@ -64,4 +64,9 @@ void PieceSet::updateOccupancy () {
     for (auto board : boards) {
         all |= board;
     }
+    all ^= boards[KING];
+}
+
+Bitboard PieceSet::allWithoutKing () const {
+    return all ^ boards[KING];
 }

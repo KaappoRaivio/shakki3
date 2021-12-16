@@ -173,22 +173,23 @@ Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Squa
     Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
     Bitboard result{0};
     for (RayDirection direction = NORTH; direction <= WEST; ++direction) {
-        Bitboard blockerMask = getRookSlideAt(direction, square);
-
-        auto blockers = blockerMask & occupancy;
-
-        if (blockers) {
-            int firstBlockPosition;
-            if (direction == NORTH || direction == EAST) {
-                firstBlockPosition = blockers.ls1b();
-            } else if (direction == SOUTH || direction == WEST) {
-                firstBlockPosition = blockers.ms1b();
-            } else {
-                throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
-            }
-
-            blockerMask ^= getRookSlideAt(direction, firstBlockPosition);
-        }
+        Bitboard blockerMask = getRookMoveBoard(square, occupancy, direction);
+//        Bitboard blockerMask = getRookSlideAt(direction, square);
+//
+//        auto blockers = blockerMask & occupancy;
+//
+//        if (blockers) {
+//            int firstBlockPosition;
+//            if (direction == NORTH || direction == EAST) {
+//                firstBlockPosition = blockers.ls1b();
+//            } else if (direction == SOUTH || direction == WEST) {
+//                firstBlockPosition = blockers.ms1b();
+//            } else {
+//                throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
+//            }
+//
+//            blockerMask ^= getRookSlideAt(direction, firstBlockPosition);
+//        }
 
         result |= blockerMask;
     }
@@ -205,6 +206,33 @@ Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Bitb
 
     return result;
 }
+
+Bitboard SlidingPieceAttacks::getRookCaptures (const Board& context, const Square& square, PieceColor color) const {
+    Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+    Bitboard result{0};
+    for (RayDirection direction = NORTH; direction <= WEST; ++direction) {
+        Bitboard blockerMask = getRookSlideAt(direction, square);
+
+        auto blockers = blockerMask & occupancy;
+
+        if (blockers) {
+            int firstBlockPosition;
+            if (direction == NORTH || direction == EAST) {
+                firstBlockPosition = blockers.ls1b();
+            } else if (direction == SOUTH || direction == WEST) {
+                firstBlockPosition = blockers.ms1b();
+            } else {
+                throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
+            }
+
+            result |= (Square) firstBlockPosition;
+        }
+    }
+
+    return result & ~context.getPieces(color).all;
+}
+
+
 
 Bitboard SlidingPieceAttacks::getBishopCaptures (const Board& context, const Square& square, PieceColor color) const {
     Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
@@ -268,6 +296,11 @@ Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Sq
     return getBishopMoveBoard(square, occupancy, direction);
 }
 
+Bitboard SlidingPieceAttacks::getRookMoveBoard (const Board& context, const Square& square, RayDirection direction) const {
+    Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+    return getRookMoveBoard(square, occupancy, direction);
+}
+
 
 Bitboard SlidingPieceAttacks::getBishopMoveBoard (const Board& context, const Bitboard& bishops, PieceColor color) const {
     Bitboard result{0};
@@ -286,6 +319,27 @@ Bitboard SlidingPieceAttacks::getQueenMoveBoard (const Board& context, const Squ
 
 Bitboard SlidingPieceAttacks::getQueenMoveBoard (const Board& context, const Bitboard& queens, PieceColor color) const {
     return getBishopMoveBoard(context, queens, color) | getRookMoveBoard(context, queens, color);
+}
+
+Bitboard SlidingPieceAttacks::getRookMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const {
+    Bitboard blockerMask = getRookSlideAt(direction, square);
+
+    auto blockers = blockerMask & occupancy;
+
+    if (blockers) {
+        int firstBlockPosition;
+        if (direction == NORTH || direction == EAST) {
+            firstBlockPosition = blockers.ls1b();
+        } else if (direction == SOUTH || direction == WEST) {
+            firstBlockPosition = blockers.ms1b();
+        } else {
+            throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
+        }
+
+        blockerMask ^= getRookSlideAt(direction, firstBlockPosition);
+    }
+
+    return blockerMask;
 }
 
 
@@ -322,8 +376,8 @@ Bitboard PawnAttacks::getPawnPushes (const Bitboard& occupancy, PieceColor color
 }
 
 Bitboard PawnAttacks::getPawnCaptures (const Board& context, const Bitboard& pawns, PieceColor color) const {
-    const auto& east = pawns.move(NORTH_EAST, color, 1, false) & context.getPieces()[flip(color)].all;
-    const auto& west = pawns.move(NORTH_WEST, color, 1, false) & context.getPieces()[flip(color)].all;
+    const auto& east = pawns.move(NORTH_EAST, color, 1, false);
+    const auto& west = pawns.move(NORTH_WEST, color, 1, false);
 
     return east | west;
 }

@@ -23,7 +23,7 @@ namespace BitboardOperations {
         constexpr uint8_t NORTH_WEST = 7;
     };
 
-    int8_t rayDirectionToShift (RayDirection d, PieceColor color);
+    int8_t rayDirectionToShift (RayDirection d, PieceColor perspective);
 
 //    Bitboard_raw move (Bitboard_raw b, RayDirection direction);
 //    Bitboard_raw move (Bitboard_raw b, RayDirection direction, uint8_t amount);

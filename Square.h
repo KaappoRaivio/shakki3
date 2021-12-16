@@ -34,6 +34,10 @@ public:
     RayDirection getDirection (const Square& other, const PieceType& type) const;
 
     friend std::ostream& operator<< (std::ostream& os, const Square& square);
+
+    Square move (RayDirection direction, PieceColor perspective) const;
+
+    Square move (RayDirection direction);
 };
 
 

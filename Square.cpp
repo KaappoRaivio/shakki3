@@ -61,7 +61,7 @@ uint8_t Square::diffY (Square square) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Square& square) {
-    os << (char)(square.getX() + 65) << (int) square.getY() + 1;
+    os << (char) (square.getX() + 65) << (int) square.getY() + 1;
     return os;
 }
 
@@ -97,5 +97,21 @@ RayDirection Square::getDirection (const Square& other, const PieceType& type) c
         std::cerr << "Invalid piece type " << type << std::endl;
         throw std::runtime_error("Invalid piece type!");
     }
+}
+
+Square Square::move (RayDirection direction) {
+    auto shift = BitboardOperations::rayDirectionToShift(direction, WHITE);
+    std::cout << shift << std::endl;
+    return *this;
+}
+
+
+Square Square::move (RayDirection direction, PieceColor perspective) const {
+    auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
+
+    std::cout << +shift << std::endl;
+    uint8_t newValue = value + shift;
+
+    return {newValue};
 }
 

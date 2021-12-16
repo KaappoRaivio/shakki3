@@ -54,5 +54,5 @@ namespace BoardAnalysis {
 
     Bitboard getPinMask (const Board& board, PieceColor color);
 
-    Bitboard getCheckMask (const Board& board, PieceColor color);
+    Bitboard getCheckMask (const Board& context, PieceColor color);
 }

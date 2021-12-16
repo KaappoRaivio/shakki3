@@ -80,7 +80,7 @@ Bitboard_raw BitboardOperations::shift (Bitboard_raw b, int shift) {
 //
 //}
 
-int8_t BitboardOperations::rayDirectionToShift (RayDirection d, PieceColor color) {
+int8_t BitboardOperations::rayDirectionToShift (RayDirection d, PieceColor perspective) {
     int8_t shift;
     switch (d) {
         case NORTH:
@@ -111,8 +111,8 @@ int8_t BitboardOperations::rayDirectionToShift (RayDirection d, PieceColor color
             throw std::runtime_error("Shouldn't happen");
     }
 
-    if (color == WHITE) return shift;
-    else if (color == BLACK) return -shift;
+    if (perspective == WHITE) return shift;
+    else if (perspective == BLACK) return -shift;
     else {
         throw std::runtime_error("Invalid color!");
     }

@@ -51,7 +51,7 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
     for (const Square& bishopSquare : bishops) {
         const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator().getBishopMoveBoard(context, bishopSquare, color);
 
-        for (const Square& possibleSquare: possibleSquares) {
+        for (const Square& possibleSquare : possibleSquares) {
             moves.emplace_back(context, bishopSquare, possibleSquare);
         }
     }
@@ -65,7 +65,7 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
         const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator().getRookMoveBoard(context, rookSquare, color);
 
 //                .getRookMoveBoard(occupancy, rookSquare);
-        for (const Square& possibleSquare: possibleSquares) {
+        for (const Square& possibleSquare : possibleSquares) {
             moves.emplace_back(context, rookSquare, possibleSquare);
         }
     }
@@ -78,7 +78,7 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
         const Bitboard& possibleSquares = Attacks::getInstance().getKnightAttackGenerator().getAttackAt(knightSquare)
                                           & ~context.getPieces(color).all;
 
-        for (const Square& possibleSquare: possibleSquares) {
+        for (const Square& possibleSquare : possibleSquares) {
             moves.emplace_back(context, knightSquare, possibleSquare);
         }
     }
@@ -104,9 +104,11 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     }
 
     //captures
+    const auto& opponentPieces = context.getPieces()[flip(color)].all;
+
     const Bitboard& captures = Attacks::getInstance()
             .getPawnAttackGenerator()
-            .getPawnCaptures(context, pawns, color);
+            .getPawnCaptures(context, pawns, color) & opponentPieces;
 
     for (const Square& pawnSquare : pawns) {
         const auto& possibleCaptureSquares = Attacks::getInstance()
@@ -138,29 +140,52 @@ bool BoardAnalysis::isSquareAttacked (const Board& board, const Square& square, 
     return bool(getAttackMask(board, color) & square);
 }
 
-Bitboard BoardAnalysis::getCheckMask (const Board& board, PieceColor color) {
+Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const color) {
     Bitboard checkMask;
     const Attacks& attacks = Attacks::getInstance();
 
-    const Square& kingPosition = board.getPieces(color).boards[PieceTypes::KING].ls1b();
+    const Square& kingPosition = context.getPieces(color).boards[PieceTypes::KING].ls1b();
 
-    // bishop
-    const Bitboard& supposedBishops = attacks.getSlidingPieceAttackGenerator().getBishopCaptures(board, kingPosition, color);
+    // bishop and queen
+    const Bitboard& supposedBishops = attacks.getSlidingPieceAttackGenerator().getBishopCaptures(context, kingPosition, color);
     for (const Square& possibleBishop : supposedBishops) {
-        if (board.getPieceAt(possibleBishop) == Piece{PieceTypes::BISHOP, flip(color)}) {
+        if (context.getPieceAt(possibleBishop) == Piece{PieceTypes::BISHOP, flip(color)}
+            || context.getPieceAt(possibleBishop) == Piece{PieceTypes::QUEEN, flip(color)}) {
+
             RayDirection direction = kingPosition.getDirection(possibleBishop, PieceTypes::BISHOP);
-            checkMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, kingPosition, direction);
+            checkMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(context, kingPosition, direction);
         }
     }
 
-    // rook
-    const Bitboard& supposedRooks = attacks.getSlidingPieceAttackGenerator().getBishopCaptures(board, kingPosition, color);
+    // rook and queen
+    const Bitboard& supposedRooks = attacks.getSlidingPieceAttackGenerator().getRookCaptures(context, kingPosition, color);
     for (const Square& possibleRook : supposedRooks) {
-        if (board.getPieceAt(possibleRook) == Piece{PieceTypes::ROOK, flip(color)}) {
-            RayDirection direction = kingPosition.getDirection(possibleRook, PieceTypes::BISHOP);
-            checkMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, kingPosition, direction);
+        if (context.getPieceAt(possibleRook) == Piece{PieceTypes::ROOK, flip(color)}
+            || context.getPieceAt(possibleRook) == Piece{PieceTypes::QUEEN, flip(color)}) {
+            RayDirection direction = kingPosition.getDirection(possibleRook, PieceTypes::ROOK);
+            checkMask |= attacks.getSlidingPieceAttackGenerator().getRookMoveBoard(context, kingPosition, direction);
         }
     }
+
+    // knight
+    const Bitboard& supposedKnights = attacks.getKnightAttackGenerator().getAttackAt(context, kingPosition, color);
+    for (const Square& possibleKnight : supposedKnights) {
+        if (context.getPieceAt(possibleKnight) == Piece{PieceTypes::KNIGHT, flip(color)}) {
+            checkMask |= possibleKnight;
+        }
+    }
+
+    // pawn
+    const Square& possiblePawn1 = kingPosition.move(Directions::SOUTH_EAST, flip(color));
+    if (context.getPieceAt(possiblePawn1) == Piece{PieceTypes::PAWN, flip(color)}) {
+        checkMask |= possiblePawn1;
+    }
+
+    const Square& possiblePawn2 = kingPosition.move(Directions::SOUTH_WEST, flip(color));
+    if (context.getPieceAt(possiblePawn2) == Piece{PieceTypes::PAWN, flip(color)}) {
+        checkMask |= possiblePawn2;
+    }
+
 
 
     return checkMask;

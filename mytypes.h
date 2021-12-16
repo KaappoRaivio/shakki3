@@ -9,6 +9,8 @@
 #include <vector>
 #include <memory>
 
+#define DEBUG true
+
 typedef uint64_t Bitboard_raw;
 typedef uint8_t RayDirection;
 
@@ -29,12 +31,12 @@ enum PieceColor {
     WHITE = 0, BLACK = 1, EMPTY = 2
 };
 
-class PieceType {
+struct PieceType {
     char symbol;
     uint8_t index;
 
 public:
-    explicit PieceType (char symbol, uint8_t index);
+    explicit constexpr PieceType (char symbol, uint8_t index);
 
 
     char getSymbol (PieceColor color) const;

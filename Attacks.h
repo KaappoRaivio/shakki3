@@ -34,6 +34,7 @@ public:
     Bitboard getAttackAt (const Board& context, const Bitboard& knights, PieceColor color) const;
 };
 
+template <PieceType type>
 class SlidingPieceAttacks {
 private:
     Bitboard rookSlides[4][64];
@@ -58,14 +59,15 @@ public:
     Bitboard getBishopMoveBoard (const Board& context, const Bitboard& bishops, PieceColor color) const;
 
     Bitboard getRookMoveBoard (const Board& context, const Bitboard& rooks, PieceColor color) const;
+    Bitboard getRookMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const;
+    Bitboard getRookCaptures (const Board& context, const Square& square, PieceColor color) const;
 
     Bitboard getQueenMoveBoard (const Board& context, const Bitboard& queens, PieceColor color) const;
-
     Bitboard getBishopCaptures (const Board& context, const Square& square, PieceColor color) const;
-
     Bitboard getBishopMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const;
-
     Bitboard getBishopMoveBoard (const Board& context, const Square& square, RayDirection direction) const;
+
+    Bitboard getRookMoveBoard (const Board& context, const Square& square, RayDirection direction) const;
 };
 
 class PawnAttacks {
@@ -108,6 +110,7 @@ private:
     Attacks ();
 public:
     const KnightAttacks& getKnightAttackGenerator () const;
+
 
     const SlidingPieceAttacks& getSlidingPieceAttackGenerator () const;
 

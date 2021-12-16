@@ -5,15 +5,20 @@
 #include "KnightAttacks.h"
 #include "Attacks.h"
 #include "StringUtils.h"
+#include "MyMath.h"
 
 int main () {
 
-    Board board = Board::fromFEN("1k6/8/8/8/5B2/8/8/1K6 w - - 0 1");
+    Board board = Board::fromFEN("8/2k5/8/2Q5/8/8/2B3P1/4K3 b - - 0 1");
     std::cout << board << std::endl;
 
 
-    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, BLACK);
+    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
     std::cout << checkMask << std::endl;
+
+    const Bitboard& attackMask = BoardAnalysis::getAttackMask(board, WHITE);
+    std::cout << attackMask << std::endl;
+
 
 //    std::cout << Attacks::getInstance().getKnightAttackGenerator().getAttackAt((Square) 1) << std::endl;
 

@@ -4,6 +4,7 @@
 
 #include "Bitboard.h"
 #include "BitboardOperations.h"
+#include "MyMath.h"
 
 Bitboard::Bitboard (uint64_t value) : value{value} {
 
@@ -83,10 +84,13 @@ Bitboard Bitboard::move (RayDirection direction, PieceColor perspective, int amo
     if (wrapAround) {
         bitmask = 0;
     } else {
-        if (shift < 0) {
+        if (MyMath::modulus(shift, 8) == 7) {
             bitmask = BitboardOperations::SquareMasks::fileH.value;
-        } else {
+        } else if (MyMath::modulus(shift, 8) == 1) {
             bitmask = BitboardOperations::SquareMasks::fileA.value;
+        } else {
+            std::cerr << "Warning: wrapAround is false, but shift is more than one (" << +shift << "). Unable to mask of irrelevant bits!!" << std::endl;
+            bitmask = 0;
         }
     }
 

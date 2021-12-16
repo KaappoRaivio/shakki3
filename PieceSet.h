@@ -19,13 +19,13 @@ struct PieceSet {
     Bitboard boards[AMOUNT_OF_BOARDS];
     Bitboard all;
 
+    explicit PieceSet (const PieceColor& color);
     bool hasPiece (Square square) const;
 
-    explicit PieceSet (const PieceColor& color);
-
+    std::string& burn (std::string& buffer) const;
     friend std::ostream& operator<< (std::ostream& os, const PieceSet& set);
 
-    std::string& burn (std::string& buffer) const;
+    Bitboard allWithoutKing () const;
 
     void updateOccupancy ();
 };

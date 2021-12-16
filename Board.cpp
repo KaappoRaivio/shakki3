@@ -20,20 +20,44 @@ std::ostream& operator<< (std::ostream& os, const Board& board) {
     board.pieces[WHITE].burn(base);
     board.pieces[BLACK].burn(base);
 
-    for (int y = 7; y >= 0; --y) {
-        for (int x = 0; x < 8; ++x) {
-            os << base[8 * y + x] << " ";
+
+
+    if (DEBUG) {
+        std::stringstream bitboard;
+
+        for (int y = 7; y >= 0; --y) {
+            for (int x = 0; x < 8; ++x) {
+                bitboard << base[8 * y + x] << " ";
+            }
+            bitboard << std::endl;
         }
-        os << std::endl;
-    }
-//
-    os << "letterbox: " << std::endl;
-    for (int y = 7; y >= 0; --y) {
-        for (int x = 0; x < 8; ++x) {
-            os << *board.letterbox[8 * y + x] << " ";
+    //
+//        os << "letterbox: " << std::endl;
+
+        std::stringstream letterbox;
+
+        for (int y = 7; y >= 0; --y) {
+            for (int x = 0; x < 8; ++x) {
+                letterbox << *board.letterbox[8 * y + x] << " ";
+            }
+            letterbox << std::endl;
         }
-        os << std::endl;
+
+        if (bitboard.str() != letterbox.str()) {
+            std::cerr << "CRITICAL: letterbox and bitboards out of sync!!!" << std::endl;
+        }
+
+        os << letterbox.str();
+
+    } else {
+        for (int y = 7; y >= 0; --y) {
+            for (int x = 0; x < 8; ++x) {
+                os << *board.letterbox[8 * y + x] << " ";
+            }
+            os << std::endl;
+        }
     }
+
 
 
 
