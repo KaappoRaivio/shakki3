@@ -233,9 +233,9 @@ const KnightAttacks& Attacks::getKnightAttackGenerator () const {
     return knightAttackGenerator;
 }
 
-template <PieceType TYPE>
-const SlidingPieceAttacks<TYPE>& Attacks::getSlidingPieceAttackGenerator () const {
-//    return rookAttackGenerator;
+//template <PieceType TYPE>
+//const SlidingPieceAttacks<TYPE>& Attacks::getSlidingPieceAttackGenerator () const {
+////    return rookAttackGenerator;
 //    switch (TYPE.index) {
 //        case PieceTypes::ROOK.index:
 //            return rookAttackGenerator;
@@ -246,7 +246,7 @@ const SlidingPieceAttacks<TYPE>& Attacks::getSlidingPieceAttackGenerator () cons
 //        default:
 //            throw std::runtime_error("Invalid piece type!");
 //    }
-}
+//}
 
 const PawnAttacks& Attacks::getPawnAttackGenerator () const {
     return pawnAttackGenerator;
@@ -259,8 +259,16 @@ const KingAttacks& Attacks::getKingAttackGenerator () const {
 Attacks::Attacks () : knightAttackGenerator{}, rookAttackGenerator{}, bishopAttackGenerator{}, queenAttackGenerator{},
                       pawnAttackGenerator{}, kingAttackGenerator{} {}
 
-const SlidingPieceAttacks<PieceTypes::BISHOP> Attacks::getBishopAttacks () const {
+SlidingPieceAttacks<PieceTypes::BISHOP> Attacks::getBishopAttacks () const {
     return bishopAttackGenerator;
+}
+
+SlidingPieceAttacks<PieceTypes::ROOK> Attacks::getRookAttacks () const {
+    return rookAttackGenerator;
+}
+
+SlidingPieceAttacks<PieceTypes::QUEEN> Attacks::getQueenAttacks () const {
+    return queenAttackGenerator;
 }
 
 PawnAttacks::PawnAttacks () : possiblePawnPushesOnEmptyBoard{}, possiblePawnCapturesOnEmptyBoard{} {

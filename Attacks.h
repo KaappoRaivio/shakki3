@@ -278,10 +278,23 @@ public:
 public:
     const KnightAttacks& getKnightAttackGenerator () const;
 
-    template <PieceType TYPE>
-    const SlidingPieceAttacks<TYPE>& getSlidingPieceAttackGenerator () const;
+//    template <PieceType TYPE>
+//    const SlidingPieceAttacks<TYPE>& getSlidingPieceAttackGenerator () const {
+//        switch (TYPE) {
+//            case PieceTypes::ROOK.index:
+//                return rookAttackGenerator;
+//            case PieceTypes::BISHOP.index:
+//                return bishopAttackGenerator;
+//            case PieceTypes::QUEEN.index:
+//                return queenAttackGenerator;
+//            default:
+//                throw std::runtime_error("Invalid piece type!");
+//        }
+//    }
 
-    const SlidingPieceAttacks<PieceTypes::BISHOP> getBishopAttacks () const;
+    SlidingPieceAttacks<PieceTypes::BISHOP> getBishopAttacks () const;
+    SlidingPieceAttacks<PieceTypes::ROOK> getRookAttacks () const;
+    SlidingPieceAttacks<PieceTypes::QUEEN> getQueenAttacks () const;
 
 
     Attacks(Attacks const&)        = delete;
