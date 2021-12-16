@@ -153,6 +153,15 @@ Bitboard BoardAnalysis::getCheckMask (const Board& board, PieceColor color) {
         }
     }
 
+    // rook
+    const Bitboard& supposedRooks = attacks.getSlidingPieceAttackGenerator().getBishopCaptures(board, kingPosition, color);
+    for (const Square& possibleRook : supposedRooks) {
+        if (board.getPieceAt(possibleRook) == Piece{PieceTypes::ROOK, flip(color)}) {
+            RayDirection direction = kingPosition.getDirection(possibleRook, PieceTypes::BISHOP);
+            checkMask |= attacks.getSlidingPieceAttackGenerator().getBishopMoveBoard(board, kingPosition, direction);
+        }
+    }
+
 
     return checkMask;
 }
