@@ -94,8 +94,8 @@ RayDirection Square::getDirection (const Square& other, const PieceType& type) c
             throw std::runtime_error("cannot convert!");
         }
     } else {
-        std::cerr << "Invalid piece type " << type << std::endl;
-        throw std::runtime_error("Invalid piece type!");
+        std::cerr << "Invalid piece TYPE " << type << std::endl;
+        throw std::runtime_error("Invalid piece TYPE!");
     }
 }
 

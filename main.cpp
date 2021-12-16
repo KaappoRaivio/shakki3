@@ -1,8 +1,6 @@
 #include <iostream>
 #include "BitboardOperations.h"
 #include "Board.h"
-#include "SlidingPieceRays.h"
-#include "KnightAttacks.h"
 #include "Attacks.h"
 #include "StringUtils.h"
 #include "MyMath.h"

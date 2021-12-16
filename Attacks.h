@@ -9,8 +9,9 @@
 #include "mytypes.h"
 #include "Bitboard.h"
 #include "PieceSet.h"
-#include "Board.h"
+//#include "Board.h"
 
+class Board;
 
 class KnightAttacks {
     static constexpr RayDirection noNoEa = 17;
@@ -34,40 +35,23 @@ public:
     Bitboard getAttackAt (const Board& context, const Bitboard& knights, PieceColor color) const;
 };
 
-template <PieceType type>
+template <PieceType TYPE>
 class SlidingPieceAttacks {
 private:
-    Bitboard rookSlides[4][64];
-    Bitboard bishopSlides[8][64];
+    Bitboard slides[8][64];
 
-    void populateRookSlides ();
-    void populateBishopSlides ();
-
-    Bitboard getRookSlideAt(RayDirection direction, int square) const;
-    Bitboard getBishopSlideAt(RayDirection direction, int square) const;
+    void populateSlides ();
+    Bitboard getSlideAt (RayDirection direction, int square) const;
 public:
-    Bitboard getRookBlockerMask(int y, int x);
-    Bitboard getBishopBlockerMask(int y, int x);
+    Bitboard getRayTo (const Square& square, const Bitboard& occupancy, RayDirection direction) const;
+    Bitboard getRayTo (const Board& context, const Square& square, RayDirection direction) const;
 
-    Bitboard getRookMoveBoard (const Board& context, const Square& square, PieceColor color) const;
-    Bitboard getBishopMoveBoard (const Board& context, const Square& square, PieceColor color) const;
+    Bitboard getRaysToAllDirections (const Board& context, const Square& square, PieceColor color) const;
+    Bitboard getRaysToAllDirectionsAllPieces (const Board& context, const Bitboard& pieces, PieceColor color) const;
+
+    Bitboard getCapturesToAllDirections (const Board& context, const Square& square, PieceColor color) const;
 
     SlidingPieceAttacks ();
-
-    Bitboard getQueenMoveBoard (const Board& context, const Square& square, PieceColor color) const;
-
-    Bitboard getBishopMoveBoard (const Board& context, const Bitboard& bishops, PieceColor color) const;
-
-    Bitboard getRookMoveBoard (const Board& context, const Bitboard& rooks, PieceColor color) const;
-    Bitboard getRookMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const;
-    Bitboard getRookCaptures (const Board& context, const Square& square, PieceColor color) const;
-
-    Bitboard getQueenMoveBoard (const Board& context, const Bitboard& queens, PieceColor color) const;
-    Bitboard getBishopCaptures (const Board& context, const Square& square, PieceColor color) const;
-    Bitboard getBishopMoveBoard (const Square& square, const Bitboard& occupancy, RayDirection direction) const;
-    Bitboard getBishopMoveBoard (const Board& context, const Square& square, RayDirection direction) const;
-
-    Bitboard getRookMoveBoard (const Board& context, const Square& square, RayDirection direction) const;
 };
 
 class PawnAttacks {
@@ -103,16 +87,21 @@ public:
 class Attacks {
 private:
     const KnightAttacks knightAttackGenerator;
-    const SlidingPieceAttacks slidingPieceAttackGenerator;
+    const SlidingPieceAttacks<PieceTypes::ROOK> rookAttackGenerator;
+    const SlidingPieceAttacks<PieceTypes::BISHOP> bishopAttackGenerator;
+    const SlidingPieceAttacks<PieceTypes::QUEEN> queenAttackGenerator;
     const PawnAttacks pawnAttackGenerator;
     const KingAttacks kingAttackGenerator;
 
+public:
     Attacks ();
+
 public:
     const KnightAttacks& getKnightAttackGenerator () const;
 
+    template <PieceType TYPE>
+    const SlidingPieceAttacks<TYPE>& getSlidingPieceAttackGenerator () const;
 
-    const SlidingPieceAttacks& getSlidingPieceAttackGenerator () const;
 
     Attacks(Attacks const&)        = delete;
     void operator=(Attacks const&) = delete;

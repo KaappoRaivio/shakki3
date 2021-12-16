@@ -10,6 +10,8 @@
 #include <ostream>
 #include "mytypes.h"
 #include "Move.h"
+#include "Attacks.h"
+#include "BoardUtils.h"
 
 class Move;
 

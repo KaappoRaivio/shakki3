@@ -31,12 +31,15 @@ enum PieceColor {
     WHITE = 0, BLACK = 1, EMPTY = 2
 };
 
+
+//template <char SYMBOL, uint8_t INDEX>
 struct PieceType {
     char symbol;
     uint8_t index;
 
 public:
-    explicit constexpr PieceType (char symbol, uint8_t index);
+//    explicit constexpr PieceType (const char& symbol, const uint8_t& index);
+//    constexpr PieceType () = default;
 
 
     char getSymbol (PieceColor color) const;
@@ -50,14 +53,14 @@ public:
 };
 
 namespace PieceTypes {
-    extern const PieceType KNIGHT;
-    extern const PieceType BISHOP;
-    extern const PieceType ROOK  ;
-    extern const PieceType QUEEN ;
-    extern const PieceType PAWN  ;
-    extern const PieceType KING  ;
-    extern const PieceType NO_PIECE;
-    extern const std::vector<PieceType> pieces;
+    constexpr PieceType KNIGHT {'n', 0};
+    constexpr PieceType BISHOP {'b', 1};
+    constexpr PieceType ROOK   {'r', 2};
+    constexpr PieceType QUEEN  {'q', 3};
+    constexpr PieceType PAWN   {'p', 4};
+    constexpr PieceType KING   {'k', 5};
+    constexpr PieceType NO_PIECE {'.', 255};
+    const std::vector<PieceType> pieces = {KNIGHT, BISHOP, ROOK, QUEEN, PAWN, KING};
 }
 
 struct Piece {

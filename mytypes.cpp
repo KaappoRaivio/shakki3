@@ -5,7 +5,10 @@
 #include "mytypes.h"
 
 
-PieceType::PieceType (char symbol, uint8_t index) : symbol{symbol}, index{index} {}
+//constexpr PieceType::PieceType (const char& symbol, const uint8_t& index) : symbol{symbol}, index{index} {
+////    this->symbol = symbol;
+////    this->index = index;
+//}
 
 char PieceType::getSymbol (PieceColor color) const {
     if (color == BLACK) {
@@ -17,33 +20,38 @@ char PieceType::getSymbol (PieceColor color) const {
     }
 }
 
+
 PieceType::operator int () const {
     return index;
 }
 
+
 std::ostream& operator<< (std::ostream& os, const PieceType& type) {
-    os << "PieceType{symbol: " << type.symbol << " index: " << (int) type.index << "}";
+    os << "PieceType{symbol: " << type.symbol << " index: " << +type.index << "}";
     return os;
 }
+
 
 bool PieceType::operator== (const PieceType& rhs) const {
     return symbol == rhs.symbol &&
            index == rhs.index;
 }
 
+
 bool PieceType::operator!= (const PieceType& rhs) const {
     return !(rhs == *this);
 }
 
+
 namespace PieceTypes {
-    const PieceType KNIGHT{'n', 0};
-    const PieceType BISHOP{'b', 1};
-    const PieceType ROOK  {'r', 2};
-    const PieceType QUEEN {'q', 3};
-    const PieceType PAWN  {'p', 4};
-    const PieceType KING  {'k', 5};
-    const PieceType NO_PIECE {'.', 255};
-    const std::vector<PieceType> pieces = {KNIGHT, BISHOP, ROOK, QUEEN, PAWN, KING};
+//    const PieceType KNIGHT{'n', 0};
+//    const PieceType BISHOP{'b', 1};
+//    const PieceType ROOK  {'r', 2};
+//    const PieceType QUEEN {'q', 3};
+//    const PieceType PAWN  {'p', 4};
+//    const PieceType KING  {'k', 5};
+//    const PieceType NO_PIECE {'.', 255};
+//    const std::vector<PieceType> pieces = {KNIGHT, BISHOP, ROOK, QUEEN, PAWN, KING};
 }
 
 namespace Pieces {
@@ -105,7 +113,7 @@ bool Piece::operator!= (const Piece& rhs) const {
 std::ostream& operator<< (std::ostream& os, const Piece& piece) {
     os << piece.type.getSymbol(piece.color);
     return os;
-//    os << "Piece{type: " << piece.type << " color: " << piece.color << "}";
+//    os << "Piece{TYPE: " << piece.TYPE << " color: " << piece.color << "}";
 //    return os;
 }
 
