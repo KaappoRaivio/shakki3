@@ -216,6 +216,7 @@ std::vector<Move> Board::getMoves () const {
     std::vector<Move> moves;
     MoveGeneration::addBishopMoves(moves, *this, getTurn());
     MoveGeneration::addRookMoves(moves, *this, getTurn());
+    MoveGeneration::addQueenMoves(moves, *this, getTurn());
     MoveGeneration::addKnightMoves(moves, *this, getTurn());
     MoveGeneration::addPawnMoves(moves, *this, getTurn());
 

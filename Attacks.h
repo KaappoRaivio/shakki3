@@ -10,7 +10,7 @@
 #include "Bitboard.h"
 #include "PieceSet.h"
 
-class Board;
+#include "Board.h"
 
 using namespace BitboardOperations::Directions;
 namespace SquareMasks = BitboardOperations::SquareMasks;
@@ -40,20 +40,12 @@ public:
 using namespace BitboardOperations;
 using namespace BitboardOperations::Directions;
 
-template<PieceType type>
+template <PieceType TYPE>
 constexpr int getClosestBitPosition (const Bitboard& blockers, RayDirection direction) {
-    if (type == PieceTypes::ROOK) {
-        if (direction == NORTH || direction == EAST) {
-            return blockers.ls1b();
-        } else {
-            return blockers.ms1b();
-        }
+    if (direction == NORTH || direction == EAST || direction == NORTH_EAST || direction == NORTH_WEST) {
+        return blockers.ls1b();
     } else {
-        if (direction == NORTH_EAST || direction == NORTH_WEST) {
-            return blockers.ls1b();
-        } else {
-            return blockers.ms1b();
-        }
+        return blockers.ms1b();
     }
 }
 
@@ -72,7 +64,7 @@ RayDirection getIterationEndDirection () {
     if (TYPE == PieceTypes::ROOK) {
         return WEST;
     } else if (TYPE == PieceTypes::BISHOP || TYPE == PieceTypes::QUEEN) {
-        return NORTH_EAST;
+        return NORTH_WEST;
     }
 //    return TYPE == PieceTypes::ROOK ? WEST : NORTH_WEST;
 }

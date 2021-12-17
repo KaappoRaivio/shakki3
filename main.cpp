@@ -8,9 +8,11 @@
 
 int main () {
 
-    Board board = Board::fromFEN("8/2k5/8/2Q5/8/8/2B3P1/4K3 b - - 0 1");
+    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     std::cout << board << std::endl;
 
+
+    std::cout << board.getPieces()[WHITE].boards[PieceTypes::QUEEN] << std::endl;
 
     const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
     std::cout << checkMask << std::endl;

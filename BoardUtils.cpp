@@ -46,28 +46,41 @@ void BoardStateHistory::pushState (BoardState newFrame) {
 
 void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {
     const Bitboard& bishops = context.getPieces()[color].boards[PieceTypes::BISHOP];
-//    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(color).all;
+    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(color).all;
 
-//    for (const Square& bishopSquare : bishops) {
-//        const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator<PieceTypes::BISHOP>().getRaysToAllDirections(context, bishopSquare, color);
-//
-//        for (const Square& possibleSquare : possibleSquares) {
-//            moves.emplace_back(context, bishopSquare, possibleSquare);
-//        }
-//    }
+    for (const Square& bishopSquare : bishops) {
+        const Bitboard& possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, bishopSquare, color);
+
+        for (const Square& possibleSquare : possibleSquares) {
+            moves.emplace_back(context, bishopSquare, possibleSquare);
+        }
+    }
 }
 
 void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {
     const Bitboard& rooks = context.getPieces()[color].boards[PieceTypes::ROOK];
-//    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(BLACK).all;
+    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(BLACK).all;
 
-//    for (const Square& rookSquare : rooks) {
-//        const Bitboard& possibleSquares = Attacks::getInstance().getSlidingPieceAttackGenerator<PieceTypes::ROOK>().getRaysToAllDirections(context, rookSquare, color);
-//
-//        for (const Square& possibleSquare : possibleSquares) {
-//            moves.emplace_back(context, rookSquare, possibleSquare);
-//        }
-//    }
+    for (const Square& rookSquare : rooks) {
+        const Bitboard& possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, rookSquare, color);
+
+        for (const Square& possibleSquare : possibleSquares) {
+            moves.emplace_back(context, rookSquare, possibleSquare);
+        }
+    }
+}
+
+void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {
+    const Bitboard& queens = context.getPieces()[color].boards[PieceTypes::QUEEN];
+    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(BLACK).all;
+
+    for (const Square& queenSquare : queens) {
+        const Bitboard& possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color);
+
+        for (const Square& possibleSquare : possibleSquares) {
+            moves.emplace_back(context, queenSquare, possibleSquare);
+        }
+    }
 }
 
 void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color) {

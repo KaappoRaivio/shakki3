@@ -50,6 +50,8 @@ public:
     bool operator!= (const PieceType& rhs) const;
 
     friend std::ostream& operator<< (std::ostream& os, const PieceType& type);
+
+    std::string getSymbolFancy (PieceColor color) const;
 };
 
 namespace PieceTypes {

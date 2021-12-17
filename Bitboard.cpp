@@ -191,3 +191,11 @@ Bitboard::Iterator Bitboard::end () {
 Bitboard::operator unsigned long long () const {
     return value;
 }
+
+bool Bitboard::operator== (const Bitboard& rhs) const {
+    return value == rhs.value;
+}
+
+bool Bitboard::operator!= (const Bitboard& rhs) const {
+    return !(rhs == *this);
+}

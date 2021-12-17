@@ -2,7 +2,9 @@
 // Created by kaappo on 29.11.2021.
 //
 
+#include <sstream>
 #include "mytypes.h"
+#include "TerminalColors.h"
 
 
 //constexpr PieceType::PieceType (const char& symbol, const uint8_t& index) : symbol{symbol}, index{index} {
@@ -18,6 +20,14 @@ char PieceType::getSymbol (PieceColor color) const {
     } else {
         return '.';
     }
+}
+
+
+
+
+std::string PieceType::getSymbolFancy (PieceColor color) const {
+//    return fancySymbols[color];
+    return "lol";
 }
 
 

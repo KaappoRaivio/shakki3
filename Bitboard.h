@@ -52,6 +52,10 @@ public:
     Bitboard& operator^=(Bitboard other);
     friend Bitboard operator^ (Bitboard bitboard, Bitboard other);
 
+    bool operator== (const Bitboard& rhs) const;
+
+    bool operator!= (const Bitboard& rhs) const;
+
     friend Bitboard operator~ (Bitboard bitboard);
     explicit operator bool () const;
     explicit operator unsigned long long () const;
