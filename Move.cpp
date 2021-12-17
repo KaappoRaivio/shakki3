@@ -3,6 +3,7 @@
 //
 
 #include "Move.h"
+#include "Board.h"
 
 using namespace PieceTypes;
 

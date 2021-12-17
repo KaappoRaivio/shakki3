@@ -4,6 +4,7 @@
 #include "Attacks.h"
 #include "StringUtils.h"
 #include "MyMath.h"
+#include "BoardAnalysis.h"
 
 int main () {
 

@@ -10,7 +10,7 @@
 #include <ostream>
 #include "mytypes.h"
 #include "Square.h"
-#include "Board.h"
+//#include "Board.h"
 
 
 // 000000 000000 0         0       0        0

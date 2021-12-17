@@ -10,10 +10,8 @@
 #include <ostream>
 #include "mytypes.h"
 #include "Move.h"
-#include "Attacks.h"
-#include "BoardUtils.h"
 
-class Move;
+//class Move;
 
 struct BoardState {
     int plysSinceFiftyMoveReset;
@@ -49,12 +47,3 @@ namespace MoveGeneration {
     void addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
 }
 
-namespace BoardAnalysis {
-    bool isSquareAttacked (const Board& board, const Square& square, PieceColor color);
-
-    Bitboard getAttackMask (const Board& board, PieceColor color);
-
-    Bitboard getPinMask (const Board& board, PieceColor color);
-
-    Bitboard getCheckMask (const Board& context, PieceColor color);
-}
