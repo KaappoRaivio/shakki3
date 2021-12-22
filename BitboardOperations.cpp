@@ -118,18 +118,6 @@ int8_t BitboardOperations::rayDirectionToShift (RayDirection d, PieceColor persp
     }
 }
 
-
-namespace BitboardOperations::Directions {
-//    uint8_t NORTH = 0;
-//    uint8_t EAST = 1;
-//    uint8_t SOUTH = 2;
-//    uint8_t WEST = 3;
-//    uint8_t NORTH_EAST = 4;
-//    uint8_t SOUTH_EAST = 5;
-//    uint8_t SOUTH_WEST = 6;
-//    uint8_t NORTH_WEST = 7;
-};
-
 namespace BitboardOperations::SquareMasks {
     Bitboard fileA = 0x0101010101010101;
     Bitboard fileB = 0x0202020202020202;
@@ -152,6 +140,10 @@ namespace BitboardOperations::SquareMasks {
     Bitboard rank6 = 0x0000FF0000000000;
     Bitboard rank7 = 0x00FF000000000000;
     Bitboard rank8 = 0xFF00000000000000;
+
+    Bitboard ranks[8] = {
+            rank1, rank2, rank3, rank4, rank5, rank6, rank7, rank8
+    };
 
     Bitboard a1h8Diagonal = 0x8040201008040201;
     Bitboard h1a8AntiDiagonal = 0x0102040810204080;

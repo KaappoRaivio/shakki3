@@ -13,11 +13,11 @@
 
 
 
-class Bitboard {
-private:
+struct Bitboard {
+//private:
     Bitboard_raw value;
 public:
-    Bitboard (uint64_t value); // NOLINT(google-explicit-constructor)
+    constexpr Bitboard (uint64_t value); // NOLINT(google-explicit-constructor)
     Bitboard (Square_raw square); // NOLINT(google-explicit-constructor)
     Bitboard (Square square); // NOLINT(google-explicit-constructor)
     Bitboard ();

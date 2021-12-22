@@ -285,3 +285,11 @@ Board Board::fromFEN (std::string FEN) {
     return board;
 }
 
+Bitboard Board::getOccupancy () const {
+    return pieces[WHITE].all | pieces[BLACK].all;
+}
+
+Bitboard Board::getBlockers (PieceColor color) const {
+    return pieces[color].all;
+}
+

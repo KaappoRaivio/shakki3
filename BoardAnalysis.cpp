@@ -4,18 +4,19 @@
 
 #include "BoardAnalysis.h"
 #include "Attacks.h"
+#include "InBetween.h"
 
 Bitboard BoardAnalysis::getAttackMask (const Board& board, PieceColor color) {
     Bitboard attackMask;
 
     const Attacks& attacks = Attacks::getInstance();
 //
-    attackMask |= attacks.getPawnAttackGenerator().getPawnCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
-    attackMask |= attacks.getBishopAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
+//    attackMask |= attacks.getPawnAttackGenerator().getPawnCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
+//    attackMask |= attacks.getBishopAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
     attackMask |= attacks.getRookAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::ROOK], color);
-    attackMask |= attacks.getQueenAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
-    attackMask |= attacks.getKnightAttackGenerator().getAttackAt(board, board.getPieces()[color].boards[PieceTypes::KNIGHT], color);
-    attackMask |= attacks.getKingAttackGenerator().getKingAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
+//    attackMask |= attacks.getQueenAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
+//    attackMask |= attacks.getKnightAttackGenerator().getAttackAt(board, board.getPieces()[color].boards[PieceTypes::KNIGHT], color);
+//    attackMask |= attacks.getKingAttackGenerator().getKingAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
 
     return attackMask;
 }
@@ -75,7 +76,33 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     return checkMask;
 }
 
-Bitboard BoardAnalysis::getPinMask (const Board& board, PieceColor color) {
-    const Square& kingPosition = board.getPieces(color).boards[PieceTypes::KING].ls1b();
-    return kingPosition; //TODO!!
+Bitboard BoardAnalysis::getPinMask (const Board& context, PieceColor color) {
+    const Square& kingPosition = context.getPieces(color).boards[PieceTypes::KING].ls1b();
+
+    Bitboard pinned = 0;
+
+    //rooks
+    Bitboard rookPinners = Attacks::getInstance()
+            .getRookAttacks()
+            .getRaysToAllDirectionsXRay(context, kingPosition, color)
+                           & context.getPieces(flip(color)).boards[PieceTypes::ROOK];
+
+    for (const Square& pinnerSquare : rookPinners) {
+        pinned |= InBetween::getInstance().getPath(pinnerSquare, kingPosition);
+    }
+
+    //bishops
+    Bitboard bishopPinners = Attacks::getInstance()
+                                   .getBishopAttacks()
+                                   .getRaysToAllDirectionsXRay(context, kingPosition, color)
+                           & context.getPieces(flip(color)).boards[PieceTypes::BISHOP];
+
+    for (const Square& pinnerSquare : bishopPinners) {
+        pinned |= InBetween::getInstance().getPath(pinnerSquare, kingPosition);
+    }
+
+
+    return pinned & context.getBlockers(color);
+
+//    return kingPosition; //TODO!!
 }

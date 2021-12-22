@@ -38,6 +38,9 @@ public:
     const Piece& getPieceAt (Square square) const;
     const PieceSet* getPieces () const;
 
+    Bitboard getOccupancy () const;
+    Bitboard getBlockers (PieceColor color) const;
+
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
     PieceSet pieces[2];

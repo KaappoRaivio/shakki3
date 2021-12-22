@@ -5,19 +5,18 @@
 #include "StringUtils.h"
 #include "MyMath.h"
 #include "BoardAnalysis.h"
+#include "InBetween.h"
 
 int main () {
 
-    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Board board = Board::fromFEN("k7/3r4/8/7b/8/3N1R2/8/3K4 w - - 0 1");
     std::cout << board << std::endl;
 
+//    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
+//    std::cout << checkMask << std::endl;
+//    std::cout << InBetween::getInstance().getPath(a1, e5) << std::endl;
 
-    std::cout << board.getPieces()[WHITE].boards[PieceTypes::QUEEN] << std::endl;
-
-    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
-    std::cout << checkMask << std::endl;
-
-    const Bitboard& attackMask = BoardAnalysis::getAttackMask(board, WHITE);
+    const Bitboard& attackMask = BoardAnalysis::getPinMask(board, WHITE);
     std::cout << attackMask << std::endl;
 
 

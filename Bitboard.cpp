@@ -6,7 +6,7 @@
 #include "BitboardOperations.h"
 #include "MyMath.h"
 
-Bitboard::Bitboard (uint64_t value) : value{value} {
+constexpr Bitboard::Bitboard (uint64_t value) : value{value} {
 
 }
 

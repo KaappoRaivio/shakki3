@@ -57,6 +57,9 @@ namespace BitboardOperations {
         extern Bitboard rank6;
         extern Bitboard rank7;
         extern Bitboard rank8;
+
+        extern Bitboard ranks[8];
+
         extern Bitboard a1h8Diagonal;
         extern Bitboard h1a8AntiDiagonal;
         extern Bitboard lightSquares;

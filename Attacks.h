@@ -168,12 +168,15 @@ public:
         return blockerMask;
     };
     Bitboard getRayTo (const Board& context, const Square& square, RayDirection direction) const {
-        Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
-        return getRayTo(square, occupancy, direction);
+        return getRayTo(square, context.getOccupancy(), direction);
     }
 
+
     Bitboard getRaysToAllDirections (const Board& context, const Square& square, PieceColor color) const {
-        Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
+        return getRaysToAllDirectionsFromOccupancy(context.getOccupancy(), context.getBlockers(color), square);
+    }
+
+    Bitboard getRaysToAllDirectionsFromOccupancy (const Bitboard& occupancy, const Bitboard& blockers, const Square& square) const {
         Bitboard result{0};
         for (RayDirection direction = getIterationStartDirection<TYPE>() ;
              direction <= getIterationEndDirection<TYPE>() ;
@@ -182,7 +185,7 @@ public:
             result |= blockerMask;
         }
 
-        return result & ~context.getPieces(color).all;
+        return result & ~blockers;
     }
 
     Bitboard getRaysToAllDirectionsAllPieces (const Board& context, const Bitboard& pieces, PieceColor color) const {
@@ -196,29 +199,33 @@ public:
     }
 
     Bitboard getCapturesToAllDirections (const Board& context, const Square& square, PieceColor color) const {
-        Bitboard occupancy = context.getPieces()[WHITE].all | context.getPieces()[BLACK].all;
         Bitboard result{0};
         for (RayDirection direction = getIterationStartDirection<TYPE>() ; direction <= getIterationEndDirection<TYPE>() ; ++direction) {
             Bitboard blockerMask = getSlideAt(direction, square);
 
-            auto blockers = blockerMask & occupancy;
+            auto blockers = blockerMask & context.getOccupancy();
 
             if (blockers) {
                 int firstBlockPosition = getClosestBitPosition<TYPE>(blockers, direction);
-//            if (direction == NORTH || direction == EAST) {
-//                firstBlockPosition = blockers.ls1b();
-//            } else if (direction == SOUTH || direction == WEST) {
-//                firstBlockPosition = blockers.ms1b();
-//            } else {
-//                throw std::runtime_error("Wrong direction, you probably messed up refactoring :)");
-//            }
 
                 result |= (Square) firstBlockPosition;
             }
         }
 
-        return result & ~context.getPieces(color).all;
+        return result & ~context.getBlockers(color);
     }
+
+    Bitboard getRaysToAllDirectionsXRay (const Board& context, const Square& square, PieceColor color) const {
+        Bitboard occupancy = context.getOccupancy();
+        Bitboard blockers = context.getBlockers(color);
+
+
+        const Bitboard& attacks = getRaysToAllDirectionsFromOccupancy(occupancy, 0, square);
+        blockers &= attacks;
+        return attacks ^ getRaysToAllDirectionsFromOccupancy(occupancy ^ blockers, 0, square);
+    }
+
+
 
     SlidingPieceAttacks () {
         populateSlides();
