@@ -34,7 +34,7 @@ public:
     Bitboard getAttackAt (const Square& square) const;
     Bitboard getAttackAt (int y, int x);
 
-    Bitboard getAttackAt (const Board& context, const Bitboard& knights, PieceColor color) const;
+    Bitboard getAttacksAt (const Board& context, const Bitboard& knights, PieceColor color) const;
 };
 
 using namespace BitboardOperations;
@@ -257,7 +257,7 @@ private:
 
 public:
     KingAttacks ();
-    Bitboard getAttackAt (const Board& context, const Square& square, PieceColor color) const;
+    Bitboard getAttacksAt (const Board& context, const Square& square, PieceColor color) const;
     Bitboard getKingAttackAt(int y, int x);
 };
 

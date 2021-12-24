@@ -46,7 +46,7 @@ Bitboard KnightAttacks::getAttackAt (const Square& square) const {
     return knightAttacks[square];
 }
 
-Bitboard KnightAttacks::getAttackAt (const Board& context, const Bitboard& knights, PieceColor color) const {
+Bitboard KnightAttacks::getAttacksAt (const Board& context, const Bitboard& knights, PieceColor color) const {
     Bitboard result{0};
 
     for (const auto& square : knights) {
@@ -368,7 +368,7 @@ KingAttacks::KingAttacks () : attacks{} {
     initializeKingAttacks();
 }
 
-Bitboard KingAttacks::getAttackAt (const Board& context, const Square& square, PieceColor color) const {
+Bitboard KingAttacks::getAttacksAt (const Board& context, const Square& square, PieceColor color) const {
     const Bitboard& occupancy = context.getPieces()[color].all;
     return attacks[square] & ~occupancy;
 }

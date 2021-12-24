@@ -109,6 +109,8 @@ void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& conte
             possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color) & checkMask & pinMaskHV;
         } else if (queenSquare & pinMaskD12) {
             possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color) & checkMask & pinMaskD12;
+        } else {
+            possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color) & checkMask;
         }
 
         for (const Square& possibleSquare : possibleSquares) {
@@ -177,7 +179,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask) {
     const Square& kingSquare = context.getPieces()[color].boards[PieceTypes::KING].ls1b();
 
-    const Bitboard& possibleSquares = Attacks::getInstance().getKingAttacks().getAttackAt(context, kingSquare, color)
+    const Bitboard& possibleSquares = Attacks::getInstance().getKingAttacks().getAttacksAt(context, kingSquare, color)
                                       & ~context.getBlockers(color)
                                       & ~attackMask;
 
