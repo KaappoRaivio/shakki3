@@ -35,5 +35,5 @@ InBetween::InBetween () : lookup{{}} {
 }
 
 Bitboard InBetween::getPath (const Square& from, const Square& to) const {
-    return lookup[from][to];
+    return lookup[from][to] | from;
 }

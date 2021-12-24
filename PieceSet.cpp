@@ -56,7 +56,7 @@ std::ostream& operator<< (std::ostream& os, const PieceSet& set) {
 }
 
 bool PieceSet::hasPiece (Square square) const {
-    return bool(all & square);
+    return bool((all | boards[KING]) & square);
 }
 
 void PieceSet::updateOccupancy () {

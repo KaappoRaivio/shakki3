@@ -7,6 +7,7 @@
 #include <cstring>
 #include <regex>
 #include "Board.h"
+#include "BoardAnalysis.h"
 
 
 Board::Board () : letterbox{}, pieces{PieceSet{WHITE}, PieceSet{BLACK}}, history{} {
@@ -214,11 +215,18 @@ const PieceSet* Board::getPieces () const {
 std::vector<Move> Board::getMoves () const {
 //    std::cout << "moi" << std::endl;
     std::vector<Move> moves;
-    MoveGeneration::addBishopMoves(moves, *this, getTurn());
-    MoveGeneration::addRookMoves(moves, *this, getTurn());
+
+    const Bitboard& checkMask = BoardAnalysis::getCheckMask(*this, getTurn());
+    const Bitboard& pinMaskHV = BoardAnalysis::getPinMask<HV>(*this, getTurn());
+    const Bitboard& pinMaskD12= BoardAnalysis::getPinMask<D12>(*this, getTurn());
+
+    std::cout << pinMaskHV << std::endl;
+    MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
+    MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addQueenMoves(moves, *this, getTurn());
-    MoveGeneration::addKnightMoves(moves, *this, getTurn());
+    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask,  pinMaskHV | pinMaskD12);
     MoveGeneration::addPawnMoves(moves, *this, getTurn());
+    MoveGeneration::addKingMoves(moves, *this, getTurn(), checkMask);
 
     return moves;
 }

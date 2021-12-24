@@ -357,6 +357,7 @@ void KingAttacks::initializeKingAttacks () {
             king |= king.move(Directions::NORTH)
                     | king.move(Directions::SOUTH);
 
+            king ^= 1ull << (8 * y + x);
 
             attacks[8 * y + x] = king;
         }

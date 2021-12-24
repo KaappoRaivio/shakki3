@@ -27,6 +27,10 @@ enum Square_raw {
     a8, b8, c8, d8, e8, f8, g8, h8
 };
 
+enum PinType {
+    HV, D12, BOTH
+};
+
 enum PieceColor {
     WHITE = 0, BLACK = 1, EMPTY = 2
 };
