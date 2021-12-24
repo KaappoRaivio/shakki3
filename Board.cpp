@@ -217,16 +217,17 @@ std::vector<Move> Board::getMoves () const {
     std::vector<Move> moves;
 
     const Bitboard& checkMask = BoardAnalysis::getCheckMask(*this, getTurn());
+    const Bitboard& attackMask = BoardAnalysis::getAttackMask(*this, flip(getTurn()));
     const Bitboard& pinMaskHV = BoardAnalysis::getPinMask<HV>(*this, getTurn());
     const Bitboard& pinMaskD12= BoardAnalysis::getPinMask<D12>(*this, getTurn());
 
     std::cout << pinMaskHV << std::endl;
     MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
-    MoveGeneration::addQueenMoves(moves, *this, getTurn());
+    MoveGeneration::addQueenMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask,  pinMaskHV | pinMaskD12);
-    MoveGeneration::addPawnMoves(moves, *this, getTurn());
-    MoveGeneration::addKingMoves(moves, *this, getTurn(), checkMask);
+    MoveGeneration::addPawnMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
+    MoveGeneration::addKingMoves(moves, *this, getTurn(), attackMask); // no pinMask as kings cannot be pinned
 
     return moves;
 }

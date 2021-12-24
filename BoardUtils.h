@@ -43,11 +43,11 @@ public:
 class Board;
 namespace MoveGeneration {
     void addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12);
-    void addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
+    void addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12);
     void addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12);
     void addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMask);
-    void addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color);
-    void addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard checkMask);
+    void addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12);
+    void addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask);
 
 }
 

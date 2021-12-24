@@ -11,12 +11,12 @@ Bitboard BoardAnalysis::getAttackMask (const Board& board, PieceColor color) {
 
     const Attacks& attacks = Attacks::getInstance();
 //
-//    attackMask |= attacks.getPawnAttackGenerator().getPawnCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
-//    attackMask |= attacks.getBishopAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
+    attackMask |= attacks.getPawnAttacks().getCaptures(board, board.getPieces()[color].boards[PieceTypes::PAWN], color);
+    attackMask |= attacks.getBishopAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::BISHOP], color);
     attackMask |= attacks.getRookAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::ROOK], color);
-//    attackMask |= attacks.getQueenAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
-//    attackMask |= attacks.getKnightAttackGenerator().getAttackAt(board, board.getPieces()[color].boards[PieceTypes::KNIGHT], color);
-//    attackMask |= attacks.getKingAttackGenerator().getKingAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
+    attackMask |= attacks.getQueenAttacks().getRaysToAllDirectionsAllPieces(board, board.getPieces()[color].boards[PieceTypes::QUEEN], color);
+    attackMask |= attacks.getKnightAttacks().getAttackAt(board, board.getPieces()[color].boards[PieceTypes::KNIGHT], color);
+    attackMask |= attacks.getKingAttacks().getAttackAt(board, board.getPieces()[color].boards[PieceTypes::KING].ls1b(), color);
 
     return attackMask;
 }
@@ -53,7 +53,7 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     }
 
     // knight
-    const Bitboard& supposedKnights = attacks.getKnightAttackGenerator().getAttackAt(context, kingPosition, color);
+    const Bitboard& supposedKnights = attacks.getKnightAttacks().getAttackAt(context, kingPosition, color);
     for (const Square& possibleKnight : supposedKnights) {
         if (context.getPieceAt(possibleKnight) == Piece{PieceTypes::KNIGHT, flip(color)}) {
             checkMask |= possibleKnight;

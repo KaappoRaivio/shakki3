@@ -241,7 +241,7 @@ private:
     void populatePossiblePawnCaptures ();
 public:
     Bitboard getPawnPushes (const Bitboard& occupancy, PieceColor color, const Bitboard& pawns) const;
-    Bitboard getPawnCaptures (const Board& context, const Bitboard& pawns, PieceColor color) const;
+    Bitboard getCaptures (const Board& context, const Bitboard& pawns, PieceColor color) const;
 
     const Bitboard& getPossiblePushesOnEmptyBoard (PieceColor color, const Square& square) const;
     const Bitboard& getPossibleCapturesOnEmptyBoard (PieceColor color, const Square& square) const;
@@ -257,7 +257,7 @@ private:
 
 public:
     KingAttacks ();
-    Bitboard getKingAttackAt (const Board& context, const Square& square, PieceColor color) const;
+    Bitboard getAttackAt (const Board& context, const Square& square, PieceColor color) const;
     Bitboard getKingAttackAt(int y, int x);
 };
 
@@ -275,7 +275,7 @@ public:
     Attacks ();
 
 public:
-    const KnightAttacks& getKnightAttackGenerator () const;
+    const KnightAttacks& getKnightAttacks () const;
 
 //    template <PieceType TYPE>
 //    const SlidingPieceAttacks<TYPE>& getSlidingPieceAttackGenerator () const {
@@ -304,7 +304,7 @@ public:
         return instance;
     }
 
-    const PawnAttacks& getPawnAttackGenerator () const;
+    const PawnAttacks& getPawnAttacks () const;
 
-    const KingAttacks& getKingAttackGenerator () const;
+    const KingAttacks& getKingAttacks () const;
 };
