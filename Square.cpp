@@ -101,7 +101,6 @@ RayDirection Square::getDirection (const Square& other, const PieceType& type) c
 
 Square Square::move (RayDirection direction) {
     auto shift = BitboardOperations::rayDirectionToShift(direction, WHITE);
-    std::cout << shift << std::endl;
     return *this;
 }
 
@@ -109,7 +108,6 @@ Square Square::move (RayDirection direction) {
 Square Square::move (RayDirection direction, PieceColor perspective) const {
     auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
 
-    std::cout << +shift << std::endl;
     uint8_t newValue = value + shift;
 
     return {newValue};

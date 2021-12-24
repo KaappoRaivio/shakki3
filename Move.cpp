@@ -8,8 +8,6 @@
 using namespace PieceTypes;
 
 Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo) : move{0} {
-//    std::cout << from << ", " << to << std::endl;
-//    std::cout << context << std::endl;
     move |= from.getValue() << 10;
     move |= to.getValue() << 4;
 

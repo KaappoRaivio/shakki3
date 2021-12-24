@@ -113,8 +113,6 @@ void Board::executeMove (const Move& move) {
     movingPieceSet ^= move.getOrigin();
     movingPieceSet ^= move.getDestination();
 
-//    std::cout << movingPieceSet << std::endl;
-
     allPieces ^= move.getOrigin();
     allPieces ^= move.getDestination();
 
@@ -125,7 +123,6 @@ void Board::executeMove (const Move& move) {
         allOppositePieces ^= move.getDestination();
     }
 
-//    std::cout << move << std::endl;
 
     // create copy-make frame
 //    history->createNewFrame();
@@ -213,15 +210,13 @@ const PieceSet* Board::getPieces () const {
 }
 
 std::vector<Move> Board::getMoves () const {
-//    std::cout << "moi" << std::endl;
     std::vector<Move> moves;
 
-    const Bitboard& checkMask = BoardAnalysis::getCheckMask(*this, getTurn());
+    const Bitboard& checkMask  = BoardAnalysis::getCheckMask(*this, getTurn());
     const Bitboard& attackMask = BoardAnalysis::getAttackMask(*this, flip(getTurn()));
-    const Bitboard& pinMaskHV = BoardAnalysis::getPinMask<HV>(*this, getTurn());
-    const Bitboard& pinMaskD12= BoardAnalysis::getPinMask<D12>(*this, getTurn());
+    const Bitboard& pinMaskHV  = BoardAnalysis::getPinMask<HV>(*this, getTurn());
+    const Bitboard& pinMaskD12 = BoardAnalysis::getPinMask<D12>(*this, getTurn());
 
-    std::cout << pinMaskHV << std::endl;
     MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addQueenMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
@@ -252,7 +247,6 @@ Board Board::fromFEN (std::string FEN) {
     split(FEN, ' ', parts);
 
     const auto position = std::regex_replace(parts[0], std::regex("\\/"), "");
-    std::cout << position.size() << std::endl;
 
     int square = 0;
 
