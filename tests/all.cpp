@@ -8,6 +8,7 @@
 #include "../mytypes.h"
 #include "../Bitboard.h"
 #include "../Square.h"
+#include "../BitboardOperations.h"
 
 TEST_CASE ( "Bitboards work correctly", "[BitBoard]" ) {
     SECTION ("Bitboards should be initializable from multiple objects") {
@@ -39,6 +40,28 @@ TEST_CASE ( "Bitboards work correctly", "[BitBoard]" ) {
         REQUIRE ((board1 | board2) == (board2 | board1));
 
         REQUIRE(~board1 == 18445547736305483775);
+    }
+
+    SECTION ("Bitboard should implement shift operations") {
+        Bitboard board1 = 4096;
+
+        std::cout << (board1 >> 1) << std::endl;
+
+        REQUIRE((board1 >> 1) == 2048);
+        REQUIRE((board1 << 1) == 8192);
+        REQUIRE((board1 >> 10) == 4);
+
+    }
+
+    SECTION ("Bitboard should implement move operations") {
+        namespace Directions = BitboardOperations::Directions;
+        Bitboard board1 = 4096;
+
+        std::cout << (board1 >> 1) << std::endl;
+
+        REQUIRE(board1.move(Directions::WEST) == 2048);
+        REQUIRE(board1.move(Directions::EAST) == 8192);
+        REQUIRE(board1.move(Directions::WEST, WHITE, 10) == 4);
 
     }
 }
