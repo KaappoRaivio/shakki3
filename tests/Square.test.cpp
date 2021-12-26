@@ -6,25 +6,25 @@
 #include "../mytypes.h"
 #include "../BitboardOperations.h"
 
-TEST_CASE ("Square works correctly", "[square]") {
-    SECTION("Square should implement initialisation from multiple arguments", "[square]") {
+TEST_CASE ("Square works correctly", "[unit][square]") {
+    SECTION("Square should implement initialisation from multiple arguments", "[unit][square]") {
         REQUIRE(Square{e4});
         REQUIRE(Square{45});
         REQUIRE(Square{0, 4});
     }
 
-    SECTION("Square should implement equality operations == and !=", "[square]") {
+    SECTION("Square should implement equality operations == and !=", "[unit][square]") {
         REQUIRE(Square{e4} == e4);
         REQUIRE(Square{e4} == Square{3, 4});
         REQUIRE(Square{e4} == 28);
     }
 
-    SECTION("Square should implement calculating x and y coordinates", "[square]") {
+    SECTION("Square should implement calculating x and y coordinates", "[unit][square]") {
         REQUIRE(Square{e4}.getX() == 4);
         REQUIRE(Square{e4}.getY() == 3);
     }
 
-    SECTION ("Square should implement calculating the y difference", "[square]") {
+    SECTION ("Square should implement calculating the y difference", "[unit][square]") {
         REQUIRE(Square{e4}.diffY(e2) == 2);
         REQUIRE(Square{e2}.diffY(e4) == 2);
 
@@ -32,7 +32,7 @@ TEST_CASE ("Square works correctly", "[square]") {
         REQUIRE(Square{a4}.diffY(e4) == 0);
     }
 
-    SECTION ("Square should implement move operations", "[square]") {
+    SECTION ("Square should implement move operations", "[unit][square]") {
         namespace Directions = BitboardOperations::Directions;
         REQUIRE(Square{c6}.move(Directions::NORTH) == c7);
         REQUIRE(Square{c6}.move(Directions::NORTH, BLACK) == c5);
@@ -44,7 +44,7 @@ TEST_CASE ("Square works correctly", "[square]") {
 
     }
 
-    SECTION ("Square should implement direction deduction", "[square]") {
+    SECTION ("Square should implement direction deduction", "[unit][square]") {
         namespace Directions = BitboardOperations::Directions;
         using namespace PieceTypes;
 
@@ -55,7 +55,7 @@ TEST_CASE ("Square works correctly", "[square]") {
         REQUIRE(Square{b1}.getDirection(c2, BISHOP) == Directions::NORTH_EAST);
     }
 
-//    SECTION ("Square should implement arithmetic operations +, += and -, -=", "[square]") {
+//    SECTION ("Square should implement arithmetic operations +, += and -, -=", "[unit][square]") {
 //        Square s1 = e4;
 //        Square s2 = a1;
 //

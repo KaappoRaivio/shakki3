@@ -9,12 +9,12 @@
 #include "../BitboardOperations.h"
 
 
-TEST_CASE ("Bitboard works correctly", "[bitboard]") {
+TEST_CASE ("Bitboard works correctly", "[unit][bitboard]") {
     SECTION ("Bitboard should implement initialisation from multiple objects") {
         REQUIRE(Bitboard{234});
         REQUIRE(Bitboard{Square{2}});
         REQUIRE(Bitboard{-1ull} == 18446744073709551615ull);
-    }SECTION ("Bitboard should implement operator== and friends", "[bitboard]") {
+    }SECTION ("Bitboard should implement operator== and friends", "[unit][bitboard]") {
         Bitboard board{5497355813888};
         REQUIRE(board == 5497355813888);
 
@@ -24,7 +24,7 @@ TEST_CASE ("Bitboard works correctly", "[bitboard]") {
         REQUIRE(board2 != Square{43});
     }
 
-    SECTION ("Bitboard should implement setwise operations", "[bitboard]") {
+    SECTION ("Bitboard should implement setwise operations", "[unit][bitboard]") {
         Bitboard board1 = 1196337404067840;
         Bitboard board2 = 17361641481138401520ull;
 
@@ -40,7 +40,7 @@ TEST_CASE ("Bitboard works correctly", "[bitboard]") {
         REQUIRE(~board1 == 18445547736305483775ull);
     }
 
-    SECTION ("Bitboard should implement shift operations", "[bitboard]") {
+    SECTION ("Bitboard should implement shift operations", "[unit][bitboard]") {
         Bitboard board1 = 4096;
 
         REQUIRE((board1 >> 1) == 2048);
@@ -48,7 +48,7 @@ TEST_CASE ("Bitboard works correctly", "[bitboard]") {
         REQUIRE((board1 >> 10) == 4);
     }
 
-    SECTION ("Bitboard should implement move operations", "[bitboard]") {
+    SECTION ("Bitboard should implement move operations", "[unit][bitboard]") {
         namespace Directions = BitboardOperations::Directions;
         Bitboard board1 = 72567767437312ull;
 
@@ -57,7 +57,7 @@ TEST_CASE ("Bitboard works correctly", "[bitboard]") {
         REQUIRE(board1.move(Directions::WEST, WHITE, 10) == 70866960388ull);
     }
 
-    SECTION ("Bitboard should implement flipping and rotating itself, also when given color perspectives", "[bitboard]") {
+    SECTION ("Bitboard should implement flipping and rotating itself, also when given color perspectives", "[unit][bitboard]") {
         Bitboard board = 4468913471492ull;
 
         REQUIRE(board.flipVertical() == 288230926176223232ull);
@@ -67,7 +67,7 @@ TEST_CASE ("Bitboard works correctly", "[bitboard]") {
         REQUIRE(board.asColor(BLACK) == 2305843013644976128ull);
     }
 
-    SECTION("Bitboard should implement iteration", "[bitboard]") {
+    SECTION("Bitboard should implement iteration", "[unit][bitboard]") {
         Bitboard board = 4468913479684ull;
 
         std::vector<int> positions;
