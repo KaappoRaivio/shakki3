@@ -202,6 +202,7 @@ PieceColor Board::getTurn () const {
 }
 
 const Piece& Board::getPieceAt (Square square) const {
+    if (square.isInvalid()) return Pieces::NO_PIECE;
     return *letterbox[square];
 }
 

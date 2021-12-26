@@ -108,17 +108,26 @@ Square Square::move (RayDirection direction) {
 Square Square::move (RayDirection direction, PieceColor perspective) const {
     auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
 
-    uint8_t newValue = std::clamp(value + shift, 0, 63);
+//    uint8_t newValue = std::clamp(value + shift, 0, 63);
+    uint8_t newX = getX() + shift % 8;
+    uint8_t newY = getY() + (shift / 8);
+
+    if (newX < 0 || newX >= 8) return INVALID;
+    if (newY < 0 || newY >= 8) return INVALID;
 
     if (DEBUG) {
-        if (newValue != value + shift) {
-            std::cerr
-                    << "WARNING!!! Square move overflow: trying to move "
-                    << *this << " (" << +value << ") by "
-                    << +shift << " amount!" << std::endl;
-        }
+//        if (newValue != value + shift) {
+//            std::cerr
+//                    << "WARNING!!! Square move overflow: trying to move "
+//                    << *this << " (" << +value << ") by "
+//                    << +shift << " amount!" << std::endl;
+//        }
     }
 
-    return {newValue};
+    return {newY, newX};
+}
+
+bool Square::isInvalid () const {
+    return value == 255;
 }
 

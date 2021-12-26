@@ -75,36 +75,3 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
 
     return checkMask;
 }
-
-//template <PinType TYPE>
-//Bitboard BoardAnalysis::getPinMask (const Board& context, PieceColor color) {
-//    const Square& kingPosition = context.getPieces(color).boards[PieceTypes::KING].ls1b();
-//
-//    Bitboard pinned = 0;
-//
-//    if (TYPE == HV || TYPE == BOTH) {
-//
-//        //rooks
-//        Bitboard rookPinners = Attacks::getInstance()
-//                                       .getRookAttacks()
-//                                       .getRaysToAllDirectionsXRay(context, kingPosition, color)
-//                               & context.getPieces(flip(color)).boards[PieceTypes::ROOK];
-//
-//        for (const Square& pinnerSquare: rookPinners) {
-//            pinned |= InBetween::getInstance().getPath(pinnerSquare, kingPosition);
-//        }
-//    }
-//    if (TYPE == D12 || TYPE == BOTH) {
-//        //bishops
-//        Bitboard bishopPinners = Attacks::getInstance()
-//                                       .getBishopAttacks()
-//                                       .getRaysToAllDirectionsXRay(context, kingPosition, color)
-//                               & context.getPieces(flip(color)).boards[PieceTypes::BISHOP];
-//
-//        for (const Square& pinnerSquare : bishopPinners) {
-//            pinned |= InBetween::getInstance().getPath(pinnerSquare, kingPosition);
-//        }
-//    }
-//
-//    return pinned;
-//}

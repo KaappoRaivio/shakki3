@@ -39,8 +39,8 @@ TEST_CASE ("Square works correctly", "[unit][square]") {
         REQUIRE(Square{g7}.move(Directions::SOUTH_WEST) == f6);
         REQUIRE(Square{g7}.move(Directions::SOUTH_WEST, BLACK) == h8);
 
-        REQUIRE(Square{h8}.move(Directions::NORTH) == h8); // prevent segfaults
-        REQUIRE(Square{a1}.move(Directions::WEST) == a1); // prevent segfaults
+        REQUIRE(Square{h8}.move(Directions::NORTH) == Square{-1}); // prevent segfaults
+        REQUIRE(Square{a1}.move(Directions::WEST) == Square{-1}); // prevent segfaults
 
     }
 

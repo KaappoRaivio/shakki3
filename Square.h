@@ -11,6 +11,8 @@
 #include "mytypes.h"
 
 struct Square {
+    static const uint8_t INVALID = 255;
+
     uint8_t value;
 
 public:
@@ -21,6 +23,7 @@ public:
     uint8_t getX () const;
     uint8_t getY () const;
     uint8_t getValue () const;
+    bool isInvalid () const;
 
 //    const Square& operator+= (const Square& other);
 //    friend Square operator+ (Square square, const Square& other);
