@@ -31,30 +31,31 @@ uint8_t Square::getValue () const {
     return value;
 }
 
-const Square& Square::operator+= (const Square& other) {
-    value <<= 8 * other.getY();
-    value <<= other.getX();
-
-    return *this;
-}
-
-Square operator+ (Square square, const Square& other) {
-    square += other;
-    return square;
-}
-
-const Square& Square::operator-= (const Square& other) {
-    value >>= 8 * other.getY();
-    value >>= other.getX();
-
-    return *this;
-}
-
-Square operator- (Square square, Square other) {
-    square += other;
-
-    return square;
-}
+//const Square& Square::operator+= (const Square& other) {
+//    value += other.value;
+//    return *this;
+//}
+//
+//Square operator+ (Square square, const Square& other) {
+//    std::cout << square << other << std::endl;
+//
+//    square += other;
+//
+//    std::cout << square << other << std::endl;
+//
+//    return square;
+//}
+//
+//const Square& Square::operator-= (const Square& other) {
+//    value -= other.value;
+//    return *this;
+//}
+//
+//Square operator- (Square square, Square other) {
+//    square += other;
+//
+//    return square;
+//}
 
 uint8_t Square::diffY (Square square) const {
     return std::abs((int8_t) getY() - (int8_t) square.getY());
@@ -100,15 +101,23 @@ RayDirection Square::getDirection (const Square& other, const PieceType& type) c
 }
 
 Square Square::move (RayDirection direction) {
-    auto shift = BitboardOperations::rayDirectionToShift(direction, WHITE);
-    return *this;
+    return move(direction, WHITE);
 }
 
 
 Square Square::move (RayDirection direction, PieceColor perspective) const {
     auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
 
-    uint8_t newValue = value + shift;
+    uint8_t newValue = std::clamp(value + shift, 0, 63);
+
+    if (DEBUG) {
+        if (newValue != value + shift) {
+            std::cerr
+                    << "WARNING!!! Square move overflow: trying to move "
+                    << *this << " (" << +value << ") by "
+                    << +shift << " amount!" << std::endl;
+        }
+    }
 
     return {newValue};
 }

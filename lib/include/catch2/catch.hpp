@@ -522,7 +522,7 @@ namespace Catch {
 
     // Bring in operator<< from global namespace into Catch namespace
     // This is necessary because the overload of operator<< above makes
-    // lookup stop at namespace Catch
+    // pathLookup stop at namespace Catch
     using ::operator<<;
 
     // Use this in variadic streaming macros to allow

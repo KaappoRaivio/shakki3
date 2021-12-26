@@ -21,12 +21,12 @@ public:
     uint8_t getX () const;
     uint8_t getY () const;
     uint8_t getValue () const;
-
-    const Square& operator+= (const Square& other);
-    friend Square operator+ (Square square, const Square& other);
-
-    const Square& operator-= (const Square& other);
-    friend Square operator- (Square square, Square other);
+    
+//    const Square& operator+= (const Square& other);
+//    friend Square operator+ (Square square, const Square& other);
+//
+//    const Square& operator-= (const Square& other);
+//    friend Square operator- (Square square, Square other);
 
     operator int () const;
 
@@ -36,7 +36,6 @@ public:
     friend std::ostream& operator<< (std::ostream& os, const Square& square);
 
     Square move (RayDirection direction, PieceColor perspective) const;
-
     Square move (RayDirection direction);
 };
 
