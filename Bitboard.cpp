@@ -199,3 +199,7 @@ bool Bitboard::operator== (const Bitboard& rhs) const {
 bool Bitboard::operator!= (const Bitboard& rhs) const {
     return !(rhs == *this);
 }
+
+void Bitboard::reset () {
+    *this ^= *this;
+}

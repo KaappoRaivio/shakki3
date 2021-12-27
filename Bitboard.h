@@ -52,6 +52,8 @@ public:
     Bitboard& operator^=(Bitboard other);
     friend Bitboard operator^ (Bitboard bitboard, Bitboard other);
 
+    void reset ();
+
     bool operator== (const Bitboard& rhs) const;
 
     bool operator!= (const Bitboard& rhs) const;

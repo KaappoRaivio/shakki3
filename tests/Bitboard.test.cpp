@@ -40,6 +40,16 @@ TEST_CASE ("Bitboard works correctly", "[unit][bitboard]") {
         REQUIRE(~board1 == 18445547736305483775ull);
     }
 
+    SECTION ("Bitboard should implement reset", "[unit][bitboard]") {
+        Bitboard bitboard = 1231245;
+        WHEN("Bitboard is reset") {
+            bitboard.reset();
+            THEN("it should be zero") {
+                REQUIRE(bitboard == 0);
+            }
+        }
+    }
+
     SECTION ("Bitboard should implement shift operations", "[unit][bitboard]") {
         Bitboard board1 = 4096;
 

@@ -33,13 +33,15 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
 
     Square potentialFirstAttacker{Square::INVALID};
 
+    using namespace PieceTypes;
+
     // bishop and queen
     const Bitboard& supposedBishops = attacks.getBishopAttacks().getRaysToAllDirections(context, kingPosition, color);
     for (const Square& possibleBishop : supposedBishops) {
-        if (context.getPieceAt(possibleBishop) == Piece{PieceTypes::BISHOP, flip(color)}
-            || context.getPieceAt(possibleBishop) == Piece{PieceTypes::QUEEN, flip(color)}) {
+        if (context.getPieceAt(possibleBishop) == Pieces::pieces[BISHOP][flip(color)]
+            || context.getPieceAt(possibleBishop) == Pieces::pieces[QUEEN][flip(color)]) {
             if (potentialFirstAttacker != Square::INVALID) {
-                checkMask ^= checkMask;
+                checkMask.reset();
                 checkMask |= potentialFirstAttacker;
                 checkMask |= possibleBishop;
                 return checkMask;
@@ -54,10 +56,10 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     // rook and queen
     const Bitboard& supposedRooks = attacks.getRookAttacks().getRaysToAllDirections(context, kingPosition, color);
     for (const Square& possibleRook : supposedRooks) {
-        if (context.getPieceAt(possibleRook) == Piece{PieceTypes::ROOK, flip(color)}
-            || context.getPieceAt(possibleRook) == Piece{PieceTypes::QUEEN, flip(color)}) {
+        if (context.getPieceAt(possibleRook) == Pieces::pieces[ROOK][flip(color)]
+            || context.getPieceAt(possibleRook) == Pieces::pieces[QUEEN][flip(color)]) {
             if (potentialFirstAttacker != Square::INVALID) {
-                checkMask ^= checkMask;
+                checkMask.reset();
                 checkMask |= potentialFirstAttacker;
                 checkMask |= possibleRook;
                 return checkMask;
@@ -72,9 +74,9 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     // knight
     const Bitboard& supposedKnights = attacks.getKnightAttacks().getAttacksAt(context, kingPosition, color);
     for (const Square& possibleKnight : supposedKnights) {
-        if (context.getPieceAt(possibleKnight) == Piece{PieceTypes::KNIGHT, flip(color)}) {
+        if (context.getPieceAt(possibleKnight) == Pieces::pieces[KNIGHT][flip(color)]) {
             if (potentialFirstAttacker != Square::INVALID) {
-                checkMask ^= checkMask;
+                checkMask.reset();
                 checkMask |= potentialFirstAttacker;
                 checkMask |= possibleKnight;
                 return checkMask;
@@ -86,9 +88,9 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
 
     // pawns
     const Square& possiblePawn1 = kingPosition.move(Directions::SOUTH_EAST, flip(color));
-    if (context.getPieceAt(possiblePawn1) == Piece{PieceTypes::PAWN, flip(color)}) {
+    if (context.getPieceAt(possiblePawn1) == Pieces::pieces[PAWN][flip(color)]) {
         if (potentialFirstAttacker != Square::INVALID) {
-            checkMask ^= checkMask;
+            checkMask.reset();
             checkMask |= potentialFirstAttacker;
             checkMask |= possiblePawn1;
             return checkMask;
@@ -98,9 +100,9 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     }
 
     const Square& possiblePawn2 = kingPosition.move(Directions::SOUTH_WEST, flip(color));
-    if (context.getPieceAt(possiblePawn2) == Piece{PieceTypes::PAWN, flip(color)}) {
+    if (context.getPieceAt(possiblePawn2) == Pieces::pieces[PAWN][flip(color)]) {
         if (potentialFirstAttacker != Square::INVALID) {
-            checkMask ^= checkMask;
+            checkMask.reset();
             checkMask |= potentialFirstAttacker;
             checkMask |= possiblePawn2;
             return checkMask;

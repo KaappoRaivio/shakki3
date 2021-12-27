@@ -48,3 +48,35 @@ TEST_CASE ("Checkmask generation works correctly", "[integration][checks]") {
     }
 }
 
+TEST_CASE ("Pinmask generation works correctly", "[integration][pins]") {
+    SECTION("When no pieces are pinned, pinmask should be 0", "[integration][pins]") {
+        Board b = Board::fromFEN("K7/3ppP2/P3b3/2k2BQ1/p4P2/5r2/4n2p/5R1n w - - 0 1");
+        REQUIRE(BoardAnalysis::getPinMask<BOTH>(b, WHITE) == 0);
+        REQUIRE(BoardAnalysis::getPinMask<HV>(b, WHITE) == 0);
+        REQUIRE(BoardAnalysis::getPinMask<D12>(b, WHITE) == 0);
+    }
+
+    SECTION("Bishop pins are not included in HV pinmasks", "[integration][pins]") {
+        REQUIRE(BoardAnalysis::getPinMask<HV>(Board::fromFEN("k4nR1/8/2r5/3B4/8/2K5/8/8 b - - 0 1"), BLACK) == 9079256848778919936);
+    }
+
+    SECTION("HV pinned rooks can move on the axis they are pinned on", "[integration][pins]") {
+        REQUIRE(BoardAnalysis::getPinMask<HV>(Board::fromFEN("k2r3R/8/2r5/3B4/8/2K5/8/8 b - - 0 1"), BLACK) == 18302628885633695744ull);
+    }
+
+    SECTION("D12 pinned rooks cannot move") {
+        REQUIRE(BoardAnalysis::getPinMask<D12>(Board::fromFEN("k2r3R/8/2r5/3B4/8/2K5/8/8 b - - 0 1"), BLACK) == 567382359670784);
+    }
+
+    SECTION("Pieces are pinned even if in check") {
+        REQUIRE(BoardAnalysis::getPinMask<BOTH>(Board::fromFEN("k6R/8/2r5/8/8/2K2B2/8/8 b - - 0 1"), BLACK) == 567382630203392);
+    }
+
+    SECTION("When there are no pins, no pinmask is generated") {
+        REQUIRE(BoardAnalysis::getPinMask<BOTH>(Board::fromFEN("k7/8/2r5/8/4r3/2K2B2/8/8 b - - 0 1"), BLACK) == 0);
+        REQUIRE(BoardAnalysis::getPinMask<BOTH>(Board::fromFEN("8/1r6/2R5/8/4K3/8/6b1/k7 w - - 0 1"), WHITE) == 0);
+        REQUIRE(BoardAnalysis::getPinMask<BOTH>(Board::fromFEN("8/R4P1p/4n3/2k2P2/7p/Bnppp3/3p2KP/4b3 b - - 0 1"), BLACK) == 0);
+
+    }
+}
+

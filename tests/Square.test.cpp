@@ -56,12 +56,4 @@ TEST_CASE ("Square works correctly", "[unit][square]") {
         REQUIRE(Square{e6}.getDirection(g6, ROOK) == Directions::EAST);
         REQUIRE(Square{b1}.getDirection(c2, BISHOP) == Directions::NORTH_EAST);
     }
-
-//    SECTION ("Square should implement arithmetic operations +, += and -, -=", "[unit][square]") {
-//        Square s1 = e4;
-//        Square s2 = a1;
-//
-//        REQUIRE(s1 + s2 == Square{g5});
-//        REQUIRE(1 == 2);
-//    }
 }

@@ -106,10 +106,6 @@ Square Square::move (RayDirection direction) {
 
 
 Square Square::move (RayDirection direction, PieceColor perspective) const {
-    auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
-
-//    uint8_t newValue = std::clamp(value + shift, 0, 63);
-
     uint8_t offX;
     uint8_t offY;
     namespace Directions = BitboardOperations::Directions;
