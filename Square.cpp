@@ -109,8 +109,54 @@ Square Square::move (RayDirection direction, PieceColor perspective) const {
     auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
 
 //    uint8_t newValue = std::clamp(value + shift, 0, 63);
-    uint8_t newX = getX() + shift % 8;
-    uint8_t newY = getY() + (shift / 8);
+
+    uint8_t offX;
+    uint8_t offY;
+    namespace Directions = BitboardOperations::Directions;
+    switch (direction) {
+        case Directions::NORTH_EAST:
+            offX = 1;
+            offY = 1;
+            break;
+        case Directions::NORTH_WEST:
+            offX = -1;
+            offY = 1;
+            break;
+        case Directions::NORTH:
+            offY = 1;
+            offX = 0;
+            break;
+        case Directions::SOUTH_EAST:
+            offX = 1;
+            offY = -1;
+            break;
+        case Directions::SOUTH_WEST:
+            offX = -1;
+            offY = -1;
+            break;
+        case Directions::SOUTH:
+            offY = -1;
+            offX = 0;
+            break;
+        case Directions::EAST:
+            offX = 1;
+            offY = 0;
+            break;
+        case Directions::WEST:
+            offX = -1;
+            offY = 0;
+            break;
+        default:
+            throw std::runtime_error(":)))))");
+    }
+
+    if (perspective == BLACK) {
+        offX *= -1;
+        offY *= -1;
+    }
+
+    uint8_t newX = getX() + offX;
+    uint8_t newY = getY() + offY;
 
     if (newX < 0 || newX >= 8) return INVALID;
     if (newY < 0 || newY >= 8) return INVALID;
