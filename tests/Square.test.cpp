@@ -35,12 +35,14 @@ TEST_CASE ("Square works correctly", "[unit][square]") {
     SECTION ("Square should implement move operations", "[unit][square]") {
         namespace Directions = BitboardOperations::Directions;
         REQUIRE(Square{c6}.move(Directions::NORTH) == c7);
-        REQUIRE(Square{c6}.move(Directions::NORTH, BLACK) == c5);
+        REQUIRE(Square{c6}.move(Directions::NORTH, BLACK) == Square{c5});
         REQUIRE(Square{g7}.move(Directions::SOUTH_WEST) == f6);
         REQUIRE(Square{g7}.move(Directions::SOUTH_WEST, BLACK) == h8);
 
         REQUIRE(Square{h8}.move(Directions::NORTH) == Square{-1}); // prevent segfaults
         REQUIRE(Square{a1}.move(Directions::WEST) == Square{-1}); // prevent segfaults
+        REQUIRE(Square{f1}.move(Directions::SOUTH) == Square{-1}); // prevent stupid behaviour
+        REQUIRE(Square{h5}.move(Directions::SOUTH_EAST) == Square{-1}); // prevent stupid behaviour
 
     }
 

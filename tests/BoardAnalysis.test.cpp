@@ -41,6 +41,9 @@ TEST_CASE ("Checkmask generation works correctly", "[integration][checks]") {
         Board boardWithDoubleCheck = Board::fromFEN("8/4k3/6N1/1r6/8/4R3/8/K7 b - - 0 1");
         REQUIRE(BoardAnalysis::getCheckMask(boardWithDoubleCheck, BLACK) == Bitboard{70368745226240ull});
 
+        Board boardWithDoubleCheck2 = Board::fromFEN("8/4k3/5P2/1r6/8/4R3/8/K7 b - - 0 1");
+        REQUIRE(BoardAnalysis::getCheckMask(boardWithDoubleCheck2, BLACK) == 35184373137408ull);
+
 //        REQUIRE(false);
     }
 }
