@@ -5,18 +5,19 @@
 #include "BoardUtils.h"
 #include "BitboardOperations.h"
 
+#include "CastlingStatus.h"
 #include "Board.h"
 #include "Attacks.h"
 
 using namespace BitboardOperations;
 
-BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount)
-        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece} {}
+BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus)
+        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece}, castlingStatus(castlingStatus) {}
 
 std::ostream& operator<< (std::ostream& os, const BoardState& state) {
-    os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << "}";
-    return os;
+    return os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " fullMoveCount: " << state.fullMoveCount << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << " castlingStatus: " << state.castlingStatus << "}";
 }
+
 
 BoardStateHistory::BoardStateHistory () : states{} {
     createNewFrame();
@@ -24,7 +25,7 @@ BoardStateHistory::BoardStateHistory () : states{} {
 
 void BoardStateHistory::createNewFrame () {
     if (states.empty()) {
-        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1});
+        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1, CastlingStatus{}});
     } else {
         states.push(BoardState{states.top()});
     }
@@ -142,7 +143,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     // pushes
     const Bitboard& pushes = Attacks::getInstance()
                                      .getPawnAttacks()
-            .getPawnPushes(occupancy, color, pawns) & checkMask;
+                                     .getPawnPushes(occupancy, color, pawns) & checkMask;
 
     for (const Square& pawnSquare : pawns) {
         if (pawnSquare & pinMaskD12) continue; // diagonally pinned pawns cannot push
@@ -168,7 +169,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
         const auto& possibleCaptureSquares = Attacks::getInstance()
                                                      .getPawnAttacks()
-                .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & pinMaskD12;
+                                                     .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & pinMaskD12;
 
         for (const Square& destinationSquare : captures & possibleCaptureSquares) {
             moves.emplace_back(context, pawnSquare, destinationSquare);

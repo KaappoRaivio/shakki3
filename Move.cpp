@@ -24,7 +24,7 @@ Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromo
 
     move &= ~MoveBitmasks::EN_PASSANT;
 
-    bool isPromotion = bool(Bitboard{to} & BitboardOperations::SquareMasks::rank8.asColor(color));
+    bool isPromotion = bool(BitboardOperations::SquareMasks::rank8.asColor(color) & to);
     if (isPromotion) {
         if (pieceToPromoteTo == KING) {
             throw std::runtime_error("You must set pieceToPromote for a promotion move!");
@@ -44,6 +44,10 @@ Square Move::getDestination () const {
 
 bool Move::isCapture () const {
     return move & (1 << MoveBitmasks::CAPTURE);
+}
+
+bool Move::isPromotion () const {
+    return move & (1 << MoveBitmasks::PROMOTION);
 }
 
 Move::Move (bool NO_MOVE) {
@@ -86,7 +90,7 @@ const Piece& Move::getMovingPiece (const Board& context) const {
     throw std::runtime_error("Problem");
 }
 
-Move::Move (const Move& other) = default;
+
 
 namespace Moves {
     Move NO_MOVE{true};

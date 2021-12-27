@@ -117,3 +117,8 @@ namespace Pieces {
 }
 
 PieceColor flip (PieceColor color);
+
+template<typename T>
+concept IsCastlingSide = requires(T a) {
+    a == 2 || a == 3;
+};

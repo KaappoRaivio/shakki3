@@ -10,6 +10,8 @@
 #include <ostream>
 #include "mytypes.h"
 #include "Square.h"
+#include "CastlingStatus.h"
+//#include "BoardUtils.h"
 //#include "Board.h"
 
 
@@ -33,18 +35,34 @@ private:
 
 public:
     explicit Move (bool NO_MOVE);
+
     Move (Move_raw move);
     Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo = PieceTypes::KING);
-    Move (const Move& other);
+    Move (const Move& other) = default;
 
     Square getOrigin () const;
     Square getDestination () const;
 
     bool isCapture () const;
+    bool isPromotion () const;
 
-    bool operator == (const Move& rhs) const;
-    bool operator != (const Move& rhs) const;
+//    requires IsCastlingSide<SIDE>
+    template<CastlingSide SIDE>
+    bool isCastling () const {
+        if (!isPromotion() && !isCapture()) {
+            if (SIDE == MoveBitmasks::KING_CASTLE && (move & 0b11) == MoveBitmasks::KING_CASTLE) {
+                return true;
+            }
+            if (SIDE == MoveBitmasks::QUEEN_CASTLE && (move & 0b11) == MoveBitmasks::QUEEN_CASTLE) {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
 
+    bool operator== (const Move& rhs) const;
+    bool operator!= (const Move& rhs) const;
     friend std::ostream& operator<< (std::ostream& os, const Move& move);
 
     Move_raw raw () const;

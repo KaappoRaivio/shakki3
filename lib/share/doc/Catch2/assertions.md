@@ -55,7 +55,7 @@ This expression is too complex because of the `||` operator. If you want to chec
 
 When comparing floating point numbers - especially if at least one of them has been computed - great care must be taken to allow for rounding errors and inexact representations.
 
-Catch provides a way to perform tolerant comparisons of floating point values through use of a wrapper class called `Approx`. `Approx` can be used on either side of a comparison expression. It overloads the comparisons operators to take a tolerance into account. Here's a simple example:
+Catch provides a way to perform tolerant comparisons of floating point values through use of a wrapper class called `Approx`. `Approx` can be used on either SIDE of a comparison expression. It overloads the comparisons operators to take a tolerance into account. Here's a simple example:
 
 ```cpp
 REQUIRE( performComputation() == Approx( 2.1 ) );
@@ -194,7 +194,7 @@ TEST_CASE_METHOD((Fixture<int, int>), "foo", "[bar]") {
 ```
 
 This solution is not always applicable, because it might require extra
-changes on the Catch's side to work.
+changes on the Catch's SIDE to work.
 
 ---
 

@@ -133,8 +133,9 @@ void Board::executeMove (const Move& move) {
         newFiftyMoveReset = history->getCurrentFrame().plysSinceFiftyMoveReset + 1;
     }
 
-    BoardState newState{flip(getTurn()), move.raw(), pieceInDestination, newFiftyMoveReset, 0};
-
+    int oldFullmoveCount = history->getCurrentFrame().fullMoveCount;
+    const CastlingStatus& oldCastlingStatus = history->getCurrentFrame().castlingStatus;
+    BoardState newState{flip(getTurn()), move.raw(), pieceInDestination, newFiftyMoveReset, oldFullmoveCount + 1, oldCastlingStatus};
     history->pushState(newState);
 //    std::cout << history->getCurrentFrame().previousMove << std::endl;
 }
