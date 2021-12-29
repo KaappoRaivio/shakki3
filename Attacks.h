@@ -168,12 +168,12 @@ public:
         return blockerMask;
     };
     Bitboard getRayTo (const Board& context, const Square& square, RayDirection direction) const {
-        return getRayTo(square, context.getOccupancy(), direction);
+        return getRayTo(square, context.getOccupancy(false), direction);
     }
 
 
-    Bitboard getRaysToAllDirections (const Board& context, const Square& square, PieceColor color) const {
-        return getRaysToAllDirectionsFromOccupancy(context.getOccupancy(), context.getBlockers(color), square);
+    Bitboard getRaysToAllDirections (const Board& context, const Square& square, PieceColor color, bool includeKingInOccupancy) const {
+        return getRaysToAllDirectionsFromOccupancy(context.getOccupancy(includeKingInOccupancy), context.getBlockers(color, includeKingInOccupancy), square);
     }
 
     Bitboard getRaysToAllDirectionsFromOccupancy (const Bitboard& occupancy, const Bitboard& blockers, const Square& square) const {
@@ -188,11 +188,11 @@ public:
         return result & ~blockers;
     }
 
-    Bitboard getRaysToAllDirectionsAllPieces (const Board& context, const Bitboard& pieces, PieceColor color) const {
+    Bitboard getRaysToAllDirectionsAllPieces (const Board& context, const Bitboard& pieces, PieceColor color, bool includeKingInOccupancy) const {
         Bitboard result{0};
 
         for (const Square& square : pieces) {
-            result |= getRaysToAllDirections(context, square, color);
+            result |= getRaysToAllDirections(context, square, color, includeKingInOccupancy);
         }
 
         return result;
@@ -203,7 +203,7 @@ public:
         for (RayDirection direction = getIterationStartDirection<TYPE>() ; direction <= getIterationEndDirection<TYPE>() ; ++direction) {
             Bitboard blockerMask = getSlideAt(direction, square);
 
-            auto blockers = blockerMask & context.getOccupancy();
+            auto blockers = blockerMask & context.getOccupancy(false);
 
             if (blockers) {
                 int firstBlockPosition = getClosestBitPosition<TYPE>(blockers, direction);
@@ -212,12 +212,12 @@ public:
             }
         }
 
-        return result & ~context.getBlockers(color);
+        return result & ~context.getBlockers(color, false);
     }
 
     Bitboard getRaysToAllDirectionsXRay (const Board& context, const Square& square, PieceColor color) const {
-        Bitboard occupancy = context.getOccupancy();
-        Bitboard blockers = context.getBlockers(color);
+        Bitboard occupancy = context.getOccupancy(false);
+        Bitboard blockers = context.getBlockers(color, false);
 
 
         const Bitboard& attacks = getRaysToAllDirectionsFromOccupancy(occupancy, 0, square);

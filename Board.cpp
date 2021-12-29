@@ -342,12 +342,23 @@ Board Board::fromFEN (std::string FEN) {
     return board;
 }
 
-Bitboard Board::getOccupancy () const {
-    return pieces[WHITE].all | pieces[BLACK].all;
+Bitboard Board::getOccupancy (bool includeKings) const {
+    Bitboard occupancy = pieces[WHITE].all | pieces[BLACK].all;
+    if (includeKings) {
+        occupancy |= pieces[WHITE].boards[PieceTypes::KING];
+        occupancy |= pieces[BLACK].boards[PieceTypes::KING];
+    }
+
+    return occupancy;
 }
 
-Bitboard Board::getBlockers (PieceColor color) const {
-    return pieces[color].all;
+Bitboard Board::getBlockers (PieceColor color, bool includeKing) const {
+    Bitboard occupancy = pieces[color].all;
+    if (includeKing) {
+        occupancy |= pieces[color].boards[PieceTypes::KING];
+    }
+
+    return occupancy;
 }
 
 const BoardStateHistory* Board::getHistory () const {

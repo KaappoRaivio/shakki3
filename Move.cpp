@@ -20,20 +20,21 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     if (context.is(PAWN, from) && from.diffY(to) == 2) {
         move |= MoveBitmasks::DOUBLE_PAWN_PUSH;
+
+        bool isPromotion = bool(BitboardOperations::SquareMasks::rank8.asColor(color, false) & to);
+        if (isPromotion) {
+            if (pieceToPromoteTo == NO_PIECE) {
+                throw std::runtime_error("You must set pieceToPromote for a promotion move!");
+            }
+            move |= MoveBitmasks::PROMOTION;
+            move |= pieceToPromoteTo;
+        }
     }
 
     if (context.is(KING, from) && from.diffX(to) == 2) {
         move |= from.getDirection(to, ROOK) == BitboardOperations::Directions::EAST ? MoveBitmasks::KING_CASTLE : MoveBitmasks::QUEEN_CASTLE;
     }
 
-    bool isPromotion = bool(BitboardOperations::SquareMasks::rank8.asColor(color) & to);
-    if (isPromotion) {
-        if (pieceToPromoteTo == KING) {
-            throw std::runtime_error("You must set pieceToPromote for a promotion move!");
-        }
-        move |= MoveBitmasks::PROMOTION;
-        move |= pieceToPromoteTo;
-    }
 }
 
 Square Move::getOrigin () const {
@@ -69,8 +70,10 @@ bool Move::operator!= (const Move& rhs) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Move& move) {
-    os << "Move{from:" << move.getOrigin() << ", to:" << move.getDestination() << "}";
-    return os;
+    if (move.isCastling(MoveBitmasks::KING_CASTLE)) return os << "O-O";
+    if (move.isCastling(MoveBitmasks::QUEEN_CASTLE)) return os << "O-O-O";
+    return os << move.getOrigin() << move.getDestination();
+
 }
 
 Move_raw Move::raw () const {

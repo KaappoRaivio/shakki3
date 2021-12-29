@@ -37,7 +37,7 @@ public:
     explicit Move (bool NO_MOVE);
 
     Move (Move_raw move);
-    Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::KING);
+    Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::NO_PIECE);
     Move (const Move& other) = default;
 
     Square getOrigin () const;

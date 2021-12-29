@@ -73,8 +73,8 @@ TEST_CASE ("Bitboard works correctly", "[unit][bitboard]") {
         REQUIRE(board.flipVertical() == 288230926176223232ull);
         REQUIRE(board.rotate180() == 2305843013644976128ull);
 
-        REQUIRE(board.asColor(WHITE) == 4468913471492ull);
-        REQUIRE(board.asColor(BLACK) == 2305843013644976128ull);
+        REQUIRE(board.asColor(WHITE, false) == 4468913471492ull);
+        REQUIRE(board.asColor(BLACK, false) == 2305843013644976128ull);
     }
 
     SECTION("Bitboard should implement iteration", "[unit][bitboard]") {

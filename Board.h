@@ -38,8 +38,8 @@ public:
     const Piece& getPieceAt (Square square) const;
     const PieceSet* getPieces () const;
 
-    Bitboard getOccupancy () const;
-    Bitboard getBlockers (PieceColor color) const;
+    Bitboard getOccupancy (bool includeKings) const;
+    Bitboard getBlockers (PieceColor color, bool includeKing) const;
 
     const BoardStateHistory* getHistory () const;
 
