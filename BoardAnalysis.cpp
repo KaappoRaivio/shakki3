@@ -36,7 +36,7 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     using namespace PieceTypes;
 
     // bishop and queen
-    const Bitboard& supposedBishops = attacks.getBishopAttacks().getRaysToAllDirections(context, kingPosition, color, false);
+    const Bitboard& supposedBishops = attacks.getBishopAttacks().getRaysToAllDirections(context, kingPosition, color, false) & ~context.getBlockers(color, false);
     for (const Square& possibleBishop : supposedBishops) {
         if (context.getPieceAt(possibleBishop) == Pieces::pieces[BISHOP][flip(color)]
             || context.getPieceAt(possibleBishop) == Pieces::pieces[QUEEN][flip(color)]) {
@@ -54,7 +54,7 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     }
 
     // rook and queen
-    const Bitboard& supposedRooks = attacks.getRookAttacks().getRaysToAllDirections(context, kingPosition, color, false);
+    const Bitboard& supposedRooks = attacks.getRookAttacks().getRaysToAllDirections(context, kingPosition, color, false) & ~context.getBlockers(color, false);
     for (const Square& possibleRook : supposedRooks) {
         if (context.getPieceAt(possibleRook) == Pieces::pieces[ROOK][flip(color)]
             || context.getPieceAt(possibleRook) == Pieces::pieces[QUEEN][flip(color)]) {

@@ -173,7 +173,7 @@ public:
 
 
     Bitboard getRaysToAllDirections (const Board& context, const Square& square, PieceColor color, bool includeKingInOccupancy) const {
-        return getRaysToAllDirectionsFromOccupancy(context.getOccupancy(includeKingInOccupancy), context.getBlockers(color, includeKingInOccupancy), square);
+        return getRaysToAllDirectionsFromOccupancy(context.getOccupancy(includeKingInOccupancy), 0, square);
     }
 
     Bitboard getRaysToAllDirectionsFromOccupancy (const Bitboard& occupancy, const Bitboard& blockers, const Square& square) const {

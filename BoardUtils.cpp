@@ -62,6 +62,7 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
         Bitboard possibleSquares = Attacks::getInstance()
                                            .getBishopAttacks()
                                            .getRaysToAllDirections(context, bishopSquare, color, true)
+                                   & ~context.getBlockers(color, true)
                                    & checkMask;
         if (bishopSquare & pinMaskD12) possibleSquares &= possiblePinnedSquares;
 
@@ -88,6 +89,7 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
         Bitboard possibleSquares = Attacks::getInstance()
                                            .getRookAttacks()
                                            .getRaysToAllDirections(context, rookSquare, color, true)
+                                   & ~context.getBlockers(color, true)
                                    & checkMask;
 
         if (rookSquare & pinMaskHV) possibleSquares &= possiblePinnedSquares;
@@ -105,11 +107,11 @@ void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& conte
     for (const Square& queenSquare : queens) {
         Bitboard possibleSquares;
         if (queenSquare & pinMaskHV) {
-            possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskHV;
+            possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskHV & ~context.getBlockers(color, true);
         } else if (queenSquare & pinMaskD12) {
-            possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskD12;
+            possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskD12 & ~context.getBlockers(color, true);
         } else {
-            possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask;
+            possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & ~context.getBlockers(color, true);
         }
 
         for (const Square& possibleSquare : possibleSquares) {
