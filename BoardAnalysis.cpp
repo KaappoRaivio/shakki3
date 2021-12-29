@@ -72,7 +72,7 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
     }
 
     // knight
-    const Bitboard& supposedKnights = attacks.getKnightAttacks().getAttacksAt(context, kingPosition, color) & ~context.getBlockers(color);
+    const Bitboard& supposedKnights = attacks.getKnightAttacks().getAttacksAt(context, kingPosition, color) & ~context.getBlockers(color, false);
     for (const Square& possibleKnight : supposedKnights) {
         if (context.getPieceAt(possibleKnight) == Pieces::pieces[KNIGHT][flip(color)]) {
             if (potentialFirstAttacker != Square::INVALID) {

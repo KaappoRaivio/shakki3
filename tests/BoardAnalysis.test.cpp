@@ -15,6 +15,7 @@ TEST_CASE ("Attack mask generation works correctly", "[integration][attacks]") {
 
         Board board3 = Board::fromFEN("N4B2/2Qp1pR1/R2nPPp1/1nPK2N1/pP1pPrb1/P2Pkp1P/pr3p1q/1B4b1 w - - 0 1");
         REQUIRE(BoardAnalysis::getAttackMask(board3, BLACK) == 0);
+        REQUIRE(false); // TODO off by one blockers!!!
     }
 
     SECTION ("Attack mask generation doesn't include the king as an occupant", "[integration][attacks]") {
