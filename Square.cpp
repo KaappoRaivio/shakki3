@@ -5,6 +5,8 @@
 #include "Square.h"
 #include "BitboardOperations.h"
 
+Square flip ();
+
 namespace Directions = BitboardOperations::Directions;
 
 Square::Square (Square_raw square) : value{static_cast<uint8_t>(square)} {
@@ -59,6 +61,10 @@ uint8_t Square::getValue () const {
 
 uint8_t Square::diffY (Square square) const {
     return std::abs((int8_t) getY() - (int8_t) square.getY());
+}
+
+uint8_t Square::diffX (Square square) const {
+    return std::abs((int8_t) getX() - (int8_t) square.getX());
 }
 
 std::ostream& operator<< (std::ostream& os, const Square& square) {
@@ -171,5 +177,24 @@ Square Square::move (RayDirection direction, PieceColor perspective) const {
 
 bool Square::isInvalid () const {
     return value == 255;
+}
+
+Square Square::asColorRotate (PieceColor color) {
+    if (color == WHITE) return *this;
+    if (color == BLACK) return rotate180();
+}
+
+Square Square::asColorFlip (PieceColor color) {
+    if (color == WHITE) return *this;
+    if (color == BLACK) return flip();
+}
+
+
+Square Square::rotate180 () const {
+    return {63 - value};
+}
+
+Square Square::flip () const {
+    return {getX(), 7 - getY()};
 }
 

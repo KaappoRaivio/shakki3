@@ -41,6 +41,8 @@ public:
     Bitboard getOccupancy () const;
     Bitboard getBlockers (PieceColor color) const;
 
+    const BoardStateHistory* getHistory () const;
+
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
     PieceSet pieces[2];
@@ -52,6 +54,10 @@ private:
     const PieceSet& getBlack () const;
 
     void initializeBitboards ();
+
+    Piece movePiece (const Square& from, const Square& to);
+
+    void executeCastlingMove (const Move& move);
 };
 
 

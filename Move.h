@@ -37,7 +37,7 @@ public:
     explicit Move (bool NO_MOVE);
 
     Move (Move_raw move);
-    Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo = PieceTypes::KING);
+    Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::KING);
     Move (const Move& other) = default;
 
     Square getOrigin () const;
@@ -47,18 +47,19 @@ public:
     bool isPromotion () const;
 
 //    requires IsCastlingSide<SIDE>
-    template<CastlingSide SIDE>
-    bool isCastling () const {
+//    template<CastlingSide SIDE>
+    bool isCastling (CastlingSide SIDE) const {
         if (!isPromotion() && !isCapture()) {
-            if (SIDE == MoveBitmasks::KING_CASTLE && (move & 0b11) == MoveBitmasks::KING_CASTLE) {
-                return true;
-            }
-            if (SIDE == MoveBitmasks::QUEEN_CASTLE && (move & 0b11) == MoveBitmasks::QUEEN_CASTLE) {
-                return true;
-            }
-        } else {
-            return false;
+            return (move & 0b11) == SIDE;
+//            if (SIDE == MoveBitmasks::KING_CASTLE && ((move & 0b11) == MoveBitmasks::KING_CASTLE)) {
+//                return true;
+//            }
+//            if (SIDE == MoveBitmasks::QUEEN_CASTLE && ((move & 0b11) == MoveBitmasks::QUEEN_CASTLE)) {
+//                return true;
+//            }
         }
+
+        return false;
     }
 
     bool operator== (const Move& rhs) const;
@@ -68,6 +69,8 @@ public:
     Move_raw raw () const;
 
     const Piece& getMovingPiece (const Board& context) const;
+
+    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const;
 };
 
 namespace Moves {

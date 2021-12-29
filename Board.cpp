@@ -91,41 +91,54 @@ bool Board::is (PieceType type, Square at) const {
     return bool(pieces[color].boards[type] & Bitboard{at});
 }
 
+Piece Board::movePiece (const Square& from, const Square& to) {
+    const Piece possiblyCapturedPiece = *letterbox[to];
+    const Piece movingPiece = *letterbox[from];
+
+
+    //letterbox
+    letterbox[to]->type = movingPiece.type;
+    letterbox[to]->color = movingPiece.color;
+
+    letterbox[from]->type = PieceTypes::NO_PIECE;
+    letterbox[from]->color = PieceColor::EMPTY;
+
+
+    //bitboards
+    Bitboard& allPieces = pieces[movingPiece.color].all;
+    Bitboard& movingPieceSet = pieces[movingPiece.color].boards[movingPiece.type];
+    movingPieceSet ^= from;
+    movingPieceSet ^= to;
+
+    allPieces ^= from;
+    allPieces ^= to;
+
+    if (possiblyCapturedPiece != Pieces::NO_PIECE) {
+        Bitboard& allOppositePieces = pieces[possiblyCapturedPiece.color].all;
+        Bitboard& destinationPieceSet = pieces[possiblyCapturedPiece.color].boards[possiblyCapturedPiece.type];
+        destinationPieceSet ^= to;
+        allOppositePieces ^= from;
+    }
+
+    return possiblyCapturedPiece;
+}
+
 void Board::executeMove (const Move& move) {
 //    const std::unique_ptr<Piece>& movingPiece = letterbox[move.getOrigin()];
     const Piece movingPiece = *letterbox[move.getOrigin()];
-    const Piece pieceInDestination = *letterbox[move.getDestination()];
 
     if (movingPiece.color != getTurn()) {
         throw std::runtime_error("Wrong turn!");
     }
 
-    // letterbox
-    letterbox[move.getDestination()]->type = movingPiece.type;
-    letterbox[move.getDestination()]->color = movingPiece.color;
-
-    letterbox[move.getOrigin()]->type = PieceTypes::NO_PIECE;
-    letterbox[move.getOrigin()]->color = PieceColor::EMPTY;
-
-    // bitboards
-    Bitboard& allPieces = pieces[movingPiece.color].all;
-    Bitboard& movingPieceSet = pieces[movingPiece.color].boards[movingPiece.type];
-    movingPieceSet ^= move.getOrigin();
-    movingPieceSet ^= move.getDestination();
-
-    allPieces ^= move.getOrigin();
-    allPieces ^= move.getDestination();
-
-    if (pieceInDestination != Pieces::NO_PIECE) {
-        Bitboard& allOppositePieces = pieces[pieceInDestination.color].all;
-        Bitboard& destinationPieceSet = pieces[pieceInDestination.color].boards[pieceInDestination.type];
-        destinationPieceSet ^= move.getDestination();
-        allOppositePieces ^= move.getDestination();
+    Piece possiblyCapturedPiece{PieceTypes::NO_PIECE, EMPTY};
+    if (move.isCastling(MoveBitmasks::KING_CASTLE) || move.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
+        executeCastlingMove(move);
+    } else {
+        possiblyCapturedPiece = movePiece(move.getOrigin(), move.getDestination());
     }
 
 
-    // create copy-make frame
-//    history->createNewFrame();
     int newFiftyMoveReset;
     if (move.isCapture() || move.getMovingPiece(*this).type == PieceTypes::PAWN) {
         newFiftyMoveReset = 0;
@@ -135,9 +148,19 @@ void Board::executeMove (const Move& move) {
 
     int oldFullmoveCount = history->getCurrentFrame().fullMoveCount;
     const CastlingStatus& oldCastlingStatus = history->getCurrentFrame().castlingStatus;
-    BoardState newState{flip(getTurn()), move.raw(), pieceInDestination, newFiftyMoveReset, oldFullmoveCount + 1, oldCastlingStatus};
+    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + 1, move.getNewCastlingStatus(*this, oldCastlingStatus)};
     history->pushState(newState);
-//    std::cout << history->getCurrentFrame().previousMove << std::endl;
+}
+
+void Board::executeCastlingMove(const Move& move) {
+    PieceColor turn = getTurn();
+    Square kingPosition{turn == WHITE ? e1 : e8};
+    Square rookPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? h1 : a1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? h8 : a8)};
+    Square newKingPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? g1 : c1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? g8 : c8)};
+    Square newRookPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? f1 : d1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? f8 : d8)};
+
+    movePiece(kingPosition, newKingPosition);
+    movePiece(rookPosition, newRookPosition);
 }
 
 void Board::unmakeMove () {
@@ -296,5 +319,9 @@ Bitboard Board::getOccupancy () const {
 
 Bitboard Board::getBlockers (PieceColor color) const {
     return pieces[color].all;
+}
+
+const BoardStateHistory* Board::getHistory () const {
+    return history.get();
 }
 

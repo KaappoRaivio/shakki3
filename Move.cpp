@@ -7,7 +7,7 @@
 
 using namespace PieceTypes;
 
-Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo) : move{0} {
+Move::Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo) : move{0} {
     move |= from.getValue() << 10;
     move |= to.getValue() << 4;
 
@@ -22,7 +22,9 @@ Move::Move (const Board& context, Square from, Square to, PieceType pieceToPromo
         move |= MoveBitmasks::DOUBLE_PAWN_PUSH;
     }
 
-    move &= ~MoveBitmasks::EN_PASSANT;
+    if (context.is(KING, from) && from.diffX(to) == 2) {
+        move |= from.getDirection(to, ROOK) == BitboardOperations::Directions::EAST ? MoveBitmasks::KING_CASTLE : MoveBitmasks::QUEEN_CASTLE;
+    }
 
     bool isPromotion = bool(BitboardOperations::SquareMasks::rank8.asColor(color) & to);
     if (isPromotion) {
@@ -90,6 +92,23 @@ const Piece& Move::getMovingPiece (const Board& context) const {
     throw std::runtime_error("Problem");
 }
 
+CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const {
+    CastlingStatus newStatus{oldStatus};
+
+    const Piece& movingPiece = getMovingPiece(context);
+    PieceColor color = movingPiece.color;
+    if (isCastling(MoveBitmasks::KING_CASTLE) || isCastling(MoveBitmasks::QUEEN_CASTLE)) {
+        newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
+        newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+    }
+
+    if (movingPiece.type == ROOK) {
+        if (getOrigin() == Square{h1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
+        if (getOrigin() == Square{a1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+    }
+
+    return newStatus;
+}
 
 
 namespace Moves {

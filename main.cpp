@@ -9,8 +9,22 @@
 
 int main () {
 
-    Board board = Board::fromFEN("rn1qkbnr/pppbpppp/3p4/1B5Q/4P3/8/PPPP1PPP/RNB1K1NR w KQkq - 0 1eee");
+    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3K2R w KQkq - 0 1");
     std::cout << board << std::endl;
+
+    Move move{board, Square{e1}, Square{c1}};
+
+    std::cout << move.isCastling(MoveBitmasks::KING_CASTLE) << std::endl;
+
+
+    board.executeMove(move);
+    std::cout << board << std::endl;
+    std::cout << board.getHistory()->getCurrentFrame().castlingStatus << std::endl;
+
+//    board.unmakeMove();
+//    std::cout << board << std::endl;
+
+    std::exit(0);
 
 //    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
 //    std::cout << checkMask << std::endl;
@@ -39,18 +53,18 @@ int main () {
 //    std::cout << "moi" << std::endl;
 //    std::cout << moves << std::endl;
 //
-    Move move = {board, e2, e4};
-    board.executeMove(move);
-
-    Move move2 = {board, d7, d5};
-    board.executeMove(move2);
-    const auto& moves = board.getMoves();
-
-    for (const auto& m: moves) {
-        std::cout << m << ", ";
-    }
-    std::cout << std::endl;
-    std::cout << board << std::endl;
+//    Move move = {board, e2, e4};
+//    board.executeMove(move);
+//
+//    Move move2 = {board, d7, d5};
+//    board.executeMove(move2);
+//    const auto& moves = board.getMoves();
+//
+//    for (const auto& m: moves) {
+//        std::cout << m << ", ";
+//    }
+//    std::cout << std::endl;
+//    std::cout << board << std::endl;
 //
 //
 //    Move move3 = {board, e4, d5};
