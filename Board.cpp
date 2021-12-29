@@ -123,6 +123,31 @@ Piece Board::movePiece (const Square& from, const Square& to) {
     return possiblyCapturedPiece;
 }
 
+void Board::unmovePiece (const Piece& capturedPiece, const Square& from, const Square& to) {
+//    const BoardState& currentState = history->popFrame();
+//    const Move& moveToUnmake = currentState.previousMove;
+//    const Piece& capturedPiece = currentState.capturedPiece;
+
+    const Piece movingPiece = *letterbox[to];
+
+    // letterbox
+    letterbox[from]->type = movingPiece.type;
+    letterbox[from]->color = movingPiece.color;
+
+    letterbox[to]->type = capturedPiece.type;
+    letterbox[to]->color = capturedPiece.color;
+
+    // bitboards
+    Bitboard& movingPieceSet = pieces[movingPiece.color].boards[movingPiece.type];
+    movingPieceSet ^= to;
+    movingPieceSet ^= from;
+
+    if (capturedPiece != Pieces::NO_PIECE) {
+        Bitboard& capturedPieceSet = pieces[capturedPiece.color].boards[capturedPiece.type];
+        capturedPieceSet ^= to;
+    }
+}
+
 void Board::executeMove (const Move& move) {
 //    const std::unique_ptr<Piece>& movingPiece = letterbox[move.getOrigin()];
     const Piece movingPiece = *letterbox[move.getOrigin()];
@@ -133,7 +158,7 @@ void Board::executeMove (const Move& move) {
 
     Piece possiblyCapturedPiece{PieceTypes::NO_PIECE, EMPTY};
     if (move.isCastling(MoveBitmasks::KING_CASTLE) || move.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
-        executeCastlingMove(move);
+        moveCastling(move);
     } else {
         possiblyCapturedPiece = movePiece(move.getOrigin(), move.getDestination());
     }
@@ -152,7 +177,7 @@ void Board::executeMove (const Move& move) {
     history->pushState(newState);
 }
 
-void Board::executeCastlingMove(const Move& move) {
+void Board::moveCastling(const Move& move) {
     PieceColor turn = getTurn();
     Square kingPosition{turn == WHITE ? e1 : e8};
     Square rookPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? h1 : a1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? h8 : a8)};
@@ -163,29 +188,31 @@ void Board::executeCastlingMove(const Move& move) {
     movePiece(rookPosition, newRookPosition);
 }
 
+void Board::unmoveCastling (const Move& move) {
+    PieceColor oldTurn = getTurn();
+    Square oldKingPosition{oldTurn == WHITE ? e1 : e8};
+    Square oldRookPosition{oldTurn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? h1 : a1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? h8 : a8)};
+
+    Square kingPosition{oldTurn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? g1 : c1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? g8 : c8)};
+    Square rookPosition{oldTurn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? f1 : d1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? f8 : d8)};
+
+    unmovePiece(Pieces::NO_PIECE, oldKingPosition, kingPosition);
+    unmovePiece(Pieces::NO_PIECE, oldRookPosition, rookPosition);
+}
+
+
+
 void Board::unmakeMove () {
     const BoardState& currentState = history->popFrame();
     const Move& moveToUnmake = currentState.previousMove;
     const Piece& capturedPiece = currentState.capturedPiece;
 
-    const Piece movingPiece = *letterbox[moveToUnmake.getDestination()];
-
-    // letterbox
-    letterbox[moveToUnmake.getOrigin()]->type = movingPiece.type;
-    letterbox[moveToUnmake.getOrigin()]->color = movingPiece.color;
-
-    letterbox[moveToUnmake.getDestination()]->type = capturedPiece.type;
-    letterbox[moveToUnmake.getDestination()]->color = capturedPiece.color;
-
-    // bitboards
-    Bitboard& movingPieceSet = pieces[movingPiece.color].boards[movingPiece.type];
-    movingPieceSet ^= moveToUnmake.getDestination();
-    movingPieceSet ^= moveToUnmake.getOrigin();
-
-    if (capturedPiece != Pieces::NO_PIECE) {
-        Bitboard& capturedPieceSet = pieces[capturedPiece.color].boards[capturedPiece.type];
-        capturedPieceSet ^= moveToUnmake.getDestination();
+    if (moveToUnmake.isCastling(MoveBitmasks::KING_CASTLE) || moveToUnmake.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
+        unmoveCastling(moveToUnmake);
+    } else {
+        unmovePiece(capturedPiece, moveToUnmake.getOrigin(), moveToUnmake.getDestination());
     }
+
 }
 
 void Board::initializeLetterbox () {
@@ -288,6 +315,7 @@ Board Board::fromFEN (std::string FEN) {
     }
 
     PieceColor turn = parts[1].at(0) == 'w' ? WHITE : BLACK;
+    CastlingStatus status{parts[2]};
     int plysSinceFiftyMoveReset = std::stoi(parts[4]);
     int fullMoveCount = std::stoi(parts[5]);
 
@@ -296,6 +324,7 @@ Board Board::fromFEN (std::string FEN) {
     newState.turn = turn;
     newState.plysSinceFiftyMoveReset = plysSinceFiftyMoveReset;
     newState.fullMoveCount = fullMoveCount;
+    newState.castlingStatus = status;
     board.history->popFrame();
     board.history->pushState(newState);
 
@@ -323,5 +352,36 @@ Bitboard Board::getBlockers (PieceColor color) const {
 
 const BoardStateHistory* Board::getHistory () const {
     return history.get();
+}
+
+std::string Board::toFEN () const {
+    std::stringstream out;
+
+    for (int y = 7; y >= 0; --y) {
+        for (int x = 0; x < 8; ++x) {
+            if (letterbox[8 * y + x]->type == PieceTypes::NO_PIECE) {
+                int emptyCount = 0;
+                while (x < 8 && letterbox[8 * y + x]->type == PieceTypes::NO_PIECE) {
+                    ++x;
+                    ++emptyCount;
+                }
+                out << emptyCount;
+                --x;
+                continue;
+            }
+
+            out << *letterbox[8 * y + x];
+        }
+        if (y != 0)
+            out << "/";
+    }
+
+    out << " " << (getTurn() == WHITE ? 'w' : 'b');
+    out << " " << history->getCurrentFrame().castlingStatus;
+    out << " -";
+    out << " " << history->getCurrentFrame().plysSinceFiftyMoveReset;
+    out << " " << history->getCurrentFrame().fullMoveCount;
+
+    return out.str();
 }
 

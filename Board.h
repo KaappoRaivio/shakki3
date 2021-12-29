@@ -43,6 +43,8 @@ public:
 
     const BoardStateHistory* getHistory () const;
 
+    std::string toFEN () const;
+
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
     PieceSet pieces[2];
@@ -57,7 +59,11 @@ private:
 
     Piece movePiece (const Square& from, const Square& to);
 
-    void executeCastlingMove (const Move& move);
+    void moveCastling (const Move& move);
+
+    void unmovePiece (const Piece& capturedPiece, const Square& from, const Square& to);
+
+    void unmoveCastling (const Move& move);
 };
 
 
