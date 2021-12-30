@@ -21,14 +21,16 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
     if (context.is(PAWN, from) && from.diffY(to) == 2) {
         move |= MoveBitmasks::DOUBLE_PAWN_PUSH;
 
-        bool isPromotion = bool(BitboardOperations::SquareMasks::rank8.asColor(color, false) & to);
-        if (isPromotion) {
-            if (pieceToPromoteTo == NO_PIECE) {
-                throw std::runtime_error("You must set pieceToPromote for a promotion move!");
-            }
-            move |= MoveBitmasks::PROMOTION;
-            move |= pieceToPromoteTo;
+    }
+
+    bool isPromotion = context.is(PAWN, from) &&  bool(BitboardOperations::SquareMasks::rank8.asColor(color, false) & to);
+    if (isPromotion) {
+        std::cout << "Promotion!!" << std::endl;
+        if (pieceToPromoteTo == NO_PIECE) {
+            throw std::runtime_error("You must set pieceToPromote for a promotion move!");
         }
+        move |= MoveBitmasks::PROMOTION;
+        move |= pieceToPromoteTo;
     }
 
     if (context.is(KING, from) && from.diffX(to) == 2) {
@@ -46,11 +48,11 @@ Square Move::getDestination () const {
 }
 
 bool Move::isCapture () const {
-    return move & (1 << MoveBitmasks::CAPTURE);
+    return move & MoveBitmasks::CAPTURE;
 }
 
 bool Move::isPromotion () const {
-    return move & (1 << MoveBitmasks::PROMOTION);
+    return move & MoveBitmasks::PROMOTION;
 }
 
 Move::Move (bool NO_MOVE) {
@@ -72,8 +74,21 @@ bool Move::operator!= (const Move& rhs) const {
 std::ostream& operator<< (std::ostream& os, const Move& move) {
     if (move.isCastling(MoveBitmasks::KING_CASTLE)) return os << "O-O";
     if (move.isCastling(MoveBitmasks::QUEEN_CASTLE)) return os << "O-O-O";
-    return os << move.getOrigin() << move.getDestination();
+    os << move.getOrigin() << move.getDestination();
 
+    if (move.isPromotion()) {
+        os << "=" << move.getPromotedPiece().getSymbol(WHITE);
+    }
+
+    return os;
+}
+
+PieceType Move::getPromotedPiece () const {
+    if (isPromotion()) {
+        return PieceTypes::pieces[move & 0b11];
+    } else {
+        return NO_PIECE;
+    }
 }
 
 Move_raw Move::raw () const {

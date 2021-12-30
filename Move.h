@@ -71,6 +71,8 @@ public:
     const Piece& getMovingPiece (const Board& context) const;
 
     CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const;
+
+    PieceType getPromotedPiece () const;
 };
 
 namespace Moves {

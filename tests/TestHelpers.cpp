@@ -26,7 +26,7 @@ namespace TestHelpers {
 //
 //    }
 
-    void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context) {
+    void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index) {
         std::unordered_set<std::string> movesString;
         std::transform(moves.begin(), moves.end(), std::inserter(movesString, movesString.begin()), [](const Move& move) {
             std::stringstream s;
@@ -37,7 +37,7 @@ namespace TestHelpers {
 //        std::cout << board << std::endl << TestHelpers::vectorToString(moves) << std::endl;
 
         if (std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves) {
-            std::cerr << "FAIL: " << std::endl;
+            std::cerr << "FAIL " << index << ": " << std::endl;
 
 
 

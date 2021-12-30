@@ -24,5 +24,5 @@ namespace TestHelpers {
         return s.str();
     }
 
-    void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context);
+    void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
 }

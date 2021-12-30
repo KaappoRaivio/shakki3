@@ -179,12 +179,12 @@ bool Square::isInvalid () const {
     return value == 255;
 }
 
-Square Square::asColorRotate (PieceColor color) {
+Square Square::asColorRotate (PieceColor color) const {
     if (color == WHITE) return *this;
     if (color == BLACK) return rotate180();
 }
 
-Square Square::asColorFlip (PieceColor color) {
+Square Square::asColorFlip (PieceColor color) const {
     if (color == WHITE) return *this;
     if (color == BLACK) return flip();
 }

@@ -42,8 +42,8 @@ public:
     Square move (RayDirection direction, PieceColor perspective) const;
     Square move (RayDirection direction);
 
-    Square asColorRotate (PieceColor color);
-    Square asColorFlip (PieceColor color);
+    Square asColorRotate (PieceColor color) const;
+    Square asColorFlip (PieceColor color) const;
 
     Square rotate180 () const;
     Square flip () const;

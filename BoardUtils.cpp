@@ -153,7 +153,16 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
                 .getPossiblePushesOnEmptyBoard(color, pawnSquare);
 
         for (const Square& destinationSquare : pushes & possiblePushSquares) {
-            moves.emplace_back(context, pawnSquare, destinationSquare);
+            if (destinationSquare.asColorRotate(color).getY() == 7) {
+                std::cout << "promotioooon" << std::endl;
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::KNIGHT);
+            } else {
+                moves.emplace_back(context, pawnSquare, destinationSquare);
+            }
+
         }
     }
 
@@ -175,6 +184,8 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
             moves.emplace_back(context, pawnSquare, destinationSquare);
         }
     }
+
+
 }
 
 void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask) {
