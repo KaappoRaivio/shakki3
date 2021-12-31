@@ -4,4 +4,3 @@
 
 #define CATCH_CONFIG_MAIN
 
-//#include "Bitboard.test.cpp"
