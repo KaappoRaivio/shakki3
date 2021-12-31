@@ -25,15 +25,21 @@ constexpr Bitboard InBetween::inBetween (Square_raw square1, Square_raw square2)
 constexpr void InBetween::populateLookup () {
     for (int sq1 = 0 ; sq1 < 64 ; ++sq1) {
         for (int sq2 = 0 ; sq2 < 64 ; ++sq2) {
-            lookup[sq1][sq2] = inBetween(static_cast<Square_raw>(sq1), static_cast<Square_raw>(sq2));
+            pathLookup[sq1][sq2] = inBetween(static_cast<Square_raw>(sq1), static_cast<Square_raw>(sq2));
+        }
+    }
+
+    for (int sq1 = 0 ; sq1 < 64 ; ++sq1) {
+        for (int sq2 = 0 ; sq2 < 64 ; ++sq2) {
+            pathLookup[sq1][sq2] = inBetween(static_cast<Square_raw>(sq1), static_cast<Square_raw>(sq2));
         }
     }
 }
 
-InBetween::InBetween () : lookup{{}} {
+InBetween::InBetween () : pathLookup{{}} {
     populateLookup();
 }
 
 Bitboard InBetween::getPath (const Square& from, const Square& to) const {
-    return lookup[from][to] | from;
+    return pathLookup[from][to] | from;
 }

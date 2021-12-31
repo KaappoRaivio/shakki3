@@ -12,7 +12,7 @@
 
 class InBetween {
 private:
-    Bitboard lookup[64][64];
+    Bitboard pathLookup[64][64];
 
     constexpr Bitboard inBetween (Square_raw square1, Square_raw square2);
     constexpr void populateLookup();

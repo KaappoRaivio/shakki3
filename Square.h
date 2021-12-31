@@ -11,6 +11,8 @@
 #include "mytypes.h"
 
 struct Square {
+    static const uint8_t INVALID = 255;
+
     uint8_t value;
 
 public:
@@ -21,23 +23,30 @@ public:
     uint8_t getX () const;
     uint8_t getY () const;
     uint8_t getValue () const;
+    bool isInvalid () const;
 
-    const Square& operator+= (const Square& other);
-    friend Square operator+ (Square square, const Square& other);
-
-    const Square& operator-= (const Square& other);
-    friend Square operator- (Square square, Square other);
+//    const Square& operator+= (const Square& other);
+//    friend Square operator+ (Square square, const Square& other);
+//
+//    const Square& operator-= (const Square& other);
+//    friend Square operator- (Square square, Square other);
 
     operator int () const;
 
     uint8_t diffY (Square square) const;
+    uint8_t diffX (Square square) const;
     RayDirection getDirection (const Square& other, const PieceType& type) const;
 
     friend std::ostream& operator<< (std::ostream& os, const Square& square);
 
     Square move (RayDirection direction, PieceColor perspective) const;
-
     Square move (RayDirection direction);
+
+    Square asColorRotate (PieceColor color) const;
+    Square asColorFlip (PieceColor color) const;
+
+    Square rotate180 () const;
+    Square flip () const;
 };
 
 

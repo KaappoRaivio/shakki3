@@ -38,8 +38,12 @@ public:
     const Piece& getPieceAt (Square square) const;
     const PieceSet* getPieces () const;
 
-    Bitboard getOccupancy () const;
-    Bitboard getBlockers (PieceColor color) const;
+    Bitboard getOccupancy (bool includeKings) const;
+    Bitboard getBlockers (PieceColor color, bool includeKing) const;
+
+    const BoardStateHistory* getHistory () const;
+
+    std::string toFEN () const;
 
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
@@ -52,6 +56,14 @@ private:
     const PieceSet& getBlack () const;
 
     void initializeBitboards ();
+
+    Piece movePiece (const Square& from, const Square& to);
+
+    void moveCastling (const Move& move);
+
+    void unmovePiece (const Piece& capturedPiece, const Square& from, const Square& to);
+
+    void unmoveCastling (const Move& move);
 };
 
 

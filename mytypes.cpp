@@ -64,8 +64,8 @@ namespace PieceTypes {
 //    const std::vector<PieceType> pieces = {KNIGHT, BISHOP, ROOK, QUEEN, PAWN, KING};
 }
 
+
 namespace Pieces {
-    Piece NO_PIECE {PieceTypes::NO_PIECE, EMPTY};
 
     Piece parsePiece (char asChar) {
         const PieceType* type = nullptr;
@@ -105,11 +105,11 @@ namespace Pieces {
     }
 }
 
-Piece::Piece (PieceType type, PieceColor color) : type{type}, color{color} {
-    if (((type == PieceTypes::NO_PIECE) ^ (color == EMPTY)) != 0) {
-        throw std::runtime_error("Must be either both NO_PIECE and EMPTY, or none");
-    }
-}
+//Piece::Piece (PieceType type, PieceColor color) : type{type}, color{color} {
+//    if (((type == PieceTypes::NO_PIECE) ^ (color == EMPTY)) != 0) {
+//        throw std::runtime_error("Must be either both NO_PIECE and EMPTY, or none");
+//    }
+//}
 
 bool Piece::operator== (const Piece& rhs) const {
     return type == rhs.type &&
@@ -121,10 +121,7 @@ bool Piece::operator!= (const Piece& rhs) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Piece& piece) {
-    os << piece.type.getSymbol(piece.color);
-    return os;
-//    os << "Piece{TYPE: " << piece.TYPE << " color: " << piece.color << "}";
-//    return os;
+    return os << piece.type.getSymbol(piece.color);
 }
 
 PieceColor flip (const PieceColor color) {

@@ -35,7 +35,7 @@ public:
     Bitboard flipVertical () const;
     Bitboard rotate180 () const;
 
-    Bitboard asColor (PieceColor color) const;
+    Bitboard asColor (PieceColor color, bool flip) const;
 
     Bitboard& operator<<=(int shift);
     friend Bitboard operator<< (Bitboard bitboard, int shift);
@@ -51,6 +51,8 @@ public:
 
     Bitboard& operator^=(Bitboard other);
     friend Bitboard operator^ (Bitboard bitboard, Bitboard other);
+
+    void reset ();
 
     bool operator== (const Bitboard& rhs) const;
 

@@ -5,6 +5,8 @@
 #include "Square.h"
 #include "BitboardOperations.h"
 
+Square flip ();
+
 namespace Directions = BitboardOperations::Directions;
 
 Square::Square (Square_raw square) : value{static_cast<uint8_t>(square)} {
@@ -31,33 +33,38 @@ uint8_t Square::getValue () const {
     return value;
 }
 
-const Square& Square::operator+= (const Square& other) {
-    value <<= 8 * other.getY();
-    value <<= other.getX();
-
-    return *this;
-}
-
-Square operator+ (Square square, const Square& other) {
-    square += other;
-    return square;
-}
-
-const Square& Square::operator-= (const Square& other) {
-    value >>= 8 * other.getY();
-    value >>= other.getX();
-
-    return *this;
-}
-
-Square operator- (Square square, Square other) {
-    square += other;
-
-    return square;
-}
+//const Square& Square::operator+= (const Square& other) {
+//    value += other.value;
+//    return *this;
+//}
+//
+//Square operator+ (Square square, const Square& other) {
+//    std::cout << square << other << std::endl;
+//
+//    square += other;
+//
+//    std::cout << square << other << std::endl;
+//
+//    return square;
+//}
+//
+//const Square& Square::operator-= (const Square& other) {
+//    value -= other.value;
+//    return *this;
+//}
+//
+//Square operator- (Square square, Square other) {
+//    square += other;
+//
+//    return square;
+//}
 
 uint8_t Square::diffY (Square square) const {
     return std::abs((int8_t) getY() - (int8_t) square.getY());
+}
+
+uint8_t Square::diffX (Square square) const {
+    return std::abs((int8_t) getX() - (int8_t) square.getX());
 }
 
 std::ostream& operator<< (std::ostream& os, const Square& square) {
@@ -100,16 +107,94 @@ RayDirection Square::getDirection (const Square& other, const PieceType& type) c
 }
 
 Square Square::move (RayDirection direction) {
-    auto shift = BitboardOperations::rayDirectionToShift(direction, WHITE);
-    return *this;
+    return move(direction, WHITE);
 }
 
 
 Square Square::move (RayDirection direction, PieceColor perspective) const {
-    auto shift = BitboardOperations::rayDirectionToShift(direction, perspective);
+    uint8_t offX;
+    uint8_t offY;
+    namespace Directions = BitboardOperations::Directions;
+    switch (direction) {
+        case Directions::NORTH_EAST:
+            offX = 1;
+            offY = 1;
+            break;
+        case Directions::NORTH_WEST:
+            offX = -1;
+            offY = 1;
+            break;
+        case Directions::NORTH:
+            offY = 1;
+            offX = 0;
+            break;
+        case Directions::SOUTH_EAST:
+            offX = 1;
+            offY = -1;
+            break;
+        case Directions::SOUTH_WEST:
+            offX = -1;
+            offY = -1;
+            break;
+        case Directions::SOUTH:
+            offY = -1;
+            offX = 0;
+            break;
+        case Directions::EAST:
+            offX = 1;
+            offY = 0;
+            break;
+        case Directions::WEST:
+            offX = -1;
+            offY = 0;
+            break;
+        default:
+            throw std::runtime_error(":)))))");
+    }
 
-    uint8_t newValue = value + shift;
+    if (perspective == BLACK) {
+        offX *= -1;
+        offY *= -1;
+    }
 
-    return {newValue};
+    uint8_t newX = getX() + offX;
+    uint8_t newY = getY() + offY;
+
+    if (newX < 0 || newX >= 8) return INVALID;
+    if (newY < 0 || newY >= 8) return INVALID;
+
+    if (DEBUG) {
+//        if (newValue != value + shift) {
+//            std::cerr
+//                    << "WARNING!!! Square move overflow: trying to move "
+//                    << *this << " (" << +value << ") by "
+//                    << +shift << " amount!" << std::endl;
+//        }
+    }
+
+    return {newY, newX};
+}
+
+bool Square::isInvalid () const {
+    return value == 255;
+}
+
+Square Square::asColorRotate (PieceColor color) const {
+    if (color == WHITE) return *this;
+    if (color == BLACK) return rotate180();
+}
+
+Square Square::asColorFlip (PieceColor color) const {
+    if (color == WHITE) return *this;
+    if (color == BLACK) return flip();
+}
+
+
+Square Square::rotate180 () const {
+    return {63 - value};
+}
+
+Square Square::flip () const {
+    return {getX(), 7 - getY()};
 }
 

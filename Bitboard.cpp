@@ -163,8 +163,14 @@ Bitboard Bitboard::rotate180 () const {
     return x;
 }
 
-Bitboard Bitboard::asColor (PieceColor color) const {
-    if (color == BLACK) return rotate180();
+Bitboard Bitboard::asColor (PieceColor color, bool flip) const {
+    if (color == BLACK) {
+        if (flip) {
+            return flipVertical();
+        } else {
+            return rotate180();
+        }
+    }
     else return *this;
 }
 
@@ -198,4 +204,8 @@ bool Bitboard::operator== (const Bitboard& rhs) const {
 
 bool Bitboard::operator!= (const Bitboard& rhs) const {
     return !(rhs == *this);
+}
+
+void Bitboard::reset () {
+    *this ^= *this;
 }

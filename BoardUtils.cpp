@@ -5,18 +5,19 @@
 #include "BoardUtils.h"
 #include "BitboardOperations.h"
 
+#include "CastlingStatus.h"
 #include "Board.h"
 #include "Attacks.h"
 
 using namespace BitboardOperations;
 
-BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount)
-        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece} {}
+BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus)
+        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece}, castlingStatus(castlingStatus) {}
 
 std::ostream& operator<< (std::ostream& os, const BoardState& state) {
-    os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << "}";
-    return os;
+    return os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " fullMoveCount: " << state.fullMoveCount << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << " castlingStatus: " << state.castlingStatus << "}";
 }
+
 
 BoardStateHistory::BoardStateHistory () : states{} {
     createNewFrame();
@@ -24,7 +25,7 @@ BoardStateHistory::BoardStateHistory () : states{} {
 
 void BoardStateHistory::createNewFrame () {
     if (states.empty()) {
-        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1});
+        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1, CastlingStatus{}});
     } else {
         states.push(BoardState{states.top()});
     }
@@ -46,7 +47,6 @@ void BoardStateHistory::pushState (BoardState newFrame) {
 
 void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
     const Bitboard& bishops = context.getPieces()[color].boards[PieceTypes::BISHOP];
-    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(color).all;
 
 
     Bitboard possiblePinnedSquares;
@@ -61,9 +61,9 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
 
         Bitboard possibleSquares = Attacks::getInstance()
                                            .getBishopAttacks()
-                                           .getRaysToAllDirections(context, bishopSquare, color)
+                                           .getRaysToAllDirections(context, bishopSquare, color, true)
+                                   & ~context.getBlockers(color, true)
                                    & checkMask;
-//                                          & possiblePinnedSquares;
         if (bishopSquare & pinMaskD12) possibleSquares &= possiblePinnedSquares;
 
 
@@ -88,7 +88,8 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
         if (rookSquare & pinMaskD12) continue;  // pinned rooks can't move if pinned diagonally
         Bitboard possibleSquares = Attacks::getInstance()
                                            .getRookAttacks()
-                                           .getRaysToAllDirections(context, rookSquare, color)
+                                           .getRaysToAllDirections(context, rookSquare, color, true)
+                                   & ~context.getBlockers(color, true)
                                    & checkMask;
 
         if (rookSquare & pinMaskHV) possibleSquares &= possiblePinnedSquares;
@@ -101,16 +102,16 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
 
 void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
     const Bitboard& queens = context.getPieces()[color].boards[PieceTypes::QUEEN];
-    const Bitboard& occupancy = context.getOccupancy();
+    const Bitboard& occupancy = context.getOccupancy(false);
 
     for (const Square& queenSquare : queens) {
         Bitboard possibleSquares;
         if (queenSquare & pinMaskHV) {
-            possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color) & checkMask & pinMaskHV;
+            possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskHV & ~context.getBlockers(color, true);
         } else if (queenSquare & pinMaskD12) {
-            possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color) & checkMask & pinMaskD12;
+            possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskD12 & ~context.getBlockers(color, true);
         } else {
-            possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color) & checkMask;
+            possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & ~context.getBlockers(color, true);
         }
 
         for (const Square& possibleSquare : possibleSquares) {
@@ -126,7 +127,7 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
         if (knightSquare & pinMask) continue; // pinned knights can't move
 
         const Bitboard& possibleSquares = Attacks::getInstance().getKnightAttacks().getAttackAt(knightSquare)
-                                          & ~context.getBlockers(color)
+                                          & ~context.getBlockers(color, false)
                                           & checkMask;
 
         for (const Square& possibleSquare : possibleSquares) {
@@ -136,13 +137,13 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
 }
 
 void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
-    const Bitboard& occupancy = context.getOccupancy();
+    const Bitboard& occupancy = context.getOccupancy(true);
     const Bitboard& pawns = context.getPieces()[color].boards[PieceTypes::PAWN];
 
     // pushes
     const Bitboard& pushes = Attacks::getInstance()
                                      .getPawnAttacks()
-            .getPawnPushes(occupancy, color, pawns) & checkMask;
+                                     .getPawnPushes(occupancy, color, pawns) & checkMask;
 
     for (const Square& pawnSquare : pawns) {
         if (pawnSquare & pinMaskD12) continue; // diagonally pinned pawns cannot push
@@ -152,7 +153,16 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
                 .getPossiblePushesOnEmptyBoard(color, pawnSquare);
 
         for (const Square& destinationSquare : pushes & possiblePushSquares) {
-            moves.emplace_back(context, pawnSquare, destinationSquare);
+            if (destinationSquare.asColorRotate(color).getY() == 7) {
+                std::cout << "promotioooon" << std::endl;
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::KNIGHT);
+            } else {
+                moves.emplace_back(context, pawnSquare, destinationSquare);
+            }
+
         }
     }
 
@@ -168,23 +178,34 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
         const auto& possibleCaptureSquares = Attacks::getInstance()
                                                      .getPawnAttacks()
-                .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & pinMaskD12;
+                                                     .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & (pinMaskD12 == 0 ? ~pinMaskD12 : pinMaskD12);
 
         for (const Square& destinationSquare : captures & possibleCaptureSquares) {
             moves.emplace_back(context, pawnSquare, destinationSquare);
         }
     }
+
+
 }
 
 void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask) {
     const Square& kingSquare = context.getPieces()[color].boards[PieceTypes::KING].ls1b();
 
     const Bitboard& possibleSquares = Attacks::getInstance().getKingAttacks().getAttacksAt(context, kingSquare, color)
-                                      & ~context.getBlockers(color)
+                                      & ~context.getBlockers(color, false)
                                       & ~attackMask;
 
     for (const Square& possibleSquare : possibleSquares) {
         moves.emplace_back(context, kingSquare, possibleSquare);
+    }
+
+    Bitboard kingsideAttackMask = 112;
+    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) && !(attackMask & kingsideAttackMask.asColor(color, true))) {
+        moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{g1}.asColorFlip(color));
+    }
+    Bitboard queensideAttackMask = 28;
+    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) && !(attackMask & queensideAttackMask.asColor(color, true))) {
+        moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{c1}.asColorFlip(color));
     }
 }
 

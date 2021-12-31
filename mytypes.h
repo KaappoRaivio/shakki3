@@ -73,7 +73,7 @@ struct Piece {
     PieceType type;
     PieceColor color;
 
-    Piece (PieceType type, PieceColor color);
+//    Piece (PieceType type, PieceColor color);
 
     bool operator== (const Piece& rhs) const;
     bool operator!= (const Piece& rhs) const;
@@ -84,9 +84,41 @@ struct Piece {
 };
 
 namespace Pieces {
-    extern Piece NO_PIECE;
+    constexpr Piece NO_PIECE {PieceTypes::NO_PIECE, EMPTY};
+
+    constexpr Piece WHITE_KNIGHT {PieceTypes::KNIGHT, WHITE};
+    constexpr Piece BLACK_KNIGHT {PieceTypes::KNIGHT, BLACK};
+
+    constexpr Piece WHITE_ROOK {PieceTypes::ROOK, WHITE};
+    constexpr Piece BLACK_ROOK {PieceTypes::ROOK, BLACK};
+
+    constexpr Piece WHITE_BISHOP {PieceTypes::BISHOP, WHITE};
+    constexpr Piece BLACK_BISHOP {PieceTypes::BISHOP, BLACK};
+
+    constexpr Piece WHITE_QUEEN {PieceTypes::QUEEN, WHITE};
+    constexpr Piece BLACK_QUEEN {PieceTypes::QUEEN, BLACK};
+
+    constexpr Piece WHITE_KING {PieceTypes::KING, WHITE};
+    constexpr Piece BLACK_KING {PieceTypes::KING, BLACK};
+
+    constexpr Piece WHITE_PAWN {PieceTypes::PAWN, WHITE};
+    constexpr Piece BLACK_PAWN {PieceTypes::PAWN, BLACK};
+
+    constexpr Piece pieces[6][2] {
+            {WHITE_KNIGHT, BLACK_KNIGHT},
+            {WHITE_BISHOP, BLACK_BISHOP},
+            {WHITE_ROOK, BLACK_ROOK},
+            {WHITE_QUEEN, BLACK_QUEEN},
+            {WHITE_PAWN, BLACK_PAWN},
+            {WHITE_KING, BLACK_KING}
+    };
 
     Piece parsePiece (char asChar);
 }
 
 PieceColor flip (PieceColor color);
+
+template<typename T>
+concept IsCastlingSide = requires(T a) {
+    a == 2 || a == 3;
+};

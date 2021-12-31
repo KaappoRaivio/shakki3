@@ -10,6 +10,8 @@
 #include <ostream>
 #include "mytypes.h"
 #include "Square.h"
+#include "CastlingStatus.h"
+//#include "BoardUtils.h"
 //#include "Board.h"
 
 
@@ -33,23 +35,44 @@ private:
 
 public:
     explicit Move (bool NO_MOVE);
+
     Move (Move_raw move);
-    Move (const Board& context, Square from, Square to, PieceType pieceToPromoteTo = PieceTypes::KING);
-    Move (const Move& other);
+    Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::NO_PIECE);
+    Move (const Move& other) = default;
 
     Square getOrigin () const;
     Square getDestination () const;
 
     bool isCapture () const;
+    bool isPromotion () const;
 
-    bool operator == (const Move& rhs) const;
-    bool operator != (const Move& rhs) const;
+//    requires IsCastlingSide<SIDE>
+//    template<CastlingSide SIDE>
+    bool isCastling (CastlingSide SIDE) const {
+        if (!isPromotion() && !isCapture()) {
+            return (move & 0b11) == SIDE;
+//            if (SIDE == MoveBitmasks::KING_CASTLE && ((move & 0b11) == MoveBitmasks::KING_CASTLE)) {
+//                return true;
+//            }
+//            if (SIDE == MoveBitmasks::QUEEN_CASTLE && ((move & 0b11) == MoveBitmasks::QUEEN_CASTLE)) {
+//                return true;
+//            }
+        }
 
+        return false;
+    }
+
+    bool operator== (const Move& rhs) const;
+    bool operator!= (const Move& rhs) const;
     friend std::ostream& operator<< (std::ostream& os, const Move& move);
 
     Move_raw raw () const;
 
     const Piece& getMovingPiece (const Board& context) const;
+
+    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const;
+
+    PieceType getPromotedPiece () const;
 };
 
 namespace Moves {

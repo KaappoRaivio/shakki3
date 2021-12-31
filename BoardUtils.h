@@ -8,11 +8,12 @@
 
 #include <stack>
 #include <ostream>
+#include <bitset>
 #include "mytypes.h"
 #include "Move.h"
 #include "Bitboard.h"
+#include "CastlingStatus.h"
 
-//class Move;
 
 struct BoardState {
     int plysSinceFiftyMoveReset;
@@ -20,8 +21,10 @@ struct BoardState {
     PieceColor turn;
     Move_raw previousMove;
     Piece capturedPiece;
+    CastlingStatus castlingStatus;
 
-    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount);
+
+    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus);
 
     friend std::ostream& operator<< (std::ostream& os, const BoardState& state);
 };
