@@ -66,6 +66,10 @@ private:
     void unmoveCastling (const Move& move);
 
     Piece movePromotion (const Move& promotionMove);
+
+    void setSquare (const Square& where, const Piece& what);
+
+    void unmovePromotion (const Piece& capturedPiece, const Move move);
 };
 
 

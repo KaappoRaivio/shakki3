@@ -9,7 +9,14 @@
 
 int main () {
 
-    Board board = Board::fromFEN("r3k2r/5r2/8/8/8/8/8/R3K2R w KQkq - 0 1");
+    Board board = Board::fromFEN("4qk2/P1p4P/n1p1pBPn/P1p1p1Pp/B1P2pp1/1bP1bR2/2P2NrQ/R3KNr1 w Q - 0 1");
+    std::cout << board << std::endl;
+
+    Move move{board, h7, h8, PieceTypes::KNIGHT};
+    board.executeMove(move);
+
+    std::cout << board << std::endl;
+    board.unmakeMove();
     std::cout << board << std::endl;
 
 //    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
@@ -26,14 +33,14 @@ int main () {
 //    std::cout << attackMask  << std::endl;
 
 
-    for (const auto& m : board.getMoves()) {
-        std::cout << m << ", ";
-    }
-
-    std::cout << board.getMoves().size() << std::endl;
+//    for (const auto& m : board.getMoves()) {
+//        std::cout << m << ", ";
+//    }
+//
+//    std::cout << board.getMoves().size() << std::endl;
 
 
 //    std::cout << Attacks::getInstance().getKnightAttackGenerator().getAttackAt((Square) 1) << std::endl;
 
-    std::exit(0);
+//    std::exit(0);
 }

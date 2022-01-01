@@ -32,6 +32,8 @@ std::ostream& operator<< (std::ostream& os, const Board& board) {
             }
             bitboard << std::endl;
         }
+
+//        os << bitboard.rdbuf();
     //
 //        os << "letterbox: " << std::endl;
 
@@ -91,65 +93,44 @@ bool Board::is (PieceType type, Square at) const {
     return bool(pieces[color].boards[type] & Bitboard{at});
 }
 
+void Board::setSquare (const Square& where, const Piece& what) {
+    const Piece currentPiece = getPieceAt(where);
+
+    letterbox[where]->type = what.type;
+    letterbox[where]->color = what.color;
+
+    if (currentPiece.type != PieceTypes::NO_PIECE) {
+        Bitboard& currentPieceBitboard = pieces[currentPiece.color].boards[currentPiece.type];
+        currentPieceBitboard ^= where;
+
+        pieces[currentPiece.color].all ^= where;
+    }
+
+    if (what.type != PieceTypes::NO_PIECE) {
+        pieces[what.color].boards[what.type] |= where;
+        pieces[what.color].all |= where;
+    }
+}
+
 Piece Board::movePiece (const Square& from, const Square& to) {
     const Piece possiblyCapturedPiece = *letterbox[to];
     const Piece movingPiece = *letterbox[from];
 
 
-    //letterbox
-    letterbox[to]->type = movingPiece.type;
-    letterbox[to]->color = movingPiece.color;
-
-    letterbox[from]->type = PieceTypes::NO_PIECE;
-    letterbox[from]->color = PieceColor::EMPTY;
-
-
-    //bitboards
-    Bitboard& allPieces = pieces[movingPiece.color].all;
-    Bitboard& movingPieceSet = pieces[movingPiece.color].boards[movingPiece.type];
-    movingPieceSet ^= from;
-    movingPieceSet ^= to;
-
-    allPieces ^= from;
-    allPieces ^= to;
-
-    if (possiblyCapturedPiece != Pieces::NO_PIECE) {
-        Bitboard& allOppositePieces = pieces[possiblyCapturedPiece.color].all;
-        Bitboard& destinationPieceSet = pieces[possiblyCapturedPiece.color].boards[possiblyCapturedPiece.type];
-        destinationPieceSet ^= to;
-        allOppositePieces ^= from;
-    }
+    setSquare(to, movingPiece);
+    setSquare(from, Pieces::NO_PIECE);
 
     return possiblyCapturedPiece;
 }
 
 void Board::unmovePiece (const Piece& capturedPiece, const Square& from, const Square& to) {
-//    const BoardState& currentState = history->popFrame();
-//    const Move& moveToUnmake = currentState.previousMove;
-//    const Piece& capturedPiece = currentState.capturedPiece;
-
     const Piece movingPiece = *letterbox[to];
 
-    // letterbox
-    letterbox[from]->type = movingPiece.type;
-    letterbox[from]->color = movingPiece.color;
-
-    letterbox[to]->type = capturedPiece.type;
-    letterbox[to]->color = capturedPiece.color;
-
-    // bitboards
-    Bitboard& movingPieceSet = pieces[movingPiece.color].boards[movingPiece.type];
-    movingPieceSet ^= to;
-    movingPieceSet ^= from;
-
-    if (capturedPiece != Pieces::NO_PIECE) {
-        Bitboard& capturedPieceSet = pieces[capturedPiece.color].boards[capturedPiece.type];
-        capturedPieceSet ^= to;
-    }
+    setSquare(from, movingPiece);
+    setSquare(to, capturedPiece);
 }
 
 void Board::executeMove (const Move& move) {
-//    const std::unique_ptr<Piece>& movingPiece = letterbox[move.getOrigin()];
     const Piece movingPiece = *letterbox[move.getOrigin()];
 
     if (movingPiece.color != getTurn()) {
@@ -211,6 +192,8 @@ void Board::unmakeMove () {
 
     if (moveToUnmake.isCastling(MoveBitmasks::KING_CASTLE) || moveToUnmake.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
         unmoveCastling(moveToUnmake);
+    } else if (moveToUnmake.isPromotion()) {
+        unmovePromotion(capturedPiece, moveToUnmake);
     } else {
         unmovePiece(capturedPiece, moveToUnmake.getOrigin(), moveToUnmake.getDestination());
     }
@@ -400,6 +383,14 @@ std::string Board::toFEN () const {
 
 Piece Board::movePromotion (const Move& promotionMove) {
     auto possiblyCapturedPiece = movePiece(promotionMove.getOrigin(), promotionMove.getDestination());
+    setSquare(promotionMove.getDestination(), Pieces::pieces[promotionMove.getPromotedPiece()][promotionMove.getMovingPiece(*this).color]);
+
     return possiblyCapturedPiece;
+}
+
+void Board::unmovePromotion (const Piece& capturedPiece, const Move move) {
+    unmovePiece(capturedPiece, move.getOrigin(), move.getDestination());
+
+    setSquare(move.getOrigin(), Pieces::pieces[PieceTypes::PAWN][getPieceAt(move.getOrigin()).color]);
 }
 
