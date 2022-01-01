@@ -26,67 +26,82 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
         }
     }
 
-    SECTION("Board should make and unmake quiet moves") {
-        Board board;
-        Move move{board, e2, e4};
-        board.executeMove(move);
-        TestHelpers::verify(move, board);
+    SECTION("Board should make an unmake moves") {
+        SECTION("quiet moves") {
+            Board board;
+            Move move{board, e2, e4};
+            board.executeMove(move);
+            TestHelpers::verify(move, board);
 
-        board.unmakeMove();
-        REQUIRE(board.toFEN() == Board{}.toFEN());
+            board.unmakeMove();
+            REQUIRE(board.toFEN() == Board{}.toFEN());
+        }
+
+        SECTION ("capture moves") {
+            Board board = Board::fromFEN("5B2/P1N1N3/P1P2P2/8/3RP2r/6kn/2qP1p2/K7 b - - 0 1");
+            Board board2 = Board::fromFEN("5B2/P1N1N3/P1P2P2/8/3RP2r/6kn/2qP1p2/K7 b - - 0 1");
+            Move move{board, c2, c3};
+            board.executeMove(move);
+
+            TestHelpers::verify(move, board);
+
+            board.unmakeMove();
+            REQUIRE(board.toFEN() == board2.toFEN());
+        }
+
+        SECTION ("castling moves") {
+            Board boardWhite = Board::fromFEN("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+            Board boardBlack = Board::fromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+            Move move{boardWhite, e1, g1};
+            boardWhite.executeMove(move);
+
+            TestHelpers::verify(move, boardWhite);
+
+            boardWhite.unmakeMove();
+
+            REQUIRE(boardWhite.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+
+            Move move2{boardWhite, e1, c1};
+            boardWhite.executeMove(move2);
+
+            TestHelpers::verify(move2, boardWhite);
+
+            boardWhite.unmakeMove();
+
+            REQUIRE(boardWhite.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
+
+            Move move3{boardBlack, e8, g8};
+            boardBlack.executeMove(move3);
+
+            TestHelpers::verify(move3, boardBlack);
+
+            boardBlack.unmakeMove();
+
+            REQUIRE(boardBlack.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+
+            Move move4{boardBlack, e8, c8};
+            boardBlack.executeMove(move4);
+
+            TestHelpers::verify(move4, boardBlack);
+
+            boardBlack.unmakeMove();
+
+            REQUIRE(boardBlack.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
+        }
+
+        SECTION ("promotion moves") {
+            Board board = Board::fromFEN("K4n2/5PP1/1p6/8/1N3Rp1/kP5p/P6B/N2r2Q1 w - - 0 1");
+
+            Move promotionMove{board, g7, g8, PieceTypes::BISHOP};
+
+            board.executeMove(promotionMove);
+            std::cout << board << std::endl;
+            std::cout << promotionMove.isPromotion() << std::endl;
+//            REQUIRE(false);
+        }
+
     }
 
-    SECTION ("Board should make and unmake capture moves") {
-        Board board = Board::fromFEN("5B2/P1N1N3/P1P2P2/8/3RP2r/6kn/2qP1p2/K7 b - - 0 1");
-        Board board2 = Board::fromFEN("5B2/P1N1N3/P1P2P2/8/3RP2r/6kn/2qP1p2/K7 b - - 0 1");
-        Move move{board, c2, c3};
-        board.executeMove(move);
-
-        TestHelpers::verify(move, board);
-
-        board.unmakeMove();
-        REQUIRE(board.toFEN() == board2.toFEN());
-    }
-
-    SECTION ("Board should make and unmake castling moves") {
-        Board boardWhite = Board::fromFEN("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-        Board boardBlack = Board::fromFEN("r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
-        Move move{boardWhite, e1, g1};
-        boardWhite.executeMove(move);
-
-        TestHelpers::verify(move, boardWhite);
-
-        boardWhite.unmakeMove();
-
-        REQUIRE(boardWhite.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-
-        Move move2{boardWhite, e1, c1};
-        boardWhite.executeMove(move2);
-
-        TestHelpers::verify(move2, boardWhite);
-
-        boardWhite.unmakeMove();
-
-        REQUIRE(boardWhite.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-
-        Move move3{boardBlack, e8, g8};
-        boardBlack.executeMove(move3);
-
-        TestHelpers::verify(move3, boardBlack);
-
-        boardBlack.unmakeMove();
-
-        REQUIRE(boardBlack.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
-
-        Move move4{boardBlack, e8, c8};
-        boardBlack.executeMove(move4);
-
-        TestHelpers::verify(move4, boardBlack);
-
-        boardBlack.unmakeMove();
-
-        REQUIRE(boardBlack.toFEN() == "r3k2r/8/8/8/8/8/8/R3K2R b KQkq - 0 1");
-    }
 }
 
 TEST_CASE("Board should implement move generation", "[board]") {

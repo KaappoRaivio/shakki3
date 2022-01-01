@@ -159,6 +159,8 @@ void Board::executeMove (const Move& move) {
     Piece possiblyCapturedPiece{PieceTypes::NO_PIECE, EMPTY};
     if (move.isCastling(MoveBitmasks::KING_CASTLE) || move.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
         moveCastling(move);
+    } else if (move.isPromotion()) {
+        possiblyCapturedPiece = movePromotion(move);
     } else {
         possiblyCapturedPiece = movePiece(move.getOrigin(), move.getDestination());
     }
@@ -394,5 +396,10 @@ std::string Board::toFEN () const {
     out << " " << history->getCurrentFrame().fullMoveCount;
 
     return out.str();
+}
+
+Piece Board::movePromotion (const Move& promotionMove) {
+    auto possiblyCapturedPiece = movePiece(promotionMove.getOrigin(), promotionMove.getDestination());
+    return possiblyCapturedPiece;
 }
 
