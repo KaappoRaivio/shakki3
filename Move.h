@@ -18,8 +18,8 @@
 // 000000 000000 0         0       0        0
 // from   to     promotion capture special1 special2
 namespace MoveBitmasks {
-    constexpr int CAPTURE = 1 << 3;
-    constexpr int PROMOTION = 1 << 4;
+    constexpr int CAPTURE = 1 << 2;
+    constexpr int PROMOTION = 1 << 3;
     constexpr int DOUBLE_PAWN_PUSH = 1;
     constexpr int KING_CASTLE = 2;
     constexpr int QUEEN_CASTLE = 3;

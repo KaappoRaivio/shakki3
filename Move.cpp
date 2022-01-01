@@ -25,7 +25,6 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     bool isPromotion = context.is(PAWN, from) &&  bool(BitboardOperations::SquareMasks::rank8.asColor(color, false) & to);
     if (isPromotion) {
-        std::cout << "Promotion!!" << std::endl;
         if (pieceToPromoteTo == NO_PIECE) {
             throw std::runtime_error("You must set pieceToPromote for a promotion move!");
         }

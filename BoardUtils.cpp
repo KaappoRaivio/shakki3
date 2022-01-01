@@ -154,7 +154,6 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
         for (const Square& destinationSquare : pushes & possiblePushSquares) {
             if (destinationSquare.asColorRotate(color).getY() == 7) {
-                std::cout << "promotioooon" << std::endl;
                 moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
                 moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
                 moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
