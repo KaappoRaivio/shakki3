@@ -73,6 +73,8 @@ public:
     CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const;
 
     PieceType getPromotedPiece () const;
+
+    static Move fromString (std::string moveString, const Board& context);
 };
 
 namespace Moves {

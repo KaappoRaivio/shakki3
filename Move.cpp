@@ -71,12 +71,12 @@ bool Move::operator!= (const Move& rhs) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Move& move) {
-    if (move.isCastling(MoveBitmasks::KING_CASTLE)) return os << "O-O";
-    if (move.isCastling(MoveBitmasks::QUEEN_CASTLE)) return os << "O-O-O";
+//    if (move.isCastling(MoveBitmasks::KING_CASTLE)) return os << "O-O";
+//    if (move.isCastling(MoveBitmasks::QUEEN_CASTLE)) return os << "O-O-O";
     os << move.getOrigin() << move.getDestination();
 
     if (move.isPromotion()) {
-        os << "=" << move.getPromotedPiece().getSymbol(WHITE);
+        os << move.getPromotedPiece().getSymbol(WHITE);
     }
 
     return os;
@@ -125,6 +125,20 @@ CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingS
     }
 
     return newStatus;
+}
+
+Move Move::fromString (std::string moveString, const Board& context) {
+    const Square& from = Square::fromString(moveString.substr(0, 2));
+    const Square& to = Square::fromString(moveString.substr(2, 2));
+
+    PieceType pieceToPromoteTo;
+    if (moveString.size() == 5) {
+        pieceToPromoteTo = Pieces::parsePiece(moveString.at(4)).type;
+    } else {
+        pieceToPromoteTo = NO_PIECE;
+    }
+
+    return {context, from, to, pieceToPromoteTo};
 }
 
 

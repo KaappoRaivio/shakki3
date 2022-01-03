@@ -47,6 +47,8 @@ public:
 
     Square rotate180 () const;
     Square flip () const;
+
+    static Square fromString (const std::string& string);
 };
 
 

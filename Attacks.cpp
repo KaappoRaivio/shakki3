@@ -323,8 +323,8 @@ void PawnAttacks::populatePossiblePawnCaptures () {
                 const Square& square = Square{y, x};
                 const Bitboard& start = square;
 
-                const Bitboard& east = start.move(NORTH_EAST, static_cast<PieceColor>(color));
-                const Bitboard& west = start.move(NORTH_WEST, static_cast<PieceColor>(color));
+                const Bitboard& east = start.move(NORTH_EAST, static_cast<PieceColor>(color), 1, false);
+                const Bitboard& west = start.move(NORTH_WEST, static_cast<PieceColor>(color), 1, false);
 
                 possiblePawnCapturesOnEmptyBoard[color][square] = east | west;
             }

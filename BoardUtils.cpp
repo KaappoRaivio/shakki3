@@ -128,7 +128,7 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
         if (knightSquare & pinMask) continue; // pinned knights can't move
 
         const Bitboard& possibleSquares = Attacks::getInstance().getKnightAttacks().getAttackAt(knightSquare)
-                                          & ~context.getBlockers(color, false)
+                                          & ~context.getBlockers(color, true)
                                           & checkMask;
 
         for (const Square& possibleSquare : possibleSquares) {
@@ -169,7 +169,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     //captures
     const auto& opponentPieces = context.getPieces()[flip(color)].all;
 
-    const Bitboard& captures = Attacks::getInstance()
+        const Bitboard& captures = Attacks::getInstance()
                                        .getPawnAttacks()
                                        .getCaptures(context, pawns, color) & opponentPieces & checkMask;
 
@@ -178,7 +178,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
         const auto& possibleCaptureSquares = Attacks::getInstance()
                                                      .getPawnAttacks()
-                                                     .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & (pinMaskD12 == 0 ? ~pinMaskD12 : pinMaskD12);
+                                                         .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & ((pinMaskD12 == 0 || !(pawnSquare & pinMaskD12)) ? ~pinMaskD12 : pinMaskD12);
 
         for (const Square& destinationSquare : captures & possibleCaptureSquares) {
             moves.emplace_back(context, pawnSquare, destinationSquare);

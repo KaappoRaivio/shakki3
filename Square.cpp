@@ -68,7 +68,7 @@ uint8_t Square::diffX (Square square) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Square& square) {
-    os << (char) (square.getX() + 65) << (int) square.getY() + 1;
+    os << (char) (square.getX() + 'A') << (int) square.getY() + 1;
     return os;
 }
 
@@ -196,5 +196,12 @@ Square Square::rotate180 () const {
 
 Square Square::flip () const {
     return {7 - getY(), getX()};
+}
+
+Square Square::fromString (const std::string& string) {
+    int x = string.at(0) - 'A';
+    int y = string.at(1) - '0' - 1;
+
+    return {y, x};
 }
 

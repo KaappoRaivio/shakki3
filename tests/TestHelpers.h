@@ -9,10 +9,12 @@
 #include "../Move.h"
 #include "../Board.h"
 
+#include "thc/thc.h"
+
 namespace TestHelpers {
     void verify (const Move& previousMove, const Board& board);
 
-    template <typename T>
+    template<typename T>
     std::string vectorToString (const std::vector<T>& items, const std::string& separator) {
         std::stringstream s;
 
@@ -25,5 +27,19 @@ namespace TestHelpers {
     }
 
     void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
+    void verifyMoveList (const std::unordered_set<std::string>& movesString, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
+
+    void qperftTHC (thc::ChessRules& board, int depth, int& out);
     void qperft (Board& board, int depth, int& out);
+    int perftTHC (thc::ChessRules& board, int depth);
+    int perft (Board& board, int depth);
+
+
+    class HelperEngineInterface {
+    public:
+        std::unordered_set<std::string> getMoves (const std::string& FEN) const;
+        std::unordered_set<std::string> getMovesNative (const std::string& FEN) const;
+    };
+
+    void analyzePerftProblem (Board& board, thc::ChessRules& rules, int depth);
 }
