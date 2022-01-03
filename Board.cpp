@@ -133,6 +133,14 @@ void Board::unmovePiece (const Piece& capturedPiece, const Square& from, const S
 void Board::executeMove (const Move& move) {
     const Piece movingPiece = *letterbox[move.getOrigin()];
 
+    if (DEBUG) {
+        if (movingPiece.color == EMPTY) {
+            std::stringstream ss;
+            ss << "Origin square for move " << move << " is empty! \n" << *this;
+            throw std::runtime_error(ss.str());
+        }
+    }
+
     if (movingPiece.color != getTurn()) {
         throw std::runtime_error("Wrong turn!");
     }

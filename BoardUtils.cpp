@@ -15,7 +15,8 @@ BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPi
         : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece}, castlingStatus(castlingStatus) {}
 
 std::ostream& operator<< (std::ostream& os, const BoardState& state) {
-    return os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " fullMoveCount: " << state.fullMoveCount << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << " castlingStatus: " << state.castlingStatus << "}";
+    return os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " fullMoveCount: " << state.fullMoveCount << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << " castlingStatus: " << state.castlingStatus
+              << "}";
 }
 
 
@@ -199,11 +200,19 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
     }
 
     Bitboard kingsideAttackMask = 112;
-    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) && !(attackMask & kingsideAttackMask.asColor(color, true))) {
+    Bitboard kingsideOccupancyMask = 96;
+    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
+        && !(attackMask & kingsideAttackMask.asColor(color, true))
+        && !(context.getOccupancy(true) & kingsideOccupancyMask)
+            ) {
         moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{g1}.asColorFlip(color));
     }
     Bitboard queensideAttackMask = 28;
-    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) && !(attackMask & queensideAttackMask.asColor(color, true))) {
+    Bitboard queensideOccupancyMask = 12;
+    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
+        && !(attackMask & queensideAttackMask.asColor(color, true))
+        && !(context.getOccupancy(true) & queensideOccupancyMask)
+            ) {
         moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{c1}.asColorFlip(color));
     }
 }
