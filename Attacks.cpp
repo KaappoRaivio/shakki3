@@ -277,7 +277,7 @@ PawnAttacks::PawnAttacks () : possiblePawnPushesOnEmptyBoard{}, possiblePawnCapt
 
 Bitboard PawnAttacks::getPawnPushes (const Bitboard& occupancy, PieceColor color, const Bitboard& pawns) const {
     const auto& singlePush = pawns.move(NORTH, color) & ~occupancy;
-    const auto& doublePush = singlePush.move(NORTH, color) & SquareMasks::rank4 & ~occupancy;
+    const auto& doublePush = singlePush.move(NORTH, color) & SquareMasks::rank4.asColor(color, false) & ~occupancy;
 
     return doublePush | singlePush;
 }

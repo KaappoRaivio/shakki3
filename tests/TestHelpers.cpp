@@ -77,4 +77,14 @@ namespace TestHelpers {
         REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} == supposedMoves);
     }
 
+    void qperft (Board& board, int depth, int& out) {
+        if (depth == 0) return;
+
+        for (const auto& move : board.getMoves()) {
+            out += 1;
+            board.executeMove(move);
+            qperft(board, depth - 1, out);
+            board.unmakeMove();
+        }
+    }
 }

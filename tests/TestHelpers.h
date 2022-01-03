@@ -25,4 +25,5 @@ namespace TestHelpers {
     }
 
     void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
+    void qperft (Board& board, int depth, int& out);
 }
