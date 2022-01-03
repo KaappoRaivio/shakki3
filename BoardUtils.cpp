@@ -76,7 +76,7 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
 
 void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
     const Bitboard& rooks = context.getPieces()[color].boards[PieceTypes::ROOK];
-    const Bitboard& occupancy = context.getPieces(WHITE).all | context.getPieces(BLACK).all;
+    const Bitboard& occupancy = context.getOccupancy(true);
 
     Bitboard possiblePinnedSquares;
     if (pinMaskHV == 0) {
@@ -176,9 +176,13 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     for (const Square& pawnSquare : pawns) {
         if (pawnSquare & pinMaskHV) continue; // horizonally or vertically pinned pawns cannot capture
 
-        const auto& possibleCaptureSquares = Attacks::getInstance()
+        auto possibleCaptureSquares = Attacks::getInstance()
                                                      .getPawnAttacks()
-                                                         .getPossibleCapturesOnEmptyBoard(color, pawnSquare) & ((pinMaskD12 == 0 || !(pawnSquare & pinMaskD12)) ? ~pinMaskD12 : pinMaskD12);
+                                                         .getPossibleCapturesOnEmptyBoard(color, pawnSquare);
+
+        if ((pawnSquare & pinMaskD12)) {
+            possibleCaptureSquares &= pinMaskD12;
+        }
 
         for (const Square& destinationSquare : captures & possibleCaptureSquares) {
             moves.emplace_back(context, pawnSquare, destinationSquare);
@@ -203,7 +207,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
     Bitboard kingsideOccupancyMask = 96;
     if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
         && !(attackMask & kingsideAttackMask.asColor(color, true))
-        && !(context.getOccupancy(true) & kingsideOccupancyMask)
+        && !(context.getOccupancy(true) & kingsideOccupancyMask.asColor(color, true))
             ) {
         moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{g1}.asColorFlip(color));
     }
@@ -211,7 +215,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
     Bitboard queensideOccupancyMask = 12;
     if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
         && !(attackMask & queensideAttackMask.asColor(color, true))
-        && !(context.getOccupancy(true) & queensideOccupancyMask)
+        && !(context.getOccupancy(true) & queensideOccupancyMask.asColor(color, true))
             ) {
         moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{c1}.asColorFlip(color));
     }

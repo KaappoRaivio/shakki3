@@ -103,12 +103,16 @@ void Board::setSquare (const Square& where, const Piece& what) {
         Bitboard& currentPieceBitboard = pieces[currentPiece.color].boards[currentPiece.type];
         currentPieceBitboard ^= where;
 
-        pieces[currentPiece.color].all ^= where;
+        if (currentPiece.type != PieceTypes::KING) {
+            pieces[currentPiece.color].all ^= where;
+        }
     }
 
     if (what.type != PieceTypes::NO_PIECE) {
         pieces[what.color].boards[what.type] |= where;
-        pieces[what.color].all |= where;
+        if (what.type != PieceTypes::KING) {
+            pieces[what.color].all |= where;
+        }
     }
 }
 
@@ -139,11 +143,11 @@ void Board::executeMove (const Move& move) {
             ss << "Origin square for move " << move << " is empty! \n" << *this;
             throw std::runtime_error(ss.str());
         }
+        if (movingPiece.color != getTurn()) {
+            throw std::runtime_error("Wrong turn!");
+        }
     }
 
-    if (movingPiece.color != getTurn()) {
-        throw std::runtime_error("Wrong turn!");
-    }
 
     Piece possiblyCapturedPiece{PieceTypes::NO_PIECE, EMPTY};
     if (move.isCastling(MoveBitmasks::KING_CASTLE) || move.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
