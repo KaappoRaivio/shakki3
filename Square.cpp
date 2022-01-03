@@ -60,11 +60,11 @@ uint8_t Square::getValue () const {
 //}
 
 uint8_t Square::diffY (Square square) const {
-    return std::abs((int8_t) getY() - (int8_t) square.getY());
+    return std::max(getY(), square.getY()) - std::min(getY(), square.getY());
 }
 
 uint8_t Square::diffX (Square square) const {
-    return std::abs((int8_t) getX() - (int8_t) square.getX());
+    return std::max(getX(), square.getX()) - std::min(getX(), square.getX());
 }
 
 std::ostream& operator<< (std::ostream& os, const Square& square) {
@@ -195,6 +195,6 @@ Square Square::rotate180 () const {
 }
 
 Square Square::flip () const {
-    return {getX(), 7 - getY()};
+    return {7 - getY(), getX()};
 }
 
