@@ -70,7 +70,7 @@ public:
 
     const Piece& getMovingPiece (const Board& context) const;
 
-    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const;
+    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus, const Piece& possiblyCapturedPiece) const;
 
     PieceType getPromotedPiece () const;
 

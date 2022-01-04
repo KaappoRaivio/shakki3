@@ -59,7 +59,7 @@ namespace TestHelpers {
 
             std::cerr << "context: " << std::endl << context << std::endl;
             std::cerr << context.toFEN() << std::endl;
-//            FAIL();
+            FAIL();
         }
 //        else {
 //            SUCCEED();

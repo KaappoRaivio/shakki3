@@ -135,14 +135,20 @@ TEST_CASE("Board should implement move generation", "[board]") {
                 {"rnbqkbnr/1ppppppp/p7/1B6/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 1 4", { "F7F6", "E7E6", "B7B6", "H7H6", "E7E5", "F7F5", "G7G5", "C7C5", "A8A7", "G8H6", "G8F6", "G7G6", "B8C6", "H7H5", "C7C6", "A6A5", "A6B5" }},
                 {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K1R1 b Qkq - 1 2", { "H3G2", "B6C4", "F6G8", "B6A4", "A6B7", "B4C3", "H8G8", "H8F8", "E7C5", "B6D5", "H8H6", "F6D5", "G7H6", "E7F8", "G7F8", "A8C8", "F6H5", "F6G4", "B6C8", "E8D8", "H8H7", "A6C8", "A8B8", "A6E2", "E7D8", "D7D6", "E8C8", "F6E4", "H8H5", "F6H7", "B4B3", "E7D6", "G6G5", "C7C5", "H8H4", "C7C6", "E6D5", "A8D8", "A6C4", "E8F8", "A6D3", "A6B5", "E8G8" }},
 //                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/2N2Q1p/pPPBBPPP/2KR2R1 w kq - 0 5", {}}
-                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/2N2Q1P/pPPBBP1P/R3K1R1 w Qkq - 0 5", { "G1G6", "F3G2", "F3F6", "F3D3", "G1F1", "A1D1", "F3G3", "E2F1", "D2C1", "D2E3", "E5C6", "G1G3", "A1A2", "E2C4", "E2D1", "E5G4", "C3D1", "F3G4", "E5D7", "E5D3", "G1G5", "E2D3", "G1G4", "A1B1", "G1H1", "E2A6", "E1C1", "G1G2", "F3F4", "F3H1", "B2B4", "A1C1", "F3E3", "F3F5", "E1D1", "C3B5", "D2F4", "C3A2", "H3H4", "C3B1", "C3A4", "E2B5", "E5C4", "E5G6", "E5F7", "B2B3", "D5D6", "D5E6", "D2G5", "D2H6", "F3H5", "E1F1" }}
+                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/2N2Q1P/pPPBBP1P/R3K1R1 w Qkq - 0 5", { "G1G6", "F3G2", "F3F6", "F3D3", "G1F1", "A1D1", "F3G3", "E2F1", "D2C1", "D2E3", "E5C6", "G1G3", "A1A2", "E2C4", "E2D1", "E5G4", "C3D1", "F3G4", "E5D7", "E5D3", "G1G5", "E2D3", "G1G4", "A1B1", "G1H1", "E2A6", "E1C1", "G1G2", "F3F4", "F3H1", "B2B4", "A1C1", "F3E3", "F3F5", "E1D1", "C3B5", "D2F4", "C3A2", "H3H4", "C3B1", "C3A4", "E2B5", "E5C4", "E5G6", "E5F7", "B2B3", "D5D6", "D5E6", "D2G5", "D2H6", "F3H5", "E1F1" }},
+                {"rnb1kbnr/pp1ppppp/8/q1p5/3P4/7N/PPP1PPPP/RNBQKB1R w KQkq - 1 5", { "D1D2", "C1D2", "B1C3", "B1D2", "C2C3", "B2B4" }},
+                {"r3k2r/p1ppqpb1/b3pnp1/3PN3/1p2P3/2N1nQ1p/PPPB1PPP/R2B1K1R w kq - 4 5", { "F1E1", "F1G1" }},
+                {"r3k2r/p2p1pb1/bn1qpnp1/2pPN3/1p2P3/2N2Q1p/PPP1BPPP/R2KB2R w kq - 0 5", { "H1G1", "E1D2", "D1D2", "A1C1", "G2G4", "H1F1", "F3D3", "E5G4", "C3A4", "B2B3", "F3H5", "D1C1", "C3B1", "E5C6", "A1B1", "F3G3", "E5F7", "E5G6", "A2A4", "G2H3", "E5C4", "E2A6", "F3E3", "F3H3", "F3F4", "C3B5", "F3F5", "F3F6", "E5D7", "F3G4", "E5D3", "E2B5", "A2A3", "E2D3", "E2C4", "E2F1", "G2G3" }},
+                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBP1P/3RK2b w kq - 0 5", { "F3H3", "C3B1", "F3G2", "F3H1", "F3H5", "F3F5", "D2E3", "D2F4", "E5C6", "D2G5", "F3G3", "D1B1", "E2F1", "D2H6", "E2B5", "F3G4", "E2D3", "F3D3", "E5C4", "E2A6", "D1A1", "E5D3", "E2C4", "E5G4", "C3A4", "E5G6", "H2H4", "E5F7", "D2C1", "A2A4", "A2A3", "F3F4", "B2B3", "H2H3", "D5D6", "C3B5", "F3F6", "E5D7", "D5E6", "F3E3", "E1F1", "D1C1" }},
+//                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBPpP/3RK2R w Kkq - 0 1", { "F3E3", "F3H3", "C3B1", "D1C1", "F3G2", "H1F1", "H1G1", "F3H5", "F3F5", "D2E3", "D2F4", "E5C6", "D2G5", "F3G3", "D1B1", "E2F1", "D2H6", "E2B5", "F3G4", "E2D3", "E2A6", "D1A1", "F3D3", "E5C4", "E5D3", "E2C4", "E5G4", "C3A4", "E5G6", "H2H4", "E5F7", "D2C1", "A2A4", "A2A3", "F3F4", "B2B3", "H2H3", "D5D6", "C3B5", "F3F6", "E5D7", "D5E6" }}
         };
 
 //        for (const auto& testCase : testCases) {
 
         for (size_t i = 0 ; i < testCases.size() ; ++i) {
-            if (i == 10)
+            if (i == 15) {
                 std::cout << "debug" << std::endl;
+            }
             const auto& testCase = testCases[i];
             const Board& board = Board::fromFEN(testCase.first);
             auto moves = board.getMoves();
@@ -211,18 +217,29 @@ TEST_CASE("Board should implement move generation", "[board]") {
     }
 
     SECTION ("Random tests5") {
-        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1p2P3/2N1nQ1p/PPPB1PPP/R2B1K1R w kq - 4 5");
-        std::cout << board << std::endl;
+        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBPpP/3RK2R b Kkq - 0 1");
+        Move move {board, g2, h1, PieceTypes::BISHOP};
+        board.executeMove(move);
+        REQUIRE(!board.getHistory()->getCurrentFrame().castlingStatus.canCastle(WHITE, MoveBitmasks::KING_CASTLE));
+    }
 
-        const std::vector<Move>& vector = board.getMoves();
-        TestHelpers::verifyMoveList(vector, {}, board, 0);
+    SECTION ("Random tests6") {
+        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/1PN2Q1p/P1PBBPPP/R3K2R w KQkq - 1 2");
+        Move move {board, b3, c4};
+        board.executeMove(move);
 
+        Move move2{board, b4, c3};
+        REQUIRE(!move2.isEnPassant());
     }
 
     SECTION ("Qperft is correct") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+//        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
+//        Board board;
+
         thc::ChessRules cr;
         cr.Forsyth("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+//        cr.Forsyth("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
 //        board.executeMove(Move{board, e2, e4});
 //        board.executeMove(Move{board, e7, e6});
 
@@ -231,11 +248,14 @@ TEST_CASE("Board should implement move generation", "[board]") {
         TestHelpers::analyzePerftProblem(board, cr, 4);
 
 
+//        TestHelpers::qperft(board, cr, 4);
+
+
 ////
 //        REQUIRE(TestHelpers::perft(board, 2) == 420);
 //        REQUIRE(TestHelpers::perftTHC(cr, 2) == 420);
-//        REQUIRE(TestHelpers::perft(board, 3) == 9322);
 //        REQUIRE(TestHelpers::perftTHC(cr, 3) == 9322);
+//        REQUIRE(TestHelpers::perft(board, 3) == 9322);
 
 //        REQUIRE(TestHelpers::perft(board, 5));
 //        REQUIRE(TestHelpers::perftTHC(cr, 5));

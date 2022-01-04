@@ -13,7 +13,8 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     PieceColor color = context.getColorAt(from);
 
-    bool isEnPassant = from.diffX(to) == 1
+    bool isEnPassant = Move{context.getHistory()->getCurrentFrame().previousMove}.isDoublePawnPush()
+                       && from.diffX(to) == 1
                        && BitboardOperations::SquareMasks::rank5.asColor(color, false) & from
                        && context.is(PAWN, from)
                        && context.getPieceAt(Square{from.getY(), to.getX()}) == Pieces::pieces[PAWN][flip(color)];
@@ -125,7 +126,7 @@ const Piece& Move::getMovingPiece (const Board& context) const {
     throw std::runtime_error("Problem");
 }
 
-CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus) const {
+CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus, const Piece& possiblyCapturedPiece) const {
     CastlingStatus newStatus{oldStatus};
 
     const Piece& movingPiece = getMovingPiece(context);
@@ -138,6 +139,15 @@ CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingS
     if (movingPiece.type == ROOK) {
         if (getOrigin() == Square{h1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
         if (getOrigin() == Square{a1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+    }
+
+    if (possiblyCapturedPiece.type == ROOK) {
+        if (getDestination() == Square{h1}.asColorFlip(flip(color))) {
+            newStatus.setCanCastle(flip(color), MoveBitmasks::KING_CASTLE, false);
+        }
+        if (getDestination() == Square{a1}.asColorFlip(flip(color))) {
+            newStatus.setCanCastle(flip(color), MoveBitmasks::KING_CASTLE, false);
+        }
     }
 
     if (movingPiece.type == KING) {

@@ -155,7 +155,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
         const Bitboard& pushableSquares = pushes & possiblePushSquares;
 
-        if (!(pushableSquares & pawnSquare.move(NORTH, color))) {
+        if (occupancy & pawnSquare.move(NORTH, color)) {
             continue;
         }
 
@@ -204,6 +204,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
     // en passant
     if (context.isEnPassantPossible()) {
+
         const Move& previousMove = Move{context.getHistory()->getCurrentFrame().previousMove};
         const Bitboard& possibleEnPassantCapturers = Attacks::getInstance()
                 .getPawnAttacks()
@@ -212,6 +213,13 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
         const Square& destination = previousMove.getOrigin().move(SOUTH, color);
 
         for (const Square& pawnSquare : possibleEnPassantCapturers & pawns) {
+            if (pawnSquare & pinMaskHV) continue; // horizonally or vertically pinned pawns cannot en passant
+
+            if ((pawnSquare & pinMaskD12) && !(destination & pinMaskD12)) {
+                continue;
+            }
+
+
             moves.emplace_back(context, pawnSquare, destination);
         }
     }

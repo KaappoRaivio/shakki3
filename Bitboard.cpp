@@ -6,9 +6,9 @@
 #include "BitboardOperations.h"
 #include "MyMath.h"
 
-constexpr Bitboard::Bitboard (uint64_t value) : value{value} {
-
-}
+//constexpr Bitboard::Bitboard (uint64_t value) : value{value} {
+//
+//}
 
 Bitboard& Bitboard::operator<<= (int shift) {
     if (shift > 0) {

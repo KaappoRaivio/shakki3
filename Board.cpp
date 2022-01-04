@@ -170,7 +170,7 @@ void Board::executeMove (const Move& move) {
 
     int oldFullmoveCount = history->getCurrentFrame().fullMoveCount;
     const CastlingStatus& oldCastlingStatus = history->getCurrentFrame().castlingStatus;
-    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + 1, move.getNewCastlingStatus(*this, oldCastlingStatus)};
+    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + 1, move.getNewCastlingStatus(*this, oldCastlingStatus, possiblyCapturedPiece)};
     history->pushState(newState);
 }
 
