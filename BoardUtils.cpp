@@ -153,7 +153,13 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
                 .getPawnAttacks()
                 .getPossiblePushesOnEmptyBoard(color, pawnSquare);
 
-        for (const Square& destinationSquare : pushes & possiblePushSquares) {
+        const Bitboard& pushableSquares = pushes & possiblePushSquares;
+
+        if (!(pushableSquares & pawnSquare.move(NORTH, color))) {
+            continue;
+        }
+
+        for (const Square& destinationSquare : pushableSquares) {
             if (destinationSquare.asColorRotate(color).getY() == 7) {
                 moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
                 moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
@@ -169,7 +175,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     //captures
     const auto& opponentPieces = context.getPieces()[flip(color)].all;
 
-        const Bitboard& captures = Attacks::getInstance()
+    const Bitboard& captures = Attacks::getInstance()
                                        .getPawnAttacks()
                                        .getCaptures(context, pawns, color) & opponentPieces & checkMask;
 
@@ -177,15 +183,36 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
         if (pawnSquare & pinMaskHV) continue; // horizonally or vertically pinned pawns cannot capture
 
         auto possibleCaptureSquares = Attacks::getInstance()
-                                                     .getPawnAttacks()
-                                                         .getPossibleCapturesOnEmptyBoard(color, pawnSquare);
+                .getPawnAttacks()
+                .getPossibleCapturesOnEmptyBoard(color, pawnSquare);
 
         if ((pawnSquare & pinMaskD12)) {
             possibleCaptureSquares &= pinMaskD12;
         }
 
         for (const Square& destinationSquare : captures & possibleCaptureSquares) {
-            moves.emplace_back(context, pawnSquare, destinationSquare);
+            if (destinationSquare.asColorRotate(color).getY() == 7) {
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
+                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::KNIGHT);
+            } else {
+                moves.emplace_back(context, pawnSquare, destinationSquare);
+            }
+        }
+    }
+
+    // en passant
+    if (context.isEnPassantPossible()) {
+        const Move& previousMove = Move{context.getHistory()->getCurrentFrame().previousMove};
+        const Bitboard& possibleEnPassantCapturers = Attacks::getInstance()
+                .getPawnAttacks()
+                .getPossibleEnPassantSquares(previousMove.getDestination());
+
+        const Square& destination = previousMove.getOrigin().move(SOUTH, color);
+
+        for (const Square& pawnSquare : possibleEnPassantCapturers & pawns) {
+            moves.emplace_back(context, pawnSquare, destination);
         }
     }
 
@@ -212,7 +239,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
         moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{g1}.asColorFlip(color));
     }
     Bitboard queensideAttackMask = 28;
-    Bitboard queensideOccupancyMask = 12;
+    Bitboard queensideOccupancyMask = 14;
     if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
         && !(attackMask & queensideAttackMask.asColor(color, true))
         && !(context.getOccupancy(true) & queensideOccupancyMask.asColor(color, true))

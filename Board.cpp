@@ -154,6 +154,8 @@ void Board::executeMove (const Move& move) {
         moveCastling(move);
     } else if (move.isPromotion()) {
         possiblyCapturedPiece = movePromotion(move);
+    } else if (move.isEnPassant()) {
+        possiblyCapturedPiece = moveEnPassant(move);
     } else {
         possiblyCapturedPiece = movePiece(move.getOrigin(), move.getDestination());
     }
@@ -206,6 +208,8 @@ void Board::unmakeMove () {
         unmoveCastling(moveToUnmake);
     } else if (moveToUnmake.isPromotion()) {
         unmovePromotion(capturedPiece, moveToUnmake);
+    } else if (moveToUnmake.isEnPassant()) {
+        unmoveEnPassant(capturedPiece, moveToUnmake);
     } else {
         unmovePiece(capturedPiece, moveToUnmake.getOrigin(), moveToUnmake.getDestination());
     }
@@ -249,7 +253,7 @@ PieceColor Board::getTurn () const {
     return history->getCurrentFrame().turn;
 }
 
-const Piece& Board::getPieceAt (Square square) const {
+const Piece& Board::getPieceAt (const Square& square) const {
     if (square.isInvalid()) return Pieces::NO_PIECE;
     return *letterbox[square];
 }
@@ -404,5 +408,23 @@ void Board::unmovePromotion (const Piece& capturedPiece, const Move move) {
     unmovePiece(capturedPiece, move.getOrigin(), move.getDestination());
 
     setSquare(move.getOrigin(), Pieces::pieces[PieceTypes::PAWN][getPieceAt(move.getOrigin()).color]);
+}
+
+Piece Board::moveEnPassant (const Move& move) {
+    const Square& captureSquare = Square{move.getOrigin().getY(), move.getDestination().getX()};
+    Piece capturedPiece = *letterbox[captureSquare];
+    movePiece(move.getOrigin(), move.getDestination());
+    setSquare(captureSquare, Pieces::NO_PIECE);
+    return capturedPiece;
+}
+
+void Board::unmoveEnPassant (const Piece& capturedPiece, const Move& moveToUnmake) {
+    const Square& captureSquare = Square{moveToUnmake.getOrigin().getY(), moveToUnmake.getDestination().getX()};
+    unmovePiece(Pieces::NO_PIECE, moveToUnmake.getOrigin(), moveToUnmake.getDestination());
+    setSquare(captureSquare, capturedPiece);
+}
+
+bool Board::isEnPassantPossible () const {
+    return Move{history->getCurrentFrame().previousMove}.isDoublePawnPush();
 }
 

@@ -330,6 +330,19 @@ void PawnAttacks::populatePossiblePawnCaptures () {
             }
         }
     }
+
+
+    for (int y = 3 ; y <= 4 ; y += 1) {
+        for (int x = 0 ; x < 8 ; ++x) {
+            Square square{y, x};
+
+            Bitboard b;
+            b |= square.move(WEST);
+            b |= square.move(EAST);
+
+            possibleEnPassantCapturerSquares[square] = b;
+        }
+    }
 }
 
 const Bitboard& PawnAttacks::getPossiblePushesOnEmptyBoard (PieceColor color, const Square& square) const {
@@ -338,6 +351,10 @@ const Bitboard& PawnAttacks::getPossiblePushesOnEmptyBoard (PieceColor color, co
 
 const Bitboard& PawnAttacks::getPossibleCapturesOnEmptyBoard (PieceColor color, const Square& square) const {
     return possiblePawnCapturesOnEmptyBoard[color][square];
+}
+
+const Bitboard& PawnAttacks::getPossibleEnPassantSquares (const Square& square) const {
+    return possibleEnPassantCapturerSquares[square];
 }
 
 

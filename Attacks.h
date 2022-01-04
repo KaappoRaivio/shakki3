@@ -236,6 +236,7 @@ class PawnAttacks {
 private:
     Bitboard possiblePawnPushesOnEmptyBoard[2][64];
     Bitboard possiblePawnCapturesOnEmptyBoard[2][64];
+    Bitboard possibleEnPassantCapturerSquares[64];
 
     void populatePossiblePawnPushes ();
     void populatePossiblePawnCaptures ();
@@ -247,6 +248,8 @@ public:
     const Bitboard& getPossibleCapturesOnEmptyBoard (PieceColor color, const Square& square) const;
 
     PawnAttacks ();
+
+    const Bitboard& getPossibleEnPassantSquares (const Square& square) const;
 
 };
 

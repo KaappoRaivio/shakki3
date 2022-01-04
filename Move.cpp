@@ -13,7 +13,18 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     PieceColor color = context.getColorAt(from);
 
-    bool isCapture = context.getColorAt(to) == flip(color);
+    bool isEnPassant = from.diffX(to) == 1
+                       && BitboardOperations::SquareMasks::rank5.asColor(color, false) & from
+                       && context.is(PAWN, from)
+                       && context.getPieceAt(Square{from.getY(), to.getX()}) == Pieces::pieces[PAWN][flip(color)];
+    if (isEnPassant) {
+        move |= MoveBitmasks::EN_PASSANT;
+    } else {
+        move &= ~MoveBitmasks::EN_PASSANT;
+    }
+
+
+    bool isCapture = context.getColorAt(to) == flip(color) || isEnPassant;
     if (isCapture) {
         move |= MoveBitmasks::CAPTURE;
     }
@@ -23,7 +34,7 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     }
 
-    bool isPromotion = context.is(PAWN, from) &&  bool(BitboardOperations::SquareMasks::rank8.asColor(color, false) & to);
+    bool isPromotion = context.is(PAWN, from) && bool(BitboardOperations::SquareMasks::rank8.asColor(color, false) & to);
     if (isPromotion) {
         if (pieceToPromoteTo == NO_PIECE) {
             throw std::runtime_error("You must set pieceToPromote for a promotion move!");
@@ -52,6 +63,11 @@ bool Move::isCapture () const {
 
 bool Move::isPromotion () const {
     return move & MoveBitmasks::PROMOTION;
+}
+
+bool Move::isDoublePawnPush () const {
+    if (isPromotion() || isCapture()) return false;
+    return move & MoveBitmasks::DOUBLE_PAWN_PUSH;
 }
 
 Move::Move (bool NO_MOVE) {
@@ -124,6 +140,13 @@ CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingS
         if (getOrigin() == Square{a1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
     }
 
+    if (movingPiece.type == KING) {
+        if (getOrigin() == Square{e1}.asColorFlip(color)) {
+            newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
+            newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+        }
+    }
+
     return newStatus;
 }
 
@@ -139,6 +162,11 @@ Move Move::fromString (std::string moveString, const Board& context) {
     }
 
     return {context, from, to, pieceToPromoteTo};
+}
+
+bool Move::isEnPassant () const {
+    if (!isCapture()) return false;
+    return move & MoveBitmasks::EN_PASSANT;
 }
 
 

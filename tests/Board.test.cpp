@@ -30,6 +30,7 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
         SECTION("quiet moves") {
             Board board;
             Move move{board, e2, e4};
+            REQUIRE(!move.isEnPassant());
             board.executeMove(move);
             TestHelpers::verify(move, board);
 
@@ -95,8 +96,20 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
             Move promotionMove{board, g7, g8, PieceTypes::BISHOP};
 
             board.executeMove(promotionMove);
-            std::cout << board << std::endl;
+//            std::cout << board << std::endl;
             std::cout << promotionMove.isPromotion() << std::endl;
+//            REQUIRE(false);
+        }
+
+        SECTION ("en passant") {
+            Board board = Board::fromFEN("r3k2r/p2pqpb1/bn2pnp1/2pPN3/4P3/1pN2Q1p/PPPBBPPP/2KR2R1 w kq - 0 5");
+//            std::cout << board << std::endl;
+            Move enPassantMove{board, d5, c6};
+            REQUIRE(enPassantMove.isEnPassant());
+            board.executeMove(enPassantMove);
+//            std::cout << board << std::endl;
+            board.unmakeMove();
+//            std::cout << board << std::endl;
 //            REQUIRE(false);
         }
 
@@ -122,12 +135,13 @@ TEST_CASE("Board should implement move generation", "[board]") {
                 {"rnbqkbnr/1ppppppp/p7/1B6/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 1 4", { "F7F6", "E7E6", "B7B6", "H7H6", "E7E5", "F7F5", "G7G5", "C7C5", "A8A7", "G8H6", "G8F6", "G7G6", "B8C6", "H7H5", "C7C6", "A6A5", "A6B5" }},
                 {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K1R1 b Qkq - 1 2", { "H3G2", "B6C4", "F6G8", "B6A4", "A6B7", "B4C3", "H8G8", "H8F8", "E7C5", "B6D5", "H8H6", "F6D5", "G7H6", "E7F8", "G7F8", "A8C8", "F6H5", "F6G4", "B6C8", "E8D8", "H8H7", "A6C8", "A8B8", "A6E2", "E7D8", "D7D6", "E8C8", "F6E4", "H8H5", "F6H7", "B4B3", "E7D6", "G6G5", "C7C5", "H8H4", "C7C6", "E6D5", "A8D8", "A6C4", "E8F8", "A6D3", "A6B5", "E8G8" }},
 //                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/2N2Q1p/pPPBBPPP/2KR2R1 w kq - 0 5", {}}
+                {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/2N2Q1P/pPPBBP1P/R3K1R1 w Qkq - 0 5", { "G1G6", "F3G2", "F3F6", "F3D3", "G1F1", "A1D1", "F3G3", "E2F1", "D2C1", "D2E3", "E5C6", "G1G3", "A1A2", "E2C4", "E2D1", "E5G4", "C3D1", "F3G4", "E5D7", "E5D3", "G1G5", "E2D3", "G1G4", "A1B1", "G1H1", "E2A6", "E1C1", "G1G2", "F3F4", "F3H1", "B2B4", "A1C1", "F3E3", "F3F5", "E1D1", "C3B5", "D2F4", "C3A2", "H3H4", "C3B1", "C3A4", "E2B5", "E5C4", "E5G6", "E5F7", "B2B3", "D5D6", "D5E6", "D2G5", "D2H6", "F3H5", "E1F1" }}
         };
 
 //        for (const auto& testCase : testCases) {
 
         for (size_t i = 0 ; i < testCases.size() ; ++i) {
-            if (i == 0)
+            if (i == 10)
                 std::cout << "debug" << std::endl;
             const auto& testCase = testCases[i];
             const Board& board = Board::fromFEN(testCase.first);
@@ -165,6 +179,44 @@ TEST_CASE("Board should implement move generation", "[board]") {
 //        std::cout << TestHelpers::vectorToString(generatedMoves, "\t") << std::endl;
 
         TestHelpers::verifyMoveList(generatedMoves, correctMoves, board, 0);
+    }
+
+    SECTION ("Random tests2") {
+        Board board = Board::fromFEN("r3k2r/p1ppqpb1/Bn2pnp1/3PN3/4P3/1pN2Q1p/PPPB1PPP/R3K1R1 b Qkq - 0 1");
+
+        Move move = {board, h3, g2};
+        board.executeMove(move);
+
+        std::cout << board << std::endl;
+//        REQUIRE(false);
+    }
+
+    SECTION ("Random tests3") {
+        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/1pN2Q1p/PPPBBPPP/R3K1R1 w Qkq - 0 1");
+        Move move {board, g2, h3};
+//        board.executeMove(move);
+        REQUIRE(!move.isEnPassant());
+        REQUIRE(!move.isDoublePawnPush());
+
+//        TestHelpers::verifyMoveList(board.getMoves(), {}, board, 0);
+    }
+
+    SECTION ("Random tests4") {
+        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBPpP/R3KR2 b Qkq - 0 1");
+        std::cout << board << std::endl;
+
+        const std::vector<Move>& vector = board.getMoves();
+//        TestHelpers::verifyMoveList(vector, {}, board, 0);
+
+    }
+
+    SECTION ("Random tests5") {
+        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1p2P3/2N1nQ1p/PPPB1PPP/R2B1K1R w kq - 4 5");
+        std::cout << board << std::endl;
+
+        const std::vector<Move>& vector = board.getMoves();
+        TestHelpers::verifyMoveList(vector, {}, board, 0);
+
     }
 
     SECTION ("Qperft is correct") {

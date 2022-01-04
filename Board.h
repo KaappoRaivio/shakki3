@@ -35,7 +35,7 @@ public:
 
     std::vector<Move> getMoves () const;
 
-    const Piece& getPieceAt (Square square) const;
+    const Piece& getPieceAt (const Square& square) const;
     const PieceSet* getPieces () const;
 
     Bitboard getOccupancy (bool includeKings) const;
@@ -44,6 +44,8 @@ public:
     const BoardStateHistory* getHistory () const;
 
     std::string toFEN () const;
+
+    bool isEnPassantPossible () const;
 
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
@@ -70,6 +72,10 @@ private:
     void setSquare (const Square& where, const Piece& what);
 
     void unmovePromotion (const Piece& capturedPiece, const Move move);
+
+    Piece moveEnPassant (const Move& move);
+
+    void unmoveEnPassant (const Piece& capturedPiece, const Move& moveToUnmake);
 };
 
 

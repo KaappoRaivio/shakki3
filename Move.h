@@ -75,6 +75,10 @@ public:
     PieceType getPromotedPiece () const;
 
     static Move fromString (std::string moveString, const Board& context);
+
+    bool isEnPassant () const;
+
+    bool isDoublePawnPush () const;
 };
 
 namespace Moves {
