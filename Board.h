@@ -19,14 +19,16 @@ class BoardStateHistory;
 class Board {
 public:
     static Board fromFEN (std::string FEN);
+    std::string toFEN () const;
+    std::string toFENShort () const;
 
     Board ();
 
     PieceSet getPieces (PieceColor color) const;
     friend std::ostream& operator<< (std::ostream& os, const Board& board);
 
-    PieceColor getColorAt (Square square) const;
-    bool is(PieceType type, Square at) const;
+    PieceColor getColorAt (const Square& square) const;
+    bool is(PieceType type, const Square& at) const;
 
     void executeMove (const Move& move);
     void unmakeMove ();
@@ -41,18 +43,16 @@ public:
     Bitboard getOccupancy (bool includeKings) const;
     Bitboard getBlockers (PieceColor color, bool includeKing) const;
 
-    const BoardStateHistory* getHistory () const;
+    const BoardStateHistory& getHistory () const;
 
-    std::string toFEN () const;
 
     bool isEnPassantPossible () const;
 
-    std::string toFENShort () const;
 
 private:
-    std::unique_ptr<Piece> letterbox[8 * 8];
+    Piece letterbox[8 * 8];
     PieceSet pieces[2];
-    std::unique_ptr<BoardStateHistory> history;
+    BoardStateHistory history;
 
     void initializeLetterbox ();
 

@@ -13,7 +13,7 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     PieceColor color = context.getColorAt(from);
 
-    Move previousMove {context.getHistory()->getCurrentFrame().previousMove};
+    Move previousMove {context.getHistory().getCurrentFrame().previousMove};
     bool isEnPassant = previousMove.isDoublePawnPush()
                        && previousMove.getOrigin().getX() == to.getX()
                        && from.diffX(to) == 1

@@ -12,15 +12,15 @@ namespace TestHelpers {
         REQUIRE(board.getPieceAt(previousMove.getDestination()) == previousMove.getMovingPiece(board));
         REQUIRE(board.getPieceAt(previousMove.getOrigin()) == Pieces::NO_PIECE);
 
-        REQUIRE(Move{board.getHistory()->getCurrentFrame().previousMove} == previousMove);
+        REQUIRE(Move{board.getHistory().getCurrentFrame().previousMove} == previousMove);
 
         PieceColor color = previousMove.getMovingPiece(board).color;
         if (previousMove.isCastling(MoveBitmasks::KING_CASTLE)) {
-            REQUIRE(board.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) == false);
+            REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) == false);
         }
 
         if (previousMove.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
-            REQUIRE(board.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE) == false);
+            REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE) == false);
         }
     }
 //
@@ -84,7 +84,7 @@ namespace TestHelpers {
     }
 
     int perft (Board& board, int depth) {
-        if (depth == 0) return 1;
+        if (depth == 1) return board.getMoves().size();
 
 
         int numberOfNodes = 0;
@@ -94,9 +94,9 @@ namespace TestHelpers {
             board.unmakeMove();
         }
 
-        if (numberOfNodes >= 100000) {
-            std::cout << numberOfNodes << std::endl;
-        }
+//        if (numberOfNodes >= 100000) {
+//            std::cout << numberOfNodes << std::endl;
+//        }
 
         return numberOfNodes;
     }

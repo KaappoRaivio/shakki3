@@ -209,7 +209,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     // en passant
     if (context.isEnPassantPossible()) {
 
-        const Move& previousMove = Move{context.getHistory()->getCurrentFrame().previousMove};
+        const Move& previousMove = Move{context.getHistory().getCurrentFrame().previousMove};
         const Bitboard& possibleEnPassantCapturers = Attacks::getInstance()
                 .getPawnAttacks()
                 .getPossibleEnPassantSquares(previousMove.getDestination());
@@ -244,7 +244,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
 
     Bitboard kingsideAttackMask = 112;
     Bitboard kingsideOccupancyMask = 96;
-    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
+    if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
         && !(attackMask & kingsideAttackMask.asColor(color, true))
         && !(context.getOccupancy(true) & kingsideOccupancyMask.asColor(color, true))
             ) {
@@ -252,7 +252,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
     }
     Bitboard queensideAttackMask = 28;
     Bitboard queensideOccupancyMask = 14;
-    if (context.getHistory()->getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
+    if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
         && !(attackMask & queensideAttackMask.asColor(color, true))
         && !(context.getOccupancy(true) & queensideOccupancyMask.asColor(color, true))
             ) {

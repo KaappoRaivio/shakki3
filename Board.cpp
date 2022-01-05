@@ -12,8 +12,6 @@
 
 Board::Board () : letterbox{}, pieces{PieceSet{WHITE}, PieceSet{BLACK}}, history{} {
     initializeLetterbox();
-
-    history = std::make_unique<BoardStateHistory>();
 }
 
 std::ostream& operator<< (std::ostream& os, const Board& board) {
@@ -22,26 +20,25 @@ std::ostream& operator<< (std::ostream& os, const Board& board) {
     board.pieces[BLACK].burn(base);
 
 
-
     if (DEBUG) {
         std::stringstream bitboard;
 
-        for (int y = 7; y >= 0; --y) {
-            for (int x = 0; x < 8; ++x) {
+        for (int y = 7 ; y >= 0 ; --y) {
+            for (int x = 0 ; x < 8 ; ++x) {
                 bitboard << base[8 * y + x] << " ";
             }
             bitboard << std::endl;
         }
 
 //        os << bitboard.rdbuf();
-    //
+        //
 //        os << "letterbox: " << std::endl;
 
         std::stringstream letterbox;
 
-        for (int y = 7; y >= 0; --y) {
-            for (int x = 0; x < 8; ++x) {
-                letterbox << *board.letterbox[8 * y + x] << " ";
+        for (int y = 7 ; y >= 0 ; --y) {
+            for (int x = 0 ; x < 8 ; ++x) {
+                letterbox << board.letterbox[8 * y + x] << " ";
             }
             letterbox << std::endl;
         }
@@ -53,17 +50,13 @@ std::ostream& operator<< (std::ostream& os, const Board& board) {
         os << letterbox.str();
 
     } else {
-        for (int y = 7; y >= 0; --y) {
-            for (int x = 0; x < 8; ++x) {
-                os << *board.letterbox[8 * y + x] << " ";
+        for (int y = 7 ; y >= 0 ; --y) {
+            for (int x = 0 ; x < 8 ; ++x) {
+                os << board.letterbox[8 * y + x] << " ";
             }
             os << std::endl;
         }
     }
-
-
-
-
 
 
     return os;
@@ -74,10 +67,8 @@ PieceSet Board::getPieces (PieceColor color) const {
     return pieces[color];
 }
 
-PieceColor Board::getColorAt (Square square) const {
-    if (pieces[WHITE].hasPiece(square)) return WHITE;
-    else if (pieces[BLACK].hasPiece(square)) return BLACK;
-    else return EMPTY;
+PieceColor Board::getColorAt (const Square& square) const {
+    return letterbox[square].color;
 }
 
 const PieceSet& Board::getWhite () const {
@@ -88,7 +79,7 @@ const PieceSet& Board::getBlack () const {
     return pieces[BLACK];
 }
 
-bool Board::is (PieceType type, Square at) const {
+bool Board::is (PieceType type, const Square& at) const {
     PieceColor color = getColorAt(at);
     return bool(pieces[color].boards[type] & Bitboard{at});
 }
@@ -96,8 +87,9 @@ bool Board::is (PieceType type, Square at) const {
 void Board::setSquare (const Square& where, const Piece& what) {
     const Piece currentPiece = getPieceAt(where);
 
-    letterbox[where]->type = what.type;
-    letterbox[where]->color = what.color;
+//    letterbox[where]->type = what.type;
+//    letterbox[where]->color = what.color;
+    letterbox[where] = what;
 
     if (currentPiece.type != PieceTypes::NO_PIECE) {
         Bitboard& currentPieceBitboard = pieces[currentPiece.color].boards[currentPiece.type];
@@ -117,8 +109,8 @@ void Board::setSquare (const Square& where, const Piece& what) {
 }
 
 Piece Board::movePiece (const Square& from, const Square& to) {
-    const Piece possiblyCapturedPiece = *letterbox[to];
-    const Piece movingPiece = *letterbox[from];
+    const Piece possiblyCapturedPiece = letterbox[to];
+    const Piece movingPiece = letterbox[from];
 
 
     setSquare(to, movingPiece);
@@ -128,16 +120,17 @@ Piece Board::movePiece (const Square& from, const Square& to) {
 }
 
 void Board::unmovePiece (const Piece& capturedPiece, const Square& from, const Square& to) {
-    const Piece movingPiece = *letterbox[to];
+    const Piece movingPiece = letterbox[to];
 
     setSquare(from, movingPiece);
     setSquare(to, capturedPiece);
 }
 
 void Board::executeMove (const Move& move) {
-    const Piece movingPiece = *letterbox[move.getOrigin()];
+    const Piece movingPiece = letterbox[move.getOrigin()];
 
     if (DEBUG) {
+        std::cout << "debug enabled" << std::endl;
         if (movingPiece.color == EMPTY) {
             std::stringstream ss;
             ss << "Origin square for move " << move << " is empty! \n" << *this;
@@ -165,16 +158,16 @@ void Board::executeMove (const Move& move) {
     if (move.isCapture() || move.getMovingPiece(*this).type == PieceTypes::PAWN) {
         newFiftyMoveReset = 0;
     } else {
-        newFiftyMoveReset = history->getCurrentFrame().plysSinceFiftyMoveReset + 1;
+        newFiftyMoveReset = history.getCurrentFrame().plysSinceFiftyMoveReset + 1;
     }
 
-    int oldFullmoveCount = history->getCurrentFrame().fullMoveCount;
-    const CastlingStatus& oldCastlingStatus = history->getCurrentFrame().castlingStatus;
+    int oldFullmoveCount = history.getCurrentFrame().fullMoveCount;
+    const CastlingStatus& oldCastlingStatus = history.getCurrentFrame().castlingStatus;
     BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + getTurn(), move.getNewCastlingStatus(*this, oldCastlingStatus, possiblyCapturedPiece)};
-    history->pushState(newState);
+    history.pushState(newState);
 }
 
-void Board::moveCastling(const Move& move) {
+void Board::moveCastling (const Move& move) {
     PieceColor turn = getTurn();
     Square kingPosition{turn == WHITE ? e1 : e8};
     Square rookPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? h1 : a1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? h8 : a8)};
@@ -198,9 +191,8 @@ void Board::unmoveCastling (const Move& move) {
 }
 
 
-
 void Board::unmakeMove () {
-    const BoardState& currentState = history->popFrame();
+    const BoardState& currentState = history.popFrame();
     const Move& moveToUnmake = currentState.previousMove;
     const Piece& capturedPiece = currentState.capturedPiece;
 
@@ -217,15 +209,17 @@ void Board::unmakeMove () {
 }
 
 void Board::initializeLetterbox () {
-    for (auto& i: letterbox) i = std::make_unique<Piece>(Pieces::NO_PIECE);
+    for (auto& i : letterbox) {
+        i = Pieces::NO_PIECE;
+    };
 
-    for (int color = WHITE; color < EMPTY; ++color) {
+    for (int color = WHITE ; color < EMPTY ; ++color) {
         for (const PieceType& type : PieceTypes::pieces) {
             auto pieceSet = pieces[color].boards[type];
 
             for (const Square& square : pieceSet) {
-                letterbox[square]->type = type;
-                letterbox[square]->color = static_cast<PieceColor>(color);
+                letterbox[square].type = type;
+                letterbox[square].color = static_cast<PieceColor>(color);
             }
         }
     }
@@ -237,11 +231,11 @@ void Board::initializeBitboards () {
         pieces[BLACK].boards[type] = 0;
     }
 
-    for (int square = 0; square < 64; ++square) {
-        const auto* piece = letterbox[square].get();
+    for (int square = 0 ; square < 64 ; ++square) {
+        const auto piece = letterbox[square];
 
-        if (*piece != Pieces::NO_PIECE) {
-            pieces[piece->color].boards[piece->type] |= Square{square};
+        if (piece != Pieces::NO_PIECE) {
+            pieces[piece.color].boards[piece.type] |= Square{square};
         }
     }
 
@@ -250,12 +244,12 @@ void Board::initializeBitboards () {
 }
 
 PieceColor Board::getTurn () const {
-    return history->getCurrentFrame().turn;
+    return history.getCurrentFrame().turn;
 }
 
 const Piece& Board::getPieceAt (const Square& square) const {
     if (square.isInvalid()) return Pieces::NO_PIECE;
-    return *letterbox[square];
+    return letterbox[square];
 }
 
 const PieceSet* Board::getPieces () const {
@@ -264,16 +258,17 @@ const PieceSet* Board::getPieces () const {
 
 std::vector<Move> Board::getMoves () const {
     std::vector<Move> moves;
+    moves.reserve(40);
 
-    const Bitboard& checkMask  = BoardAnalysis::getCheckMask(*this, getTurn());
+    const Bitboard& checkMask = BoardAnalysis::getCheckMask(*this, getTurn());
     const Bitboard& attackMask = BoardAnalysis::getAttackMask(*this, flip(getTurn()));
-    const Bitboard& pinMaskHV  = BoardAnalysis::getPinMask<HV>(*this, getTurn());
+    const Bitboard& pinMaskHV = BoardAnalysis::getPinMask<HV>(*this, getTurn());
     const Bitboard& pinMaskD12 = BoardAnalysis::getPinMask<D12>(*this, getTurn());
 
     MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addQueenMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
-    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask,  pinMaskHV | pinMaskD12); // a combination of the pinmasks as pinned knights can never move
+    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask, pinMaskHV | pinMaskD12); // a combination of the pinmasks as pinned knights can never move
     MoveGeneration::addPawnMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addKingMoves(moves, *this, getTurn(), attackMask); // no pinMask as kings cannot be pinned
 
@@ -281,13 +276,11 @@ std::vector<Move> Board::getMoves () const {
 }
 
 
-void split (std::string const& string, const char delimiter, std::vector<std::string>& out)
-{
+void split (std::string const& string, const char delimiter, std::vector<std::string>& out) {
     size_t start;
     size_t end = 0;
 
-    while ((start = string.find_first_not_of(delimiter, end)) != std::string::npos)
-    {
+    while ((start = string.find_first_not_of(delimiter, end)) != std::string::npos) {
         end = string.find(delimiter, start);
         out.push_back(string.substr(start, end - start));
     }
@@ -303,13 +296,13 @@ Board Board::fromFEN (std::string FEN) {
 
     int square = 0;
 
-    for (auto & i : board.letterbox) i = std::make_unique<Piece>(Pieces::NO_PIECE);
+    for (auto& i : board.letterbox) i = Pieces::NO_PIECE;
 
     for (char piece : position) {
         if (std::isdigit(piece)) {
             square += piece - '0';
         } else {
-            board.letterbox[square ^ 56] = std::make_unique<Piece>(Pieces::parsePiece(piece));
+            board.letterbox[square ^ 56] = Pieces::parsePiece(piece);
             square += 1;
         }
 
@@ -321,13 +314,13 @@ Board Board::fromFEN (std::string FEN) {
     int fullMoveCount = std::stoi(parts[5]);
 
 
-    BoardState newState = board.history->getCurrentFrame();
+    BoardState newState = board.history.getCurrentFrame();
     newState.turn = turn;
     newState.plysSinceFiftyMoveReset = plysSinceFiftyMoveReset;
     newState.fullMoveCount = fullMoveCount;
     newState.castlingStatus = status;
-    board.history->popFrame();
-    board.history->pushState(newState);
+    board.history.popFrame();
+    board.history.pushState(newState);
 
 //    std::cout << ranks[1] << std::endl;
 
@@ -362,16 +355,16 @@ Bitboard Board::getBlockers (PieceColor color, bool includeKing) const {
     return occupancy;
 }
 
-const BoardStateHistory* Board::getHistory () const {
-    return history.get();
+const BoardStateHistory& Board::getHistory () const {
+    return history;
 }
 
 std::string Board::toFEN () const {
     std::stringstream out;
     out << toFENShort();
 
-    out << " " << history->getCurrentFrame().plysSinceFiftyMoveReset;
-    out << " " << history->getCurrentFrame().fullMoveCount;
+    out << " " << history.getCurrentFrame().plysSinceFiftyMoveReset;
+    out << " " << history.getCurrentFrame().fullMoveCount;
 
     return out.str();
 }
@@ -379,11 +372,11 @@ std::string Board::toFEN () const {
 std::string Board::toFENShort () const {
     std::stringstream out;
 
-    for (int y = 7; y >= 0; --y) {
-        for (int x = 0; x < 8; ++x) {
-            if (letterbox[8 * y + x]->type == PieceTypes::NO_PIECE) {
+    for (int y = 7 ; y >= 0 ; --y) {
+        for (int x = 0 ; x < 8 ; ++x) {
+            if (letterbox[8 * y + x].type == PieceTypes::NO_PIECE) {
                 int emptyCount = 0;
-                while (x < 8 && letterbox[8 * y + x]->type == PieceTypes::NO_PIECE) {
+                while (x < 8 && letterbox[8 * y + x].type == PieceTypes::NO_PIECE) {
                     ++x;
                     ++emptyCount;
                 }
@@ -392,23 +385,23 @@ std::string Board::toFENShort () const {
                 continue;
             }
 
-            out << *letterbox[8 * y + x];
+            out << letterbox[8 * y + x];
         }
         if (y != 0)
             out << "/";
     }
 
     out << " " << (getTurn() == WHITE ? 'w' : 'b');
-    out << " " << history->getCurrentFrame().castlingStatus;
+    out << " " << history.getCurrentFrame().castlingStatus;
 
-    const Move& previousMove = Move{history->getCurrentFrame().previousMove};
+    const Move& previousMove = Move{history.getCurrentFrame().previousMove};
     if (previousMove.isDoublePawnPush()) {
         const Square& square = previousMove.getOrigin().move(NORTH, flip(getTurn()));
         std::stringstream ss;
         ss << square;
         std::string str = ss.str();
         std::transform(str.begin(), str.end(), str.begin(),
-                       [](unsigned char c){ return tolower(c); });
+                       [] (unsigned char c) { return tolower(c); });
 
         out << " " << str;
     } else {
@@ -432,7 +425,7 @@ void Board::unmovePromotion (const Piece& capturedPiece, const Move move) {
 
 Piece Board::moveEnPassant (const Move& move) {
     const Square& captureSquare = Square{move.getOrigin().getY(), move.getDestination().getX()};
-    Piece capturedPiece = *letterbox[captureSquare];
+    Piece capturedPiece = letterbox[captureSquare];
     movePiece(move.getOrigin(), move.getDestination());
     setSquare(captureSquare, Pieces::NO_PIECE);
     return capturedPiece;
@@ -445,6 +438,6 @@ void Board::unmoveEnPassant (const Piece& capturedPiece, const Move& moveToUnmak
 }
 
 bool Board::isEnPassantPossible () const {
-    return Move{history->getCurrentFrame().previousMove}.isDoublePawnPush();
+    return Move{history.getCurrentFrame().previousMove}.isDoublePawnPush();
 }
 
