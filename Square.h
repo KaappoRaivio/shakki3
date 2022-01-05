@@ -40,7 +40,7 @@ public:
     friend std::ostream& operator<< (std::ostream& os, const Square& square);
 
     Square move (RayDirection direction, PieceColor perspective) const;
-    Square move (RayDirection direction);
+    Square move (RayDirection direction) const;
 
     Square asColorRotate (PieceColor color) const;
     Square asColorFlip (PieceColor color) const;
@@ -48,7 +48,7 @@ public:
     Square rotate180 () const;
     Square flip () const;
 
-    static Square fromString (const std::string& string);
+    static Square fromString (std::string string);
 };
 
 

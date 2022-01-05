@@ -41,12 +41,12 @@ TEST_CASE ("Checkmask generation works correctly", "[integration][checks]") {
         REQUIRE(BoardAnalysis::getCheckMask(board, WHITE) == 551911686144ull);
     }
 
-    SECTION ("When there is double check, checkmask only includes the checking pieces", "[integration][checks]") {
+    SECTION ("When there is double check, checkmask is zero", "[integration][checks]") {
         Board boardWithDoubleCheck = Board::fromFEN("8/4k3/6N1/1r6/8/4R3/8/K7 b - - 0 1");
-        REQUIRE(BoardAnalysis::getCheckMask(boardWithDoubleCheck, BLACK) == Bitboard{70368745226240ull});
+        REQUIRE(BoardAnalysis::getCheckMask(boardWithDoubleCheck, BLACK) == 0);
 
         Board boardWithDoubleCheck2 = Board::fromFEN("8/4k3/5P2/1r6/8/4R3/8/K7 b - - 0 1");
-        REQUIRE(BoardAnalysis::getCheckMask(boardWithDoubleCheck2, BLACK) == 35184373137408ull);
+        REQUIRE(BoardAnalysis::getCheckMask(boardWithDoubleCheck2, BLACK) == 0);
 
 //        REQUIRE(false);
     }

@@ -59,7 +59,8 @@ namespace TestHelpers {
 
             std::cerr << "context: " << std::endl << context << std::endl;
             std::cerr << context.toFEN() << std::endl;
-            FAIL();
+            REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves);
+//            FAIL();
         }
 //        else {
 //            SUCCEED();

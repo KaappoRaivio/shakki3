@@ -130,7 +130,7 @@ void Board::executeMove (const Move& move) {
     const Piece movingPiece = letterbox[move.getOrigin()];
 
     if (DEBUG) {
-        std::cout << "debug enabled" << std::endl;
+//        std::cout << "debug enabled" << std::endl;
         if (movingPiece.color == EMPTY) {
             std::stringstream ss;
             ss << "Origin square for move " << move << " is empty! \n" << *this;
@@ -310,17 +310,12 @@ Board Board::fromFEN (std::string FEN) {
 
     PieceColor turn = parts[1].at(0) == 'w' ? WHITE : BLACK;
     CastlingStatus status{parts[2]};
+
+
     int plysSinceFiftyMoveReset = std::stoi(parts[4]);
     int fullMoveCount = std::stoi(parts[5]);
 
 
-    BoardState newState = board.history.getCurrentFrame();
-    newState.turn = turn;
-    newState.plysSinceFiftyMoveReset = plysSinceFiftyMoveReset;
-    newState.fullMoveCount = fullMoveCount;
-    newState.castlingStatus = status;
-    board.history.popFrame();
-    board.history.pushState(newState);
 
 //    std::cout << ranks[1] << std::endl;
 
@@ -332,6 +327,31 @@ Board Board::fromFEN (std::string FEN) {
 //    board.letterbox[43] = std::make_unique<Piece>(PieceTypes::KNIGHT, BLACK);
 
     board.initializeBitboards();
+
+    Move previousMove = Moves::NO_MOVE;
+    if (parts[3].at(0) != '-') {
+        const Square& enPassantTargetSquare = Square::fromString(parts[3]);
+        switch (enPassantTargetSquare.getY()) {
+            case 3:
+                previousMove = Move{board, enPassantTargetSquare.move(SOUTH), enPassantTargetSquare.move(NORTH)};
+                break;
+            case 5:
+                previousMove = Move{board, enPassantTargetSquare.move(NORTH), enPassantTargetSquare.move(SOUTH)};
+                break;
+            default:
+                throw std::runtime_error("Invalid en passant target square!");
+        }
+    }
+
+    BoardState newState = board.history.getCurrentFrame();
+    newState.turn = turn;
+    newState.plysSinceFiftyMoveReset = plysSinceFiftyMoveReset;
+    newState.fullMoveCount = fullMoveCount;
+    newState.castlingStatus = status;
+    newState.previousMove = previousMove.raw() | MoveBitmasks::DOUBLE_PAWN_PUSH;
+    board.history.popFrame();
+    board.history.pushState(newState);
+
 
     return board;
 }

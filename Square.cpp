@@ -106,7 +106,7 @@ RayDirection Square::getDirection (const Square& other, const PieceType& type) c
     }
 }
 
-Square Square::move (RayDirection direction) {
+Square Square::move (RayDirection direction) const {
     return move(direction, WHITE);
 }
 
@@ -198,7 +198,8 @@ Square Square::flip () const {
     return {7 - getY(), getX()};
 }
 
-Square Square::fromString (const std::string& string) {
+Square Square::fromString (std::string string) {
+    std::transform(string.begin(), string.end(), string.begin(), ::toupper);
     int x = string.at(0) - 'A';
     int y = string.at(1) - '0' - 1;
 
