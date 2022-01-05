@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <sstream>
 
 #define DEBUG true
 
@@ -122,3 +123,13 @@ template<typename T>
 concept IsCastlingSide = requires(T a) {
     a == 2 || a == 3;
 };
+
+
+namespace MyUtils {
+    template <typename T>
+    std::string toString (T object) {
+        std::stringstream ss;
+        ss << object;
+        return ss.str();
+    }
+}

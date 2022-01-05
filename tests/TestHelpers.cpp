@@ -84,10 +84,23 @@ namespace TestHelpers {
     }
 
     int perft (Board& board, int depth) {
-        int out = 0;
-        qperft(board, depth, out);
-        return out;
+        if (depth == 0) return 1;
+
+
+        int numberOfNodes = 0;
+        for (const auto& move : board.getMoves()) {
+            board.executeMove(move);
+            numberOfNodes += perft(board, depth - 1);
+            board.unmakeMove();
+        }
+
+        if (numberOfNodes >= 100000) {
+            std::cout << numberOfNodes << std::endl;
+        }
+
+        return numberOfNodes;
     }
+
     int perftTHC (thc::ChessRules& board, int depth) {
         int out = 0;
         qperftTHC(board, depth, out);
@@ -111,16 +124,6 @@ namespace TestHelpers {
         }
     }
 
-    void qperft (Board& board, int depth, int& out) {
-        if (depth == 0) return;
-
-        for (const auto& move : board.getMoves()) {
-            out += 1;
-            board.executeMove(move);
-            qperft(board, depth - 1, out);
-            board.unmakeMove();
-        }
-    }
 
     std::unordered_set<std::string> HelperEngineInterface::getMoves (const std::string& FEN) const {
         thc::ChessRules cr;
@@ -214,11 +217,14 @@ namespace TestHelpers {
 //        return result;
 //    }
 
-    void analyzePerftProblem (Board& board, thc::ChessRules& rules, int depth) {
-        TestHelpers::verifyMoveList(board.getMoves(), HelperEngineInterface{}.getMoves(rules.ForsythPublish()), board, 0);
+    void analyzePerftProblem (Board& board, thc::ChessRules& cr, int depth) {
+        if (board.toFENShort() != cr.ForsythPublishShort()) {
+            REQUIRE(board.toFENShort() == cr.ForsythPublishShort());
+        }
+        TestHelpers::verifyMoveList(board.getMoves(), HelperEngineInterface{}.getMoves(cr.ForsythPublish()), board, 0);
         if (depth == 0) return;
         else {
-            std::unordered_set<std::string> moves = HelperEngineInterface{}.getMoves(rules.ForsythPublish());
+            std::unordered_set<std::string> moves = HelperEngineInterface{}.getMoves(cr.ForsythPublish());
             for (const auto& moveString : moves) {
                 std::string moveStringLower = moveString;
                 std::transform(moveStringLower.begin(), moveStringLower.end(),moveStringLower.begin(), ::tolower);
@@ -226,17 +232,17 @@ namespace TestHelpers {
 
                 thc::Move thcmove;
 //                std::cout << moveString << moveStringLower << std::endl;
-                thcmove.TerseIn(&rules, moveStringLower.c_str());
+                thcmove.TerseIn(&cr, moveStringLower.c_str());
 
                 const Move& move = Move::fromString(moveString, board);
 
 //                std::cout << "thc: " << thcmove.TerseOut() << ", " << move << std::endl;
 
-                rules.PlayMove(thcmove);
+                cr.PlayMove(thcmove);
                 board.executeMove(move);
-                analyzePerftProblem(board, rules, depth - 1);
+                analyzePerftProblem(board, cr, depth - 1);
 
-                rules.PopMove(thcmove);
+                cr.PopMove(thcmove);
                 board.unmakeMove();
             }
         }

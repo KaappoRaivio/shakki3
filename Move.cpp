@@ -13,7 +13,9 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
 
     PieceColor color = context.getColorAt(from);
 
-    bool isEnPassant = Move{context.getHistory()->getCurrentFrame().previousMove}.isDoublePawnPush()
+    Move previousMove {context.getHistory()->getCurrentFrame().previousMove};
+    bool isEnPassant = previousMove.isDoublePawnPush()
+                       && previousMove.getOrigin().getX() == to.getX()
                        && from.diffX(to) == 1
                        && BitboardOperations::SquareMasks::rank5.asColor(color, false) & from
                        && context.is(PAWN, from)
@@ -146,7 +148,7 @@ CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingS
             newStatus.setCanCastle(flip(color), MoveBitmasks::KING_CASTLE, false);
         }
         if (getDestination() == Square{a1}.asColorFlip(flip(color))) {
-            newStatus.setCanCastle(flip(color), MoveBitmasks::KING_CASTLE, false);
+            newStatus.setCanCastle(flip(color), MoveBitmasks::QUEEN_CASTLE, false);
         }
     }
 

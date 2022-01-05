@@ -170,7 +170,7 @@ void Board::executeMove (const Move& move) {
 
     int oldFullmoveCount = history->getCurrentFrame().fullMoveCount;
     const CastlingStatus& oldCastlingStatus = history->getCurrentFrame().castlingStatus;
-    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + 1, move.getNewCastlingStatus(*this, oldCastlingStatus, possiblyCapturedPiece)};
+    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + getTurn(), move.getNewCastlingStatus(*this, oldCastlingStatus, possiblyCapturedPiece)};
     history->pushState(newState);
 }
 
@@ -273,7 +273,7 @@ std::vector<Move> Board::getMoves () const {
     MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addQueenMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
-    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask,  pinMaskHV | pinMaskD12);
+    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask,  pinMaskHV | pinMaskD12); // a combination of the pinmasks as pinned knights can never move
     MoveGeneration::addPawnMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12);
     MoveGeneration::addKingMoves(moves, *this, getTurn(), attackMask); // no pinMask as kings cannot be pinned
 
@@ -368,6 +368,16 @@ const BoardStateHistory* Board::getHistory () const {
 
 std::string Board::toFEN () const {
     std::stringstream out;
+    out << toFENShort();
+
+    out << " " << history->getCurrentFrame().plysSinceFiftyMoveReset;
+    out << " " << history->getCurrentFrame().fullMoveCount;
+
+    return out.str();
+}
+
+std::string Board::toFENShort () const {
+    std::stringstream out;
 
     for (int y = 7; y >= 0; --y) {
         for (int x = 0; x < 8; ++x) {
@@ -390,10 +400,20 @@ std::string Board::toFEN () const {
 
     out << " " << (getTurn() == WHITE ? 'w' : 'b');
     out << " " << history->getCurrentFrame().castlingStatus;
-    out << " -";
-    out << " " << history->getCurrentFrame().plysSinceFiftyMoveReset;
-    out << " " << history->getCurrentFrame().fullMoveCount;
 
+    const Move& previousMove = Move{history->getCurrentFrame().previousMove};
+    if (previousMove.isDoublePawnPush()) {
+        const Square& square = previousMove.getOrigin().move(NORTH, flip(getTurn()));
+        std::stringstream ss;
+        ss << square;
+        std::string str = ss.str();
+        std::transform(str.begin(), str.end(), str.begin(),
+                       [](unsigned char c){ return tolower(c); });
+
+        out << " " << str;
+    } else {
+        out << " -";
+    }
     return out.str();
 }
 

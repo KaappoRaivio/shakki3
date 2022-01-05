@@ -47,6 +47,8 @@ public:
 
     bool isEnPassantPossible () const;
 
+    std::string toFENShort () const;
+
 private:
     std::unique_ptr<Piece> letterbox[8 * 8];
     PieceSet pieces[2];
@@ -76,6 +78,7 @@ private:
     Piece moveEnPassant (const Move& move);
 
     void unmoveEnPassant (const Piece& capturedPiece, const Move& moveToUnmake);
+
 };
 
 

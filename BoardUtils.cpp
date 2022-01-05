@@ -149,9 +149,13 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
     for (const Square& pawnSquare : pawns) {
         if (pawnSquare & pinMaskD12) continue; // diagonally pinned pawns cannot push
 
-        const auto& possiblePushSquares = Attacks::getInstance()
+        auto possiblePushSquares = Attacks::getInstance()
                 .getPawnAttacks()
                 .getPossiblePushesOnEmptyBoard(color, pawnSquare);
+
+        if ((pawnSquare & pinMaskHV)) {
+            possiblePushSquares &= pinMaskHV;
+        }
 
         const Bitboard& pushableSquares = pushes & possiblePushSquares;
 

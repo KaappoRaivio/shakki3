@@ -30,16 +30,15 @@ namespace TestHelpers {
     void verifyMoveList (const std::unordered_set<std::string>& movesString, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
 
     void qperftTHC (thc::ChessRules& board, int depth, int& out);
-    void qperft (Board& board, int depth, int& out);
-    int perftTHC (thc::ChessRules& board, int depth);
     int perft (Board& board, int depth);
+    int perftTHC (thc::ChessRules& board, int depth);
 
 
     class HelperEngineInterface {
     public:
         std::unordered_set<std::string> getMoves (const std::string& FEN) const;
-        std::unordered_set<std::string> getMovesNative (const std::string& FEN) const;
+//        std::unordered_set<std::string> getMovesNative (const std::string& FEN) const;
     };
 
-    void analyzePerftProblem (Board& board, thc::ChessRules& rules, int depth);
+    void analyzePerftProblem (Board& board, thc::ChessRules& cr, int depth);
 }

@@ -492,6 +492,8 @@ public:
     // Whos turn is it anyway
     inline bool WhiteToPlay() const { return white; }
     void Toggle() { white = !white; }
+
+    std::string ForsythPublishShort ();
 };
 
 } //namespace thc

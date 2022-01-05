@@ -1303,6 +1303,87 @@ std::string ChessPosition::ForsythPublish()
     return( str );
 }
 
+std::string ChessPosition::ForsythPublishShort()
+{
+    int i, empty=0, file=0, rank=7, save_file=0, save_rank=0;
+    Square sq;
+    char p;
+    std::string str;
+
+    // Squares
+    for( i=0; i<64; i++ )
+    {
+        sq = SQ('a'+file,'1'+rank);
+        if( sq == enpassant_target )
+        {
+            save_file = file;
+            save_rank = rank;
+        }
+        p = squares[sq];
+        if( p == ' ' )
+            empty++;
+        else
+        {
+            if( empty )
+            {
+                char count = '0' + (char)empty;
+                str += count;
+                empty = 0;
+            }
+            str += p;
+        }
+        file++;
+        if( file == 8 )
+        {
+            if( empty )
+            {
+                char count = '0'+(char)empty;
+                str += count;
+            }
+            if( rank )
+                str += '/';
+            empty = 0;
+            file = 0;
+            rank--;
+        }
+    }
+
+    // Who to move
+    str += ' ';
+    str += (white?'w':'b');
+
+    // Castling flags
+    str += ' ';
+    if( !wking_allowed() && !wqueen_allowed() && !bking_allowed() && !bqueen_allowed() )
+        str += '-';
+    else
+    {
+        if( wking_allowed() )
+            str += 'K';
+        if( wqueen_allowed() )
+            str += 'Q';
+        if( bking_allowed() )
+            str += 'k';
+        if( bqueen_allowed() )
+            str += 'q';
+    }
+
+    // Enpassant target square
+    str += ' ';
+    if( enpassant_target==SQUARE_INVALID || save_rank==0 )
+        str += '-';
+    else
+    {
+        char file2 = 'a'+(char)save_file;
+        str += file2;
+        char rank2 = '1'+(char)save_rank;
+        str += rank2;
+    }
+
+    return str;
+}
+
+
 
 /****************************************************************************
  * Compress chess position
