@@ -51,7 +51,7 @@ BoardState& BoardStateHistory::setCurrentFrame () {
     return states.top();
 }
 
-void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
+void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& bishops = context.getPieces()[color].boards[PieceTypes::BISHOP];
 
 
@@ -65,9 +65,13 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
     for (const Square& bishopSquare : bishops) {
         if (bishopSquare & pinMaskHV) continue; // pinned bishops can't move if pinned vertically or horizontally
 
-        Bitboard possibleSquares = Attacks::getInstance()
-                                           .getBishopAttacks()
-                                           .getRaysToAllDirections(context, bishopSquare, color, true)
+        Bitboard possibleSquares = (captureOnly
+                                    ? Attacks::getInstance()
+                                            .getBishopAttacks()
+                                            .getCapturesToAllDirections(context, bishopSquare, color, true)
+                                    : Attacks::getInstance()
+                                            .getBishopAttacks()
+                                            .getRaysToAllDirections(context, bishopSquare, color, true))
                                    & ~context.getBlockers(color, true)
                                    & checkMask;
         if (bishopSquare & pinMaskD12) possibleSquares &= possiblePinnedSquares;
@@ -79,7 +83,7 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
     }
 }
 
-void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
+void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& rooks = context.getPieces()[color].boards[PieceTypes::ROOK];
     const Bitboard& occupancy = context.getOccupancy(true);
 
@@ -92,9 +96,13 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
 
     for (const Square& rookSquare : rooks) {
         if (rookSquare & pinMaskD12) continue;  // pinned rooks can't move if pinned diagonally
-        Bitboard possibleSquares = Attacks::getInstance()
-                                           .getRookAttacks()
-                                           .getRaysToAllDirections(context, rookSquare, color, true)
+        Bitboard possibleSquares = (captureOnly
+                                    ? Attacks::getInstance()
+                                            .getRookAttacks()
+                                            .getCapturesToAllDirections(context, rookSquare, color, true)
+                                    : Attacks::getInstance()
+                                            .getRookAttacks()
+                                            .getRaysToAllDirections(context, rookSquare, color, true))
                                    & ~context.getBlockers(color, true)
                                    & checkMask;
 
@@ -106,18 +114,24 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
     }
 }
 
-void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
+void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& queens = context.getPieces()[color].boards[PieceTypes::QUEEN];
     const Bitboard& occupancy = context.getOccupancy(false);
 
     for (const Square& queenSquare : queens) {
         Bitboard possibleSquares;
         if (queenSquare & pinMaskHV) {
-            possibleSquares = Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskHV & ~context.getBlockers(color, true);
+            possibleSquares = captureOnly
+                              ? Attacks::getInstance().getRookAttacks().getCapturesToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskHV & ~context.getBlockers(color, true)
+                              : Attacks::getInstance().getRookAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskHV & ~context.getBlockers(color, true);
         } else if (queenSquare & pinMaskD12) {
-            possibleSquares = Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskD12 & ~context.getBlockers(color, true);
+            possibleSquares = captureOnly
+                              ? Attacks::getInstance().getBishopAttacks().getCapturesToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskD12 & ~context.getBlockers(color, true)
+                              : Attacks::getInstance().getBishopAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & pinMaskD12 & ~context.getBlockers(color, true);
         } else {
-            possibleSquares = Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & ~context.getBlockers(color, true);
+            possibleSquares = captureOnly
+                              ? Attacks::getInstance().getQueenAttacks().getCapturesToAllDirections(context, queenSquare, color, true) & checkMask & ~context.getBlockers(color, true)
+                              : Attacks::getInstance().getQueenAttacks().getRaysToAllDirections(context, queenSquare, color, true) & checkMask & ~context.getBlockers(color, true);
         }
 
         for (const Square& possibleSquare : possibleSquares) {
@@ -126,15 +140,19 @@ void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& conte
     }
 }
 
-void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMask) {
+void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMask, bool captureOnly) {
     const Bitboard& knights = context.getPieces()[color].boards[PieceTypes::KNIGHT];
 
     for (const Square& knightSquare : knights) {
         if (knightSquare & pinMask) continue; // pinned knights can't move
 
-        const Bitboard& possibleSquares = Attacks::getInstance().getKnightAttacks().getAttackAt(knightSquare)
-                                          & ~context.getBlockers(color, true)
-                                          & checkMask;
+        Bitboard possibleSquares = Attacks::getInstance().getKnightAttacks().getAttackAt(knightSquare)
+                                   & ~context.getBlockers(color, true)
+                                   & checkMask;
+
+        if (captureOnly) {
+            possibleSquares &= context.getBlockers(flip(color), false);
+        }
 
         for (const Square& possibleSquare : possibleSquares) {
             moves.emplace_back(context, knightSquare, possibleSquare);
@@ -142,42 +160,44 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
     }
 }
 
-void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {
+void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& occupancy = context.getOccupancy(true);
     const Bitboard& pawns = context.getPieces()[color].boards[PieceTypes::PAWN];
 
     // pushes
-    const Bitboard& pushes = Attacks::getInstance()
-                                     .getPawnAttacks()
-                                     .getPawnPushes(occupancy, color, pawns) & checkMask;
+    if (!captureOnly) {
+        const Bitboard& pushes = Attacks::getInstance()
+                                         .getPawnAttacks()
+                                         .getPawnPushes(occupancy, color, pawns) & checkMask;
 
-    for (const Square& pawnSquare : pawns) {
-        if (pawnSquare & pinMaskD12) continue; // diagonally pinned pawns cannot push
+        for (const Square& pawnSquare : pawns) {
+            if (pawnSquare & pinMaskD12) continue; // diagonally pinned pawns cannot push
 
-        auto possiblePushSquares = Attacks::getInstance()
-                .getPawnAttacks()
-                .getPossiblePushesOnEmptyBoard(color, pawnSquare);
+            auto possiblePushSquares = Attacks::getInstance()
+                    .getPawnAttacks()
+                    .getPossiblePushesOnEmptyBoard(color, pawnSquare);
 
-        if ((pawnSquare & pinMaskHV)) {
-            possiblePushSquares &= pinMaskHV;
-        }
-
-        const Bitboard& pushableSquares = pushes & possiblePushSquares;
-
-        if (occupancy & pawnSquare.move(NORTH, color)) {
-            continue;
-        }
-
-        for (const Square& destinationSquare : pushableSquares) {
-            if (destinationSquare.asColorRotate(color).getY() == 7) {
-                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
-                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
-                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
-                moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::KNIGHT);
-            } else {
-                moves.emplace_back(context, pawnSquare, destinationSquare);
+            if ((pawnSquare & pinMaskHV)) {
+                possiblePushSquares &= pinMaskHV;
             }
 
+            const Bitboard& pushableSquares = pushes & possiblePushSquares;
+
+            if (occupancy & pawnSquare.move(NORTH, color)) {
+                continue;
+            }
+
+            for (const Square& destinationSquare : pushableSquares) {
+                if (destinationSquare.asColorRotate(color).getY() == 7) {
+                    moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
+                    moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
+                    moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
+                    moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::KNIGHT);
+                } else {
+                    moves.emplace_back(context, pawnSquare, destinationSquare);
+                }
+
+            }
         }
     }
 
@@ -236,32 +256,38 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
 }
 
-void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask) {
+void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask, bool captureOnly) {
     const Square& kingSquare = context.getPieces()[color].boards[PieceTypes::KING].ls1b();
 
-    const Bitboard& possibleSquares = Attacks::getInstance().getKingAttacks().getAttacksAt(context, kingSquare, color)
-                                      & ~context.getBlockers(color, false)
-                                      & ~attackMask;
+    Bitboard possibleSquares = Attacks::getInstance().getKingAttacks().getAttacksAt(context, kingSquare, color)
+                               & ~context.getBlockers(color, false)
+                               & ~attackMask;
+
+    if (captureOnly) {
+        possibleSquares &= context.getBlockers(flip(color), false);
+    }
 
     for (const Square& possibleSquare : possibleSquares) {
         moves.emplace_back(context, kingSquare, possibleSquare);
     }
 
-    Bitboard kingsideAttackMask = 112;
-    Bitboard kingsideOccupancyMask = 96;
-    if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
-        && !(attackMask & kingsideAttackMask.asColor(color, true))
-        && !(context.getOccupancy(true) & kingsideOccupancyMask.asColor(color, true))
-            ) {
-        moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{g1}.asColorFlip(color));
-    }
-    Bitboard queensideAttackMask = 28;
-    Bitboard queensideOccupancyMask = 14;
-    if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
-        && !(attackMask & queensideAttackMask.asColor(color, true))
-        && !(context.getOccupancy(true) & queensideOccupancyMask.asColor(color, true))
-            ) {
-        moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{c1}.asColorFlip(color));
+    if (!captureOnly) {
+        Bitboard kingsideAttackMask = 112;
+        Bitboard kingsideOccupancyMask = 96;
+        if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
+            && !(attackMask & kingsideAttackMask.asColor(color, true))
+            && !(context.getOccupancy(true) & kingsideOccupancyMask.asColor(color, true))
+                ) {
+            moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{g1}.asColorFlip(color));
+        }
+        Bitboard queensideAttackMask = 28;
+        Bitboard queensideOccupancyMask = 14;
+        if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
+            && !(attackMask & queensideAttackMask.asColor(color, true))
+            && !(context.getOccupancy(true) & queensideOccupancyMask.asColor(color, true))
+                ) {
+            moves.emplace_back(context, Square{e1}.asColorFlip(color), Square{c1}.asColorFlip(color));
+        }
     }
 }
 

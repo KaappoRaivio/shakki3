@@ -16,6 +16,7 @@ namespace EvaluationConstants {
 class Search {
 private:
     int negamaxSearch(Board& positionToSearch, int depth, int alpha, int beta);
+    int quiescenceSearch (Board& positionToSearch, int alpha, int beta);
 public:
     int negamaxSearch (Board positionToSearch, int depth);
 

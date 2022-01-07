@@ -26,8 +26,8 @@ namespace TestHelpers {
         return s.str();
     }
 
-    void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
-    void verifyMoveList (const std::unordered_set<std::string>& movesString, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index);
+    void verifyMoveList (const std::vector<Move>& moves, const Board& context, int index, bool captureOnly);
+    void verifyMoveList (const std::unordered_set<std::string>& movesString, const Board& context, int index, bool captureOnly);
 
     void qperftTHC (thc::ChessRules& board, int depth, int& out);
     int perft (Board& board, int depth);
@@ -36,7 +36,7 @@ namespace TestHelpers {
 
     class HelperEngineInterface {
     public:
-        std::unordered_set<std::string> getMoves (const std::string& FEN) const;
+        std::unordered_set<std::string> getMoves (const std::string& FEN, bool captureOnly) const;
 //        std::unordered_set<std::string> getMovesNative (const std::string& FEN) const;
     };
 

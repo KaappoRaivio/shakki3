@@ -198,12 +198,12 @@ public:
         return result;
     }
 
-    Bitboard getCapturesToAllDirections (const Board& context, const Square& square, PieceColor color) const {
+    Bitboard getCapturesToAllDirections (const Board& context, const Square& square, PieceColor color, bool includeKingsInOccupancy) const {
         Bitboard result{0};
         for (RayDirection direction = getIterationStartDirection<TYPE>() ; direction <= getIterationEndDirection<TYPE>() ; ++direction) {
             Bitboard blockerMask = getSlideAt(direction, square);
 
-            auto blockers = blockerMask & context.getOccupancy(false);
+            auto blockers = blockerMask & context.getOccupancy(includeKingsInOccupancy);
 
             if (blockers) {
                 int firstBlockPosition = getClosestBitPosition<TYPE>(blockers, direction);

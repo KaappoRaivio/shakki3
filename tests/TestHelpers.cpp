@@ -23,17 +23,53 @@ namespace TestHelpers {
             REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE) == false);
         }
     }
+
 //
 //    std::string vectorToString (const std::vector<Move>& moves) {
 //
 //    }
-    void verifyMoveList (const std::unordered_set<std::string>& movesString, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index) {
-        if (std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves) {
+    void verifyMoveList (const std::unordered_set<std::string>& movesString, const Board& context, int index, bool captureOnly) {
+        std::unordered_set<std::string> correctMoves = TestHelpers::HelperEngineInterface{}.getMoves(context.toFEN(), captureOnly);
+
+//        if (correctMoves != supposedMoves) {
+//            std::cerr << "TESTCASE FAIL " << index << ": " << std::endl;
+//            std::vector<std::string> a;
+//            for (const auto& supposedlyGeneratedMove : supposedMoves) {
+//                if (!correctMoves.contains(supposedlyGeneratedMove)) {
+////                    std::cerr << '\t' << supposedlyGeneratedMove << std::endl;
+//                    a.push_back(supposedlyGeneratedMove);
+//                }
+//            }
+//            if (!a.empty()) {
+//                std::cerr << "following moves are included in the testcase, even though they shouldn't be:" << std::endl;
+//                std::cerr << vectorToString(a, "\t") << std::endl;
+//            }
+//
+//            std::vector<std::string> b;
+//            for (const auto& generatedMove : correctMoves) {
+//                if (!supposedMoves.contains(generatedMove)) {
+////                    std::cerr << '\t' << generatedMove << std::endl;
+//                    b.push_back(generatedMove);
+//                }
+//            }
+//
+//            if (!b.empty()) {
+//                std::cerr << "following moves should be included in the testcase, but are not:" << std::endl;
+//                std::cerr << vectorToString(b, "\t") << std::endl;
+//            }
+//
+////            std::cerr << "context: " << std::endl << context << std::endl;
+////            std::cerr << context.toFEN() << std::endl;
+////            REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves);
+//        }
+        if (std::unordered_set<std::string>{movesString.begin(), movesString.end()} != correctMoves) {
+
+//        if (std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves) {
             std::cerr << "FAIL " << index << ": " << std::endl;
 
 
             std::vector<std::string> a;
-            for (const auto& supposedlyGeneratedMove : supposedMoves) {
+            for (const auto& supposedlyGeneratedMove : correctMoves) {
                 if (!movesString.contains(supposedlyGeneratedMove)) {
 //                    std::cerr << '\t' << supposedlyGeneratedMove << std::endl;
                     a.push_back(supposedlyGeneratedMove);
@@ -46,7 +82,7 @@ namespace TestHelpers {
 
             std::vector<std::string> b;
             for (const auto& generatedMove : movesString) {
-                if (!supposedMoves.contains(generatedMove)) {
+                if (!correctMoves.contains(generatedMove)) {
 //                    std::cerr << '\t' << generatedMove << std::endl;
                     b.push_back(generatedMove);
                 }
@@ -59,17 +95,17 @@ namespace TestHelpers {
 
             std::cerr << "context: " << std::endl << context << std::endl;
             std::cerr << context.toFEN() << std::endl;
-            REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves);
+            REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} != correctMoves);
 //            FAIL();
         }
 //        else {
 //            SUCCEED();
 //        }
 
-        REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} == supposedMoves);
+        REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} == correctMoves);
     }
 
-    void verifyMoveList (const std::vector<Move>& moves, const std::unordered_set<std::string>& supposedMoves, const Board& context, int index) {
+    void verifyMoveList (const std::vector<Move>& moves, const Board& context, int index, bool captureOnly) {
         std::unordered_set<std::string> movesString;
         std::transform(moves.begin(), moves.end(), std::inserter(movesString, movesString.begin()), [] (const Move& move) {
             std::stringstream s;
@@ -77,7 +113,7 @@ namespace TestHelpers {
             return s.str();
         });
 
-        verifyMoveList(movesString, supposedMoves, context, index);
+        verifyMoveList(movesString, context, index, captureOnly);
 
 //        std::cout << board << std::endl << TestHelpers::vectorToString(moves) << std::endl;
 
@@ -126,8 +162,9 @@ namespace TestHelpers {
     }
 
 
-    std::unordered_set<std::string> HelperEngineInterface::getMoves (const std::string& FEN) const {
+    std::unordered_set<std::string> HelperEngineInterface::getMoves (const std::string& FEN, bool captureOnly) const {
         thc::ChessRules cr;
+        Board board = Board::fromFEN(FEN);
         cr.Forsyth(FEN.c_str());
 //        std::cout << cr.ToDebugStr() << std::endl;
 //        std::cout << "List of all legal moves in the current position" << std::endl;
@@ -161,13 +198,21 @@ namespace TestHelpers {
                 }
                 if (mv.special == thc::SPECIAL_PROMOTION_BISHOP) {
                     ss << "=B";
-                }if (mv.special == thc::SPECIAL_PROMOTION_KNIGHT) {
+                }
+                if (mv.special == thc::SPECIAL_PROMOTION_KNIGHT) {
                     ss << "=N";
                 }
             }
             auto str = mv.TerseOut();
-            std::transform(str.begin(), str.end(),str.begin(), ::toupper);
-            result.insert(str);
+            std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+
+            if (captureOnly) {
+                if (board.getPieceAt(Square{mv.dst}.asColorFlip(BLACK)) != Pieces::NO_PIECE) {
+                    result.insert(str);
+                }
+            } else {
+                result.insert(str);
+            }
         }
 
         return result;
@@ -222,13 +267,13 @@ namespace TestHelpers {
         if (board.toFENShort() != cr.ForsythPublishShort()) {
             REQUIRE(board.toFENShort() == cr.ForsythPublishShort());
         }
-        TestHelpers::verifyMoveList(board.getMoves(), HelperEngineInterface{}.getMoves(cr.ForsythPublish()), board, 0);
+        TestHelpers::verifyMoveList(board.getMoves(), board, 0, 0);
         if (depth == 0) return;
         else {
-            std::unordered_set<std::string> moves = HelperEngineInterface{}.getMoves(cr.ForsythPublish());
+            std::unordered_set<std::string> moves = HelperEngineInterface{}.getMoves(cr.ForsythPublish(), 0);
             for (const auto& moveString : moves) {
                 std::string moveStringLower = moveString;
-                std::transform(moveStringLower.begin(), moveStringLower.end(),moveStringLower.begin(), ::tolower);
+                std::transform(moveStringLower.begin(), moveStringLower.end(), moveStringLower.begin(), ::tolower);
 
 
                 thc::Move thcmove;

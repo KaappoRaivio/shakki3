@@ -13,7 +13,7 @@ int Search::negamaxSearch (Board positionToSearch, int depth) {
 int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta) {
     const std::vector<Move>& moves = positionToSearch.getMoves();
 
-    if (moves.size() == 0) {
+    if (moves.empty()) {
         if (positionToSearch.isCheck()) {
             return EvaluationConstants::LOSE;
         } else {
@@ -22,9 +22,9 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
     }
 
     if (depth == 0) {
-        return BoardEvaluator::evaluateSimple(positionToSearch);
+//        return BoardEvaluator::evaluateSimple(positionToSearch);
+        return quiescenceSearch(positionToSearch, alpha, beta);
     }
-
 
 
     int positionValue = EvaluationConstants::LOSE;
@@ -53,5 +53,24 @@ Move Search::getBestMove (Board position, int searchDepth) {
         position.unmakeMove();
     }
 
-    return moves[std::distance(values.begin(),std::max_element(values.begin(), values.end()))];
+    return moves[std::distance(values.begin(), std::max_element(values.begin(), values.end()))];
+}
+
+int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta) {
+    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch);
+    if (standing_pat >= beta) { return beta; }
+    if (standing_pat > alpha) { alpha = standing_pat; }
+
+
+    for (const Move& captureMove : positionToSearch.getMoves(true)) {
+        positionToSearch.executeMove(captureMove);
+        int score = -quiescenceSearch(positionToSearch, -beta, -alpha);
+        if (score >= beta) {
+            return beta;
+        } else if (score > alpha) {
+            alpha = score;
+        }
+    }
+
+    return alpha;
 }

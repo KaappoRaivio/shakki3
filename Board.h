@@ -36,7 +36,7 @@ public:
 
     PieceColor getTurn () const;
 
-    std::vector<Move> getMoves () const;
+    std::vector<Move> getMoves (bool captureOnly=false) const;
 
     const Piece& getPieceAt (const Square& square) const;
     const PieceSet* getPieces () const;
