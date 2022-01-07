@@ -8,11 +8,12 @@
 #include "CastlingStatus.h"
 #include "Board.h"
 #include "Attacks.h"
+#include "ZobristHash.h"
 
 using namespace BitboardOperations;
 
-BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus)
-        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece}, castlingStatus(castlingStatus) {}
+BoardState::BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus, uint64_t currentHash)
+        : plysSinceFiftyMoveReset{plysSinceFiftyMoveReset}, fullMoveCount{wholeMoveCount}, turn{turn}, previousMove{previousMove}, capturedPiece{capturedPiece}, castlingStatus(castlingStatus), currentHash(currentHash) {}
 
 std::ostream& operator<< (std::ostream& os, const BoardState& state) {
     return os << "BoardState{plysSinceFiftyMoveReset: " << state.plysSinceFiftyMoveReset << " fullMoveCount: " << state.fullMoveCount << " turn: " << state.turn << " previousMove: " << state.previousMove << " capturedPiece: " << state.capturedPiece << " castlingStatus: " << state.castlingStatus
@@ -26,13 +27,13 @@ BoardStateHistory::BoardStateHistory () : states{} {
 
 void BoardStateHistory::createNewFrame () {
     if (states.empty()) {
-        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1, CastlingStatus{}});
+        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1, CastlingStatus{}, 0});
     } else {
         states.push(BoardState{states.top()});
     }
 }
 
-const BoardState& BoardStateHistory::getCurrentFrame () const {
+BoardState BoardStateHistory::getCurrentFrame () const {
     return states.top();
 }
 
@@ -44,6 +45,10 @@ const BoardState& BoardStateHistory::popFrame () {
 
 void BoardStateHistory::pushState (BoardState newFrame) {
     states.push(newFrame);
+}
+
+BoardState& BoardStateHistory::setCurrentFrame () {
+    return states.top();
 }
 
 void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12) {

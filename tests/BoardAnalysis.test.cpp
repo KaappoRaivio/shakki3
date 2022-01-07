@@ -50,6 +50,11 @@ TEST_CASE ("Checkmask generation works correctly", "[integration][checks]") {
 
 //        REQUIRE(false);
     }
+
+    SECTION("If checkmask is other than -1, there is a check") {
+        Board boardWithCheck = Board::fromFEN("p7/8/3kp1pK/2R3P1/3P4/2P2Ppq/5b1P/1r1b4 w - - 0 1");
+        REQUIRE(BoardAnalysis::isCheck(boardWithCheck));
+    }
 }
 
 TEST_CASE ("Pinmask generation works correctly", "[integration][pins]") {

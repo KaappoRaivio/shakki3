@@ -31,6 +31,50 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
         }
     }
 
+    SECTION ("Board hashes itself") {
+        SECTION ("Obvious tests") {
+            Board board;
+
+            Board startingPositionFEN = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            REQUIRE(board.hash() == startingPositionFEN.hash());
+            std::cout << board.hash() << std::endl;
+
+            Board reference = board;
+
+            Move move {board, e2, e4};
+            board.executeMove(move);
+            std::cout << board.hash() << std::endl;
+            Move move2 {board, d7, d5};
+            board.executeMove(move2);
+            std::cout << board.hash() << std::endl;
+            board.unmakeMove();
+            std::cout << board.hash() << std::endl;
+            board.unmakeMove();
+            std::cout << board.hash() << std::endl;
+
+            REQUIRE(reference.hash() == board.hash());
+        }
+
+        SECTION ("More tests") {
+            Board starting = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+            Board startingWithoutCastling = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
+            Board startingWithDifferentTurn = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+
+            REQUIRE(starting.hash() != startingWithoutCastling.hash());
+            REQUIRE(starting.hash() != startingWithDifferentTurn.hash());
+        }
+
+        SECTION ("More tests2") {
+            Board reference = Board::fromFEN("rnbq2nr/pppp1kpp/8/2b1p3/4P3/8/PPPP1PPP/RNBQK1NR w KQ - 0 1");
+            Board board;
+            board.executeSequenceOfMoves({"e2e4", "e7e5", "f1c4", "f8c5", "c4f7", "e8f7"});
+
+            std::cout << reference;
+            std::cout << board;
+            REQUIRE(board.hash() == reference.hash());
+        }
+    }
+
     SECTION("Board should make an unmake moves") {
         SECTION("quiet moves") {
             Board board;
@@ -146,13 +190,14 @@ TEST_CASE("Board should implement move generation", "[board]") {
                 {"r3k2r/p1ppqpb1/b3pnp1/3PN3/1p2P3/2N1nQ1p/PPPB1PPP/R2B1K1R w kq - 4 5", {"F1E1", "F1G1"}},
                 {"r3k2r/p2p1pb1/bn1qpnp1/2pPN3/1p2P3/2N2Q1p/PPP1BPPP/R2KB2R w kq - 0 5", {"H1G1", "E1D2", "D1D2", "A1C1", "G2G4", "H1F1", "F3D3", "E5G4", "C3A4", "B2B3", "F3H5", "D1C1", "C3B1", "E5C6", "A1B1", "F3G3", "E5F7", "E5G6", "A2A4", "G2H3", "E5C4", "E2A6", "F3E3", "F3H3", "F3F4", "C3B5", "F3F5", "F3F6", "E5D7", "F3G4", "E5D3",  "E2B5",  "A2A3",  "E2D3",  "E2C4",  "E2F1",  "G2G3"}},
                 {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBP1P/3RK2b w kq - 0 5",    {"F3H3", "C3B1", "F3G2", "F3H1", "F3H5", "F3F5", "D2E3", "D2F4", "E5C6", "D2G5", "F3G3", "D1B1", "E2F1", "D2H6", "E2B5", "F3G4", "E2D3", "F3D3", "E5C4", "E2A6", "D1A1", "E5D3", "E2C4", "E5G4", "C3A4", "E5G6", "H2H4", "E5F7", "D2C1", "A2A4", "A2A3",  "F3F4",  "B2B3",  "H2H3",  "D5D6",  "C3B5",  "F3F6",  "E5D7",  "D5E6", "F3E3", "E1F1", "D1C1"}},
-                {"rnbq1bnr/pppQpkpp/8/5p2/8/2P5/PP1PPPPP/RNB1KBNR b KQ - 0 6",           { "B7B5", "G8H6", "H7H6", "F5F4", "G8F6", "B7B6", "D8D7", "B8C6", "G7G5", "B8A6", "A7A5", "C8D7", "C7C5", "A7A6", "B8D7", "D8E8", "C7C6", "G7G6", "H7H5", "F7F6", "F7G6" }}
+                {"rnbq1bnr/pppQpkpp/8/5p2/8/2P5/PP1PPPPP/RNB1KBNR b KQ - 0 6",           { "B7B5", "G8H6", "H7H6", "F5F4", "G8F6", "B7B6", "D8D7", "B8C6", "G7G5", "B8A6", "A7A5", "C8D7", "C7C5", "A7A6", "B8D7", "D8E8", "C7C6", "G7G6", "H7H5", "F7F6", "F7G6" }},
+                {"5rk1/6pp/8/1PQ1N1br/5p2/PKpp4/4P3/7B w - - 0 1", { "E5C6", "B3A4", "E5G6", "C5E7", "C5C4", "E5F3", "C5A7", "C5D6", "C5C6", "H1G2", "H1F3", "E5F7", "H1E4", "C5F2", "A3A4", "C5C7", "E5D7", "C5F8", "E5D3", "B3B4", "H1C6", "E5G4", "C5D5", "C5D4", "C5G1", "C5B6", "H1A8", "B5B6", "C5C8", "H1B7", "B3C4", "E2E3", "E2E4", "C5B4", "E2D3", "C5E3", "C5C3", "B3A2", "E5C4", "B3C3" }}
         };
 
 //        for (const auto& testCase : testCases) {
 
         for (size_t i = 0 ; i < testCases.size() ; ++i) {
-            if (i == 15) {
+            if (i == 16) {
                 std::cout << "debug" << std::endl;
             }
             const auto& testCase = testCases[i];

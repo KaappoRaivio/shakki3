@@ -209,3 +209,7 @@ bool Bitboard::operator!= (const Bitboard& rhs) const {
 void Bitboard::reset () {
     *this ^= *this;
 }
+
+uint8_t Bitboard::popCount () const {
+    return std::popcount(value);
+}

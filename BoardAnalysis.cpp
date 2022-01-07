@@ -120,3 +120,7 @@ Bitboard BoardAnalysis::getCheckMask (const Board& context, PieceColor const col
 
     return checkMask;
 }
+
+bool BoardAnalysis::isCheck (const Board& context) {
+    return getCheckMask(context, context.getTurn()) != -1;
+}

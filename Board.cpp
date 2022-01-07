@@ -8,10 +8,12 @@
 #include <regex>
 #include "Board.h"
 #include "BoardAnalysis.h"
+#include "ZobristHash.h"
 
 
 Board::Board () : letterbox{}, pieces{PieceSet{WHITE}, PieceSet{BLACK}}, history{} {
     initializeLetterbox();
+    initializeCurrentHash();
 }
 
 std::ostream& operator<< (std::ostream& os, const Board& board) {
@@ -87,8 +89,6 @@ bool Board::is (PieceType type, const Square& at) const {
 void Board::setSquare (const Square& where, const Piece& what) {
     const Piece currentPiece = getPieceAt(where);
 
-//    letterbox[where]->type = what.type;
-//    letterbox[where]->color = what.color;
     letterbox[where] = what;
 
     if (currentPiece.type != PieceTypes::NO_PIECE) {
@@ -98,6 +98,8 @@ void Board::setSquare (const Square& where, const Piece& what) {
         if (currentPiece.type != PieceTypes::KING) {
             pieces[currentPiece.color].all ^= where;
         }
+
+        history.setCurrentFrame().currentHash ^= ZobristHash::getInstance().getHashFor(currentPiece, where);
     }
 
     if (what.type != PieceTypes::NO_PIECE) {
@@ -105,6 +107,8 @@ void Board::setSquare (const Square& where, const Piece& what) {
         if (what.type != PieceTypes::KING) {
             pieces[what.color].all |= where;
         }
+
+        history.setCurrentFrame().currentHash ^= ZobristHash::getInstance().getHashFor(what, where);
     }
 }
 
@@ -155,15 +159,23 @@ void Board::executeMove (const Move& move) {
 
 
     int newFiftyMoveReset;
+    const BoardState& currentState = history.getCurrentFrame();
     if (move.isCapture() || move.getMovingPiece(*this).type == PieceTypes::PAWN) {
         newFiftyMoveReset = 0;
     } else {
-        newFiftyMoveReset = history.getCurrentFrame().plysSinceFiftyMoveReset + 1;
+        newFiftyMoveReset = currentState.plysSinceFiftyMoveReset + 1;
     }
 
-    int oldFullmoveCount = history.getCurrentFrame().fullMoveCount;
-    const CastlingStatus& oldCastlingStatus = history.getCurrentFrame().castlingStatus;
-    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + getTurn(), move.getNewCastlingStatus(*this, oldCastlingStatus, possiblyCapturedPiece)};
+    int oldFullmoveCount = currentState.fullMoveCount;
+    const CastlingStatus& oldCastlingStatus = currentState.castlingStatus;
+    BoardState newState{flip(getTurn()), move.raw(), possiblyCapturedPiece, newFiftyMoveReset, oldFullmoveCount + getTurn(), move.getNewCastlingStatus(*this, oldCastlingStatus, possiblyCapturedPiece), currentState.currentHash};
+
+    newState.currentHash ^= getTurn();
+    newState.currentHash ^= flip(getTurn());
+
+    newState.currentHash ^= ZobristHash::getInstance().getHashFor(currentState.castlingStatus);
+    newState.currentHash ^= ZobristHash::getInstance().getHashFor(newState.castlingStatus);
+
     history.pushState(newState);
 }
 
@@ -242,6 +254,21 @@ void Board::initializeBitboards () {
     pieces[WHITE].updateOccupancy();
     pieces[BLACK].updateOccupancy();
 }
+
+void Board::initializeCurrentHash () {
+    uint64_t currentHash = 0;
+    for (const Square& square : Bitboard{(uint64_t) -1}) {
+        currentHash ^= ZobristHash::getInstance().getHashFor(letterbox[square], square);
+    }
+
+    const CastlingStatus& castlingStatus = history.getCurrentFrame().castlingStatus;
+    currentHash ^= ZobristHash::getInstance().getHashFor(castlingStatus);
+    currentHash ^= ZobristHash::getInstance().getHashFor(getTurn());
+
+    auto& currentFrame = history.setCurrentFrame();
+    currentFrame.currentHash = currentHash;
+}
+
 
 PieceColor Board::getTurn () const {
     return history.getCurrentFrame().turn;
@@ -353,6 +380,7 @@ Board Board::fromFEN (std::string FEN) {
     board.history.pushState(newState);
 
 
+    board.initializeCurrentHash();
     return board;
 }
 
@@ -437,7 +465,7 @@ Piece Board::movePromotion (const Move& promotionMove) {
     return possiblyCapturedPiece;
 }
 
-void Board::unmovePromotion (const Piece& capturedPiece, const Move move) {
+void Board::unmovePromotion (const Piece& capturedPiece, const Move& move) {
     unmovePiece(capturedPiece, move.getOrigin(), move.getDestination());
 
     setSquare(move.getOrigin(), Pieces::pieces[PieceTypes::PAWN][getPieceAt(move.getOrigin()).color]);
@@ -461,3 +489,29 @@ bool Board::isEnPassantPossible () const {
     return Move{history.getCurrentFrame().previousMove}.isDoublePawnPush();
 }
 
+bool Board::isCheck () const {
+    return BoardAnalysis::isCheck(*this);
+}
+
+
+uint64_t Board::hash () const {
+    return history.getCurrentFrame().currentHash;
+}
+
+void Board::executeSequenceOfMoves (const std::vector<std::string>& moves) {
+    for (const std::string& moveString : moves) {
+        executeMove(Move::fromString(moveString, *this));
+    }
+}
+
+
+namespace std {
+    template <>
+    struct hash<Board>
+    {
+        std::size_t operator () (const Board& k) const {
+            return k.hash();
+        }
+    };
+
+}

@@ -48,4 +48,5 @@ namespace BoardAnalysis {
     }
 
     Bitboard getCheckMask (const Board& context, PieceColor color);
+    bool isCheck(const Board& context);
 }

@@ -31,6 +31,7 @@ public:
     bool is(PieceType type, const Square& at) const;
 
     void executeMove (const Move& move);
+    void executeSequenceOfMoves (const std::vector<std::string>& moves);
     void unmakeMove ();
 
     PieceColor getTurn () const;
@@ -49,36 +50,35 @@ public:
     bool isEnPassantPossible () const;
 
 
+    bool isCheck () const;
+
+    uint64_t hash () const;
+
 private:
-    Piece letterbox[8 * 8];
+    Piece letterbox[64];
     PieceSet pieces[2];
     BoardStateHistory history;
 
     void initializeLetterbox ();
+    void initializeCurrentHash ();
 
     const PieceSet& getWhite () const;
     const PieceSet& getBlack () const;
 
     void initializeBitboards ();
+    void setSquare (const Square& where, const Piece& what);
 
     Piece movePiece (const Square& from, const Square& to);
-
-    void moveCastling (const Move& move);
-
     void unmovePiece (const Piece& capturedPiece, const Square& from, const Square& to);
 
+    void moveCastling (const Move& move);
     void unmoveCastling (const Move& move);
 
     Piece movePromotion (const Move& promotionMove);
-
-    void setSquare (const Square& where, const Piece& what);
-
-    void unmovePromotion (const Piece& capturedPiece, const Move move);
+    void unmovePromotion (const Piece& capturedPiece, const Move& move);
 
     Piece moveEnPassant (const Move& move);
-
     void unmoveEnPassant (const Piece& capturedPiece, const Move& moveToUnmake);
-
 };
 
 

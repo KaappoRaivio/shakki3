@@ -33,6 +33,8 @@ public:
     uint8_t ls1b () const;
     uint8_t ms1b () const;
 
+    uint8_t popCount () const;
+
     std::string& burnTo (std::string& buffer, char symbol='1') const;
 
     Bitboard flipVertical () const;

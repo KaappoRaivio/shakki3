@@ -22,9 +22,10 @@ struct BoardState {
     Move_raw previousMove;
     Piece capturedPiece;
     CastlingStatus castlingStatus;
+    uint64_t currentHash;
 
 
-    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus);
+    BoardState (PieceColor turn, Move_raw previousMove, Piece capturedPiece, int plysSinceFiftyMoveReset, int wholeMoveCount, CastlingStatus castlingStatus, uint64_t currentHash);
 
     friend std::ostream& operator<< (std::ostream& os, const BoardState& state);
 };
@@ -36,7 +37,8 @@ private:
 public:
     BoardStateHistory ();
 
-    const BoardState& getCurrentFrame () const;
+    BoardState getCurrentFrame () const;
+    BoardState& setCurrentFrame ();
     void pushState (BoardState newFrame);
 
     void createNewFrame ();
