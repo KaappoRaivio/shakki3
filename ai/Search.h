@@ -3,6 +3,7 @@
 //
 
 #include "../Board.h"
+#include "TranspositionTable.h"
 
 #pragma once
 
@@ -15,6 +16,8 @@ namespace EvaluationConstants {
 
 class Search {
 private:
+    TranspositionTable table;
+
     int negamaxSearch(Board& positionToSearch, int depth, int alpha, int beta);
     int quiescenceSearch (Board& positionToSearch, int alpha, int beta);
 public:
