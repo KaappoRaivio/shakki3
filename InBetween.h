@@ -13,6 +13,7 @@
 class InBetween {
 private:
     Bitboard pathLookup[64][64];
+    int distanceToEdge[64];
 
     constexpr Bitboard inBetween (Square_raw square1, Square_raw square2);
     constexpr void populateLookup();
@@ -28,6 +29,7 @@ public:
     }
 
     Bitboard getPath (const Square& from, const Square& to) const;
+    int getDistanceToEdge (Square square) const;
 };
 
 

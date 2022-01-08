@@ -16,7 +16,10 @@ struct Square {
     uint8_t value;
 
 public:
-    Square (Square_raw square);
+    constexpr Square (Square_raw square) : value{static_cast<uint8_t>(square)} {
+
+    }
+
     Square (int square);
     Square (int y, int x);
 

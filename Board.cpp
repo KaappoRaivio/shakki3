@@ -493,6 +493,10 @@ bool Board::isCheck () const {
     return BoardAnalysis::isCheck(*this);
 }
 
+bool Board::isCheckmate () const {
+    return getMoves().empty() && isCheck();
+}
+
 
 uint64_t Board::hash () const {
     return history.getCurrentFrame().currentHash;

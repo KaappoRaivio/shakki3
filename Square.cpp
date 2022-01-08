@@ -9,9 +9,7 @@ Square flip ();
 
 namespace Directions = BitboardOperations::Directions;
 
-Square::Square (Square_raw square) : value{static_cast<uint8_t>(square)} {
 
-}
 
 Square::Square (int y, int x) : value{static_cast<uint8_t>(8 * y + x)} {
 

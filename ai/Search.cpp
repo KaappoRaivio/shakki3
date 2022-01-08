@@ -7,16 +7,16 @@
 #include "TranspositionTable.h"
 #include "../BoardAnalysis.h"
 
-#define USE_TT 1
+#define USE_TT 0
 #define ORDER_MOVES 1
 
 
-int Search::negamaxSearch (Board positionToSearch, int depth) {
+int Search::negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation) {
     using namespace EvaluationConstants;
-    return negamaxSearch(positionToSearch, depth, LOSE, WIN);
+    return negamaxSearch(positionToSearch, depth, LOSE, WIN, principalVariation);
 }
 
-int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta) {
+int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta, std::vector<Move>& principalVariation) {
     ++nodesSearched;
     int originalAlpha = alpha;
 
@@ -47,14 +47,15 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
 
     if (moves.empty()) {
         if (positionToSearch.isCheck()) {
-            return EvaluationConstants::LOSE;
+            std::cout << "CHECKMATE!" << std::endl;
+            return EvaluationConstants::LOSE * (depth + 1);
         } else {
             return EvaluationConstants::DRAW;
         }
     }
 
     if (depth == 0) {
-        return BoardEvaluator::evaluateSimple(positionToSearch);
+        return BoardEvaluator::evaluateSimple(positionToSearch, depth);
 //        return quiescenceSearch(positionToSearch, alpha, beta);
     }
 
@@ -63,16 +64,31 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
 #endif
 
     int positionValue = EvaluationConstants::LOSE;
-    int bestMoveIndex = -1;
+    size_t bestMoveIndex = -1;
     for (size_t moveIndex = 0; moveIndex < moves.size(); ++moveIndex) {
-        const auto& move = moves[moveIndex];
+        std::vector<Move> childPrincipalVariation;
+
+        auto move = moves[moveIndex];
         positionToSearch.executeMove(move);
-        int newValue = -negamaxSearch(positionToSearch, depth - 1, -beta, -alpha);
+        int newValue = -negamaxSearch(positionToSearch, depth - 1, -beta, -alpha, childPrincipalVariation);
+        positionToSearch.unmakeMove();
+
+
+
+
         if (newValue > positionValue) {
             positionValue = newValue;
             bestMoveIndex = moveIndex;
+
+//            principalVariation.clear();
+//            principalVariation.push_back(move);
         }
-        positionToSearch.unmakeMove();
+
+        if (positionValue > alpha && positionValue < beta) {
+            principalVariation.clear();
+            principalVariation.push_back(move);
+            std::copy(childPrincipalVariation.begin(), childPrincipalVariation.end(), std::back_inserter(principalVariation));
+        }
 
         alpha = std::max(alpha, positionValue);
         if (alpha >= beta) {
@@ -101,44 +117,56 @@ Move Search::getBestMove (Board position, int searchDepth) {
     Move bestMoveSoFar = Moves::NO_MOVE;
     for (int depth = 1 ; depth <= searchDepth ; ++depth) {
         std::cout << "Iterative deepening for depth: " << depth << std::endl;
-        bestMoveSoFar = getMove(position, depth);
-        std::cout << "Best move so far: " << bestMoveSoFar << std::endl;
 
-        std::vector<std::string> principleVariation = table.getPrincipalVariation(position, depth);
-        MyUtils::toString(principleVariation);
+
+        std::vector<Move> principalVariation;
+        bestMoveSoFar = getMove(position, depth, principalVariation);
+        std::cout << "\tBest move so far: " << bestMoveSoFar << std::endl;
+
+        std::cout << "\tPrincipal variation: " <<  MyUtils::toString(principalVariation) << std::endl;
+        principalVariation.clear();
     }
 
     return bestMoveSoFar;
 
 }
 
-Move Search::getMove (Board& position, int searchDepth) {
+Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation) {
     const auto& moves = position.getMoves();
 
     std::vector<int> values;
+    std::vector<std::vector<Move>> principalVariations;
     nodesSearched = 0;
     tableHits = 0;
     cutoffs = 0;
     table.hits = 0;
     table.collisions = 0;
 
-    for (auto move : moves) {
-        position.executeMove(move);
-        values.push_back(-negamaxSearch(position, searchDepth - 1));
+    for (size_t index = 0; index < moves.size(); ++index) {
+        position.executeMove(moves[index]);
+
+        principalVariations.emplace_back();
+        values.push_back(-negamaxSearch(position, searchDepth - 1, principalVariations[index]));
         position.unmakeMove();
     }
 
-    std::cout << "Table hits: " << tableHits << std::endl;
-    std::cout << "Nodes searched " << nodesSearched << std::endl;
-    std::cout << "Cutoffs " << cutoffs << std::endl;
-    std::cout << "Collisions " << table.collisions << std::endl;
-    std::cout << "Hits " << table.hits << std::endl;
+    std::cout << "\tTable hits: " << tableHits << std::endl;
+    std::cout << "\tNodes searched " << nodesSearched << std::endl;
+    std::cout << "\tCutoffs " << cutoffs << std::endl;
+    std::cout << "\tCollisions " << table.collisions << std::endl;
+    std::cout << "\tHits " << table.hits << std::endl;
     std::cout.flush();
-    return moves[std::distance(values.begin(), std::max_element(values.begin(), values.end()))];
+    long index = std::distance(values.begin(), std::max_element(values.begin(), values.end()));
+    table.store(position, TranspositionTableEntry{TranspositionTableHitType::EXACT, searchDepth, values[index], moves[index]});
+    principalVariation.clear();
+    principalVariation.push_back(moves[index]);
+    std::copy(principalVariations[index].begin(), principalVariations[index].end(), std::back_inserter(principalVariation));
+
+    return moves[index];
 }
 
 int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta) {
-    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch);
+    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch, 0);
     if (standing_pat >= beta) { return beta; }
     if (standing_pat > alpha) { alpha = standing_pat; }
 

@@ -5,7 +5,7 @@
 #include "BoardEvaluator.h"
 #include "../BoardAnalysis.h"
 
-int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspective) {
+int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspective, int depth) {
 
 
     int value = 0;
@@ -16,12 +16,12 @@ int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspe
 //        value += (board.getPieces(perspective).boards[pieceType] & pinMask).popCount() * pieceValues[pieceType] * 0.5;
     }
 
+    value += InBetween::getInstance().getDistanceToEdge(board.getPieces(perspective).boards[PieceTypes::KING].ls1b()) * 10;
 
-
-    return value;
+    return value * (depth + 1);
 //    - pinMask.popCount();
 }
 
-int BoardEvaluator::evaluateSimple (const Board& board) {
-    return evaluateSimpleOneSide(board, board.getTurn()) - evaluateSimpleOneSide(board, flip(board.getTurn()));
+int BoardEvaluator::evaluateSimple (const Board& board, int depth) {
+    return evaluateSimpleOneSide(board, board.getTurn(), depth) - evaluateSimpleOneSide(board, flip(board.getTurn()), depth);
 }

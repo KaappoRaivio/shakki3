@@ -19,8 +19,8 @@ namespace BoardEvaluator {
     };
 
 
-    int evaluateSimpleOneSide (const Board& board, PieceColor perspective);
-    int evaluateSimple (const Board& board);
+    int evaluateSimpleOneSide (const Board& board, PieceColor perspective, int i);
+    int evaluateSimple (const Board& board, int depth);
 }
 
 

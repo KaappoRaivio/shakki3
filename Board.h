@@ -54,6 +54,8 @@ public:
 
     uint64_t hash () const;
 
+    bool isCheckmate () const;
+
 private:
     Piece letterbox[64];
     PieceSet pieces[2];
@@ -79,6 +81,7 @@ private:
 
     Piece moveEnPassant (const Move& move);
     void unmoveEnPassant (const Piece& capturedPiece, const Move& moveToUnmake);
+
 };
 
 

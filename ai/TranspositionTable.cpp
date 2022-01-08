@@ -8,31 +8,34 @@ TranspositionTable::TranspositionTable () : table{}, collisions{0} {
     table.reserve(1e6);
 }
 
-TranspositionTableEntry TranspositionTable::getEntry (const Board& board) {
-    return table[board.hash()];
+TranspositionTableEntry TranspositionTable::getEntry (const Board& board) const {
+    const auto& iterator = table.find(board.hash());
+    return iterator->second;
 }
 
-bool TranspositionTable::hasEntry (const Board& board, int depth) {
-    bool hasEntry = table.contains(board.hash()) && table[board.hash()].depth >= depth;
-//    if (hasEntry) ++hits;
-//    if (hasEntry) {
-//        std::cout << table[board.hash()].depth << std::endl;
-//    }
-    return hasEntry;
+bool TranspositionTable::hasEntry (const Board& board, int depth) const {
+    const auto& iterator = table.find(board.hash());
+    if (iterator == table.end()) return false;
+    else {
+        const auto& value = iterator->second;
+        return value.depth >= depth;
+    }
 }
 
 void TranspositionTable::store (const Board& board, TranspositionTableEntry entry) {
-    if (hasEntry(board, entry.depth)) {
-        ++collisions;
+    if (hasEntry(board, 0)) {
+        if (getEntry(board).depth >= entry.depth) {
+            ++collisions;
+            return;
+        }
     }
     table[board.hash()] = entry;
 }
 
-std::vector<std::string> TranspositionTable::getPrincipalVariation (Board& board, int depth) {
-    if (depth == 0) return {"END"};
-    std::vector<std::string> principalVariation;
+void TranspositionTable::getPrincipalVariation (Board& board, int depth, std::vector<std::string>& principalVariation) const {
+    if (depth == 0) return;
 
-    std::cout << board << std::endl;
+//    std::cout << board << std::endl;
 
     if (hasEntry(board, 0)) {
         const TranspositionTableEntry& entry = getEntry(board);
@@ -40,15 +43,11 @@ std::vector<std::string> TranspositionTable::getPrincipalVariation (Board& board
 
         principalVariation.push_back(MyUtils::toString(entry.bestMove));
         board.executeMove(entry.bestMove);
-        std::vector<std::string> rest = getPrincipalVariation(board, depth - 1);
-        board.unmakeMove();
-        principalVariation.insert(principalVariation.begin(), rest.begin(), principalVariation.end());
+        getPrincipalVariation(board, depth - 1, principalVariation);
     } else {
         std::cerr << "Problem not found" << std::endl;
-        return {" not found "};
+        principalVariation.emplace_back("Not found");
     }
-
-    return principalVariation;
 }
 
 TranspositionTableEntry::TranspositionTableEntry (TranspositionTableHitType hitType, int depth, int positionValue, Move bestMove) : hitType{hitType}, depth{depth}, positionValue{positionValue}, bestMove(bestMove) {}

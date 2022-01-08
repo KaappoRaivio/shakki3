@@ -131,14 +131,14 @@ concept IsCastlingSide = requires (T a) {
 
 namespace MyUtils {
     template<typename T>
-    std::string toString (T object) {
+    [[nodiscard]] std::string toString (T object) {
         std::stringstream ss;
         ss << object;
         return ss.str();
     }
 
     template<typename T>
-    std::string toString (std::vector<T> vector) {
+    [[nodiscard]] std::string toString (std::vector<T> vector) {
         std::stringstream ss;
         for (T item : vector) {
             ss << item << ", ";

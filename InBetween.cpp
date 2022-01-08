@@ -34,12 +34,22 @@ constexpr void InBetween::populateLookup () {
             pathLookup[sq1][sq2] = inBetween(static_cast<Square_raw>(sq1), static_cast<Square_raw>(sq2));
         }
     }
+
+    for (int i = 0; i < 64; ++i) {
+        Square square{i};
+
+        distanceToEdge[i] = std::min({square.getX(), (uint8_t) (7 - square.getX()), square.getY(), (uint8_t) (7 - square.getY())});
+    }
 }
 
-InBetween::InBetween () : pathLookup{{}} {
+InBetween::InBetween () : pathLookup{{}}, distanceToEdge{} {
     populateLookup();
 }
 
 Bitboard InBetween::getPath (const Square& from, const Square& to) const {
     return pathLookup[from][to] | from;
+}
+
+int InBetween::getDistanceToEdge (Square square) const {
+    return distanceToEdge[square];
 }
