@@ -33,12 +33,16 @@ public:
     bool hasEntry (const Board& board, int depth);
     TranspositionTableEntry getEntry(const Board& board);
 
+<<<<<<< HEAD
     void store (const Board& board, TranspositionTableEntry entry);
 
     int collisions;
     int hits;
 
     std::vector<std::string> getPrincipalVariation (Board& board, int depth);
+=======
+    void store (const Board& board, const TranspositionTableEntry& entry);
+>>>>>>> 7e63ba80c26083f80d37d6a7541a125f4b24c58a
 };
 
 

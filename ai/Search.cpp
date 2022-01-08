@@ -42,6 +42,7 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
     }
 #endif
 
+
     std::vector<Move> moves = positionToSearch.getMoves();
 
     if (moves.empty()) {
@@ -86,6 +87,7 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
                                         TranspositionTableHitType::UPPER_BOUND : positionValue >= beta ?
                                                                                  TranspositionTableHitType::LOWER_BOUND :
                                                                                  TranspositionTableHitType::EXACT;
+
 
     TranspositionTableEntry entry{hitType, depth, positionValue, moves[bestMoveIndex]};
     table.store(positionToSearch, entry);
