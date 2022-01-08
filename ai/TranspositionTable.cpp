@@ -29,22 +29,23 @@ void TranspositionTable::store (const Board& board, TranspositionTableEntry entr
 }
 
 std::vector<std::string> TranspositionTable::getPrincipalVariation (Board& board, int depth) {
-    if (depth == 0) return {};
+    if (depth == 0) return {"END"};
     std::vector<std::string> principalVariation;
 
-    for (const Move& move : board.getMoves()) {
-        board.executeMove(move);
-        if (hasEntry(board, 0)) {
-            const TranspositionTableEntry& entry = getEntry(board);
-            if (entry.hitType != TranspositionTableHitType::EXACT) std::cerr << "Problem!" << std::endl;
+    std::cout << board << std::endl;
 
-            principalVariation.push_back(MyUtils::toString(entry.bestMove));
-        } else {
-            std::cerr << "Problem" << std::endl;
-        }
+    if (hasEntry(board, 0)) {
+        const TranspositionTableEntry& entry = getEntry(board);
+        if (entry.hitType != TranspositionTableHitType::EXACT) std::cerr << "Problem!" << std::endl;
 
+        principalVariation.push_back(MyUtils::toString(entry.bestMove));
+        board.executeMove(entry.bestMove);
         std::vector<std::string> rest = getPrincipalVariation(board, depth - 1);
+        board.unmakeMove();
         principalVariation.insert(principalVariation.begin(), rest.begin(), principalVariation.end());
+    } else {
+        std::cerr << "Problem not found" << std::endl;
+        return {" not found "};
     }
 
     return principalVariation;
