@@ -18,7 +18,6 @@ TEST_CASE("BoardEvaluator") {
 
     SECTION ("Tree search") {
         Board board = Board::fromFEN("5rk1/5Npp/8/1P1Q2br/5p2/PKpp4/4P3/8 w - - 4 3");
-//        TestHelpers::verifyMoveList(board.getMoves(), {}, board, 0);
-        std::cout << Search{}.getBestMove(board, 6) << std::endl;
+        std::cout << Search{}.getBestMove(board, 1) << std::endl;
     }
 }

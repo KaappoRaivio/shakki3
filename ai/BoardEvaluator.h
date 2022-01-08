@@ -8,12 +8,14 @@
 
 
 namespace BoardEvaluator {
-    constexpr int pieceValues[6] = {
+    constexpr int pieceValues[7] = {
             300,
             300,
             500,
             900,
-            100
+            100,
+            1000,
+            0,
     };
 
 

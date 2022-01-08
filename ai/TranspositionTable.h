@@ -14,12 +14,13 @@ enum class TranspositionTableHitType {
 };
 
 struct TranspositionTableEntry {
-    TranspositionTableEntry (TranspositionTableHitType hitType, uint8_t depth, int positionValue);
+    TranspositionTableEntry (TranspositionTableHitType hitType, int depth, int positionValue, Move bestMove);
     TranspositionTableEntry ();
 
     TranspositionTableHitType hitType;
-    uint8_t depth;
+    int depth;
     int positionValue;
+    Move bestMove;
 };
 
 
@@ -32,7 +33,12 @@ public:
     bool hasEntry (const Board& board, int depth);
     TranspositionTableEntry getEntry(const Board& board);
 
-    void store (const Board& board, const TranspositionTableEntry& entry);
+    void store (const Board& board, TranspositionTableEntry entry);
+
+    int collisions;
+    int hits;
+
+    std::vector<std::string> getPrincipalVariation (Board& board, int depth);
 };
 
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include "BitboardOperations.h"
 #include "Board.h"
 #include "Attacks.h"
@@ -6,41 +7,20 @@
 #include "MyMath.h"
 #include "BoardAnalysis.h"
 #include "InBetween.h"
+#include "ai/Search.h"
 
 int main () {
 
-    Board board = Board::fromFEN("4qk2/P1p4P/n1p1pBPn/P1p1p1Pp/B1P2pp1/1bP1bR2/2P2NrQ/R3KNr1 w Q - 0 1");
+//    Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
+    Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
+    board.executeSequenceOfMoves({"a1b1", "a7b7", "b1c1", "b7c7"});
     std::cout << board << std::endl;
+    std::cout << board.toFEN() << std::endl;
+    Search search{};
 
-    Move move{board, h7, h8, PieceTypes::KNIGHT};
-    board.executeMove(move);
+    auto startTime = std::chrono::system_clock::now();
+    std::cout << search.getBestMove(board, 20) << std::endl;
+    auto endTime = std::chrono::system_clock::now();
+    std::cout << "Took " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count() << " ms!" << std::endl;
 
-    std::cout << board << std::endl;
-    board.unmakeMove();
-    std::cout << board << std::endl;
-
-//    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, board.getTurn());
-//    std::cout << checkMask << std::endl;
-//    std::cout << InBetween::getInstance().getPath(a1, e5) << std::endl;
-
-//    const Bitboard& pinMask = BoardAnalysis::getPinMask<BOTH>  (board, WHITE);
-//    std::cout << pinMask << std::endl;
-//
-//    const Bitboard& checkMask = BoardAnalysis::getCheckMask(board, WHITE);
-//    std::cout << checkMask  << std::endl;
-//
-//    const Bitboard& attackMask = BoardAnalysis::getAttackMask(board, BLACK);
-//    std::cout << attackMask  << std::endl;
-
-
-//    for (const auto& m : board.getMoves()) {
-//        std::cout << m << ", ";
-//    }
-//
-//    std::cout << board.getMoves().size() << std::endl;
-
-
-//    std::cout << Attacks::getInstance().getKnightAttackGenerator().getAttackAt((Square) 1) << std::endl;
-
-//    std::exit(0);
 }

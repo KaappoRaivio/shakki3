@@ -73,6 +73,16 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
             std::cout << board;
             REQUIRE(board.hash() == reference.hash());
         }
+
+        SECTION ("More tests3") {
+            Board board1 = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1");
+            Board board2 = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b KQkq - 0 1");
+
+            board1.executeSequenceOfMoves({"h3g2", "f3g2", "b4c3", "b2c3"});
+            board2.executeSequenceOfMoves({"b4c3", "b2c3", "h3g2", "f3g2"});
+
+            REQUIRE(board1.hash() == board2.hash());
+        }
     }
 
     SECTION("Board should make an unmake moves") {

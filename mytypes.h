@@ -69,7 +69,7 @@ namespace PieceTypes {
     constexpr PieceType QUEEN{'q', 3};
     constexpr PieceType PAWN{'p', 4};
     constexpr PieceType KING{'k', 5};
-    constexpr PieceType NO_PIECE{'.', 255};
+    constexpr PieceType NO_PIECE{'.', 6};
     const std::vector<PieceType> pieces = {KNIGHT, BISHOP, ROOK, QUEEN, PAWN, KING};
 }
 
@@ -134,6 +134,15 @@ namespace MyUtils {
     std::string toString (T object) {
         std::stringstream ss;
         ss << object;
+        return ss.str();
+    }
+
+    template<typename T>
+    std::string toString (std::vector<T> vector) {
+        std::stringstream ss;
+        for (T item : vector) {
+            ss << item << ", ";
+        }
         return ss.str();
     }
 }
