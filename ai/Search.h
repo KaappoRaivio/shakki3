@@ -17,13 +17,14 @@ namespace EvaluationConstants {
 class Search {
 private:
     TranspositionTable table;
+    int originalDepth;
 
     int tableHits = 0;
     int nodesSearched = 0;
     int cutoffs = 0;
 
-    int negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta);
-    int quiescenceSearch (Board& positionToSearch, int alpha, int beta);
+    int negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
+    int quiescenceSearch (Board& positionToSearch, int alpha, int beta, int plysFromRoot);
 public:
     int negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation);
 

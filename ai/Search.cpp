@@ -13,10 +13,10 @@
 
 int Search::negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation) {
     using namespace EvaluationConstants;
-    return negamaxSearch(positionToSearch, depth, -1e9, 1e9);
+    return negamaxSearch(positionToSearch, 0, depth, -1e9, 1e9);
 }
 
-int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta) {
+int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth, int alpha, int beta) {
     ++nodesSearched;
 
 #if USE_TT
@@ -53,9 +53,9 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
         }
     }
 
-    if (depth == 0) {
-        return BoardEvaluator::evaluateSimple(positionToSearch, depth);
-//        return quiescenceSearch(positionToSearch, alpha, beta);
+    if (plysFromRoot == depth) {
+//        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
+        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
     }
 
 #if ORDER_MOVES
@@ -65,9 +65,8 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
     int positionValue = -1e9;
     size_t bestMoveIndex = -1;
     for (auto move : moves) {
-
         positionToSearch.executeMove(move);
-        int newValue = -negamaxSearch(positionToSearch, depth - 1, -beta, -alpha);
+        int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha);
         positionToSearch.unmakeMove();
 
         positionValue = std::max(positionValue, newValue);
@@ -95,6 +94,7 @@ int Search::negamaxSearch (Board& positionToSearch, int depth, int alpha, int be
 }
 
 Move Search::getBestMove (Board position, int searchDepth) {
+    originalDepth = searchDepth;
     Move bestMoveSoFar = Moves::NO_MOVE;
     for (int depth = 1 ; depth <= searchDepth ; ++depth) {
         std::cout << "Iterative deepening for depth: " << depth << std::endl;
@@ -124,9 +124,6 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
     table.collisions = 0;
 
     for (size_t index = 0; index < moves.size(); ++index) {
-        if (moves[index].getDestination() == b2) {
-            std::cout << "Debug" << "paska " << std::endl;
-        }
         position.executeMove(moves[index]);
 
 
@@ -159,8 +156,8 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
     return moves[index];
 }
 
-int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta) {
-    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch, 0);
+int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta, int plysFromRoot) {
+    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch, plysFromRoot, originalDepth);
     if (standing_pat >= beta) { return beta; }
     if (standing_pat > alpha) { alpha = standing_pat; }
 
@@ -169,7 +166,7 @@ int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta) {
 
     for (const Move& captureMove : captureMoves) {
         positionToSearch.executeMove(captureMove);
-        int score = -quiescenceSearch(positionToSearch, -beta, -alpha);
+        int score = -quiescenceSearch(positionToSearch, -beta, -alpha, plysFromRoot + 1);
         positionToSearch.unmakeMove();
         if (score >= beta) {
             return beta;

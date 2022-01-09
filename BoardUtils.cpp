@@ -27,28 +27,32 @@ BoardStateHistory::BoardStateHistory () : states{} {
 
 void BoardStateHistory::createNewFrame () {
     if (states.empty()) {
-        states.push(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1, CastlingStatus{}, 0});
+        states.push_back(BoardState{WHITE, Moves::NO_MOVE.raw(), Pieces::NO_PIECE, 0, 1, CastlingStatus{}, 0});
     } else {
-        states.push(BoardState{states.top()});
+        states.emplace_back(states.back());
     }
 }
 
 BoardState BoardStateHistory::getCurrentFrame () const {
-    return states.top();
+    return states.back();
 }
 
 const BoardState& BoardStateHistory::popFrame () {
-    const BoardState& state = states.top();
-    states.pop();
+    const BoardState& state = states.back();
+    states.pop_back();
     return state;
 }
 
 void BoardStateHistory::pushState (BoardState newFrame) {
-    states.push(newFrame);
+    states.push_back(newFrame);
 }
 
 BoardState& BoardStateHistory::setCurrentFrame () {
-    return states.top();
+    return states.back();
+}
+
+const BoardState& BoardStateHistory::getFrame (int index) const {
+    return states[states.size() - 1 - index];
 }
 
 void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {

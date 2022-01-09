@@ -32,7 +32,7 @@ struct BoardState {
 
 class BoardStateHistory {
 private:
-    std::stack<BoardState> states;
+    std::vector<BoardState> states;
 
 public:
     BoardStateHistory ();
@@ -43,6 +43,7 @@ public:
 
     void createNewFrame ();
     const BoardState& popFrame ();
+    const BoardState& getFrame (int index) const;
 };
 
 class Board;
