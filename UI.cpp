@@ -10,6 +10,8 @@ void TtyUI::updateValues (Board board) {
     this->board = board;
     std::cout << (board.getTurn() == PieceColor::WHITE ? "WHITE" : "BLACK") << std::endl;
     std::cout << board << std::endl;
+    std::cout << board.toFEN() << std::endl;
+    std::cout << "Possible moves: " << MyUtils::toString(board.getMoves()) << std::endl;
 }
 
 Move TtyUI::getMove () {

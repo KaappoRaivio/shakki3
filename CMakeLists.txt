@@ -4,11 +4,11 @@ project(shakki4)
 set(CMAKE_PREFIX_PATH $CMAKE_PREFIX_PATH $CMAKE_CURRENT_SOURCE_DIR/lib)
 
 set(CMAKE_CXX_STANDARD 23)
-#set(CMAKE_BUILD_TYPE "Release")
+SET(CMAKE_BUILD_TYPE Debug)
 
-#set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0  -Wall -Wextra -fconcepts -DDEBUG=1")
-set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}  -Wall -Wextra -fconcepts -O3 -flto -DDEBUG=0")
-set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  -Wall -Wextra -fconcepts -O3 -flto -DDEBUG=0")
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og  -Wall -Wextra -fconcepts -DDEBUG=1")
+#set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}  -Wall -Wextra -fconcepts -O3 -flto -DDEBUG=0")
+#set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  -Wall -Wextra -fconcepts -O3 -flto -DDEBUG=0")
 
 
 

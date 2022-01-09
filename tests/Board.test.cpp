@@ -41,10 +41,10 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
 
             Board reference = board;
 
-            Move move {board, e2, e4};
+            Move move{board, e2, e4};
             board.executeMove(move);
 //            std::cout << board.hash() << std::endl;
-            Move move2 {board, d7, d5};
+            Move move2{board, d7, d5};
             board.executeMove(move2);
 //            std::cout << board.hash() << std::endl;
             board.unmakeMove();
@@ -198,8 +198,12 @@ TEST_CASE("Board should implement move generation", "[board]") {
                 {"r3k2r/p1ppqpb1/b3pnp1/3PN3/1p2P3/2N1nQ1p/PPPB1PPP/R2B1K1R w kq - 4 5", {"F1E1", "F1G1"}},
                 {"r3k2r/p2p1pb1/bn1qpnp1/2pPN3/1p2P3/2N2Q1p/PPP1BPPP/R2KB2R w kq - 0 5", {"H1G1", "E1D2", "D1D2", "A1C1", "G2G4", "H1F1", "F3D3", "E5G4", "C3A4", "B2B3", "F3H5", "D1C1", "C3B1", "E5C6", "A1B1", "F3G3", "E5F7", "E5G6", "A2A4", "G2H3", "E5C4", "E2A6", "F3E3", "F3H3", "F3F4", "C3B5", "F3F5", "F3F6", "E5D7", "F3G4", "E5D3",  "E2B5",  "A2A3",  "E2D3",  "E2C4",  "E2F1",  "G2G3"}},
                 {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBP1P/3RK2b w kq - 0 5",    {"F3H3", "C3B1", "F3G2", "F3H1", "F3H5", "F3F5", "D2E3", "D2F4", "E5C6", "D2G5", "F3G3", "D1B1", "E2F1", "D2H6", "E2B5", "F3G4", "E2D3", "F3D3", "E5C4", "E2A6", "D1A1", "E5D3", "E2C4", "E5G4", "C3A4", "E5G6", "H2H4", "E5F7", "D2C1", "A2A4", "A2A3",  "F3F4",  "B2B3",  "H2H3",  "D5D6",  "C3B5",  "F3F6",  "E5D7",  "D5E6", "F3E3", "E1F1", "D1C1"}},
-                {"rnbq1bnr/pppQpkpp/8/5p2/8/2P5/PP1PPPPP/RNB1KBNR b KQ - 0 6",           { "B7B5", "G8H6", "H7H6", "F5F4", "G8F6", "B7B6", "D8D7", "B8C6", "G7G5", "B8A6", "A7A5", "C8D7", "C7C5", "A7A6", "B8D7", "D8E8", "C7C6", "G7G6", "H7H5", "F7F6", "F7G6" }},
-                {"5rk1/6pp/8/1PQ1N1br/5p2/PKpp4/4P3/7B w - - 0 1", { "E5C6", "B3A4", "E5G6", "C5E7", "C5C4", "E5F3", "C5A7", "C5D6", "C5C6", "H1G2", "H1F3", "E5F7", "H1E4", "C5F2", "A3A4", "C5C7", "E5D7", "C5F8", "E5D3", "B3B4", "H1C6", "E5G4", "C5D5", "C5D4", "C5G1", "C5B6", "H1A8", "B5B6", "C5C8", "H1B7", "B3C4", "E2E3", "E2E4", "C5B4", "E2D3", "C5E3", "C5C3", "B3A2", "E5C4", "B3C3" }}
+                {"rnbq1bnr/pppQpkpp/8/5p2/8/2P5/PP1PPPPP/RNB1KBNR b KQ - 0 6",           {"B7B5", "G8H6", "H7H6", "F5F4", "G8F6", "B7B6", "D8D7", "B8C6", "G7G5", "B8A6", "A7A5", "C8D7", "C7C5", "A7A6", "B8D7", "D8E8", "C7C6", "G7G6", "H7H5", "F7F6", "F7G6"}},
+                {"5rk1/6pp/8/1PQ1N1br/5p2/PKpp4/4P3/7B w - - 0 1",                       {"E5C6", "B3A4", "E5G6", "C5E7", "C5C4", "E5F3", "C5A7", "C5D6", "C5C6", "H1G2", "H1F3", "E5F7", "H1E4", "C5F2", "A3A4", "C5C7", "E5D7", "C5F8", "E5D3", "B3B4", "H1C6", "E5G4", "C5D5", "C5D4", "C5G1", "C5B6", "H1A8", "B5B6", "C5C8", "H1B7", "B3C4",  "E2E3",  "E2E4",  "C5B4",  "E2D3",  "C5E3",  "C5C3",  "B3A2",  "E5C4", "B3C3"}},
+                {"8/5k2/8/5p2/8/6K1/8/6Q1 b - - 3 2",                                    {}},
+                {"8/8/4k3/5p2/5Q2/8/5K2/8 b - - 1 1",                                    {}},
+
+
         };
 
 //        for (const auto& testCase : testCases) {
@@ -233,8 +237,12 @@ TEST_CASE("Board should implement move generation", "[board]") {
 //                {board, b3, a2}
         };
 
-        for (const auto& move : moves) {
-            board.executeMove(Move::fromString(move, board));
+        for (
+            const auto& move
+                : moves) {
+            board.
+                    executeMove(Move::fromString(move, board)
+            );
         }
 
 //        std::cout << board.toFEN() << std::endl;
@@ -244,14 +252,16 @@ TEST_CASE("Board should implement move generation", "[board]") {
 
 //        std::cout << TestHelpers::vectorToString(generatedMoves, "\t") << std::endl;
 
-        TestHelpers::verifyMoveList(generatedMoves, board, 0, 0);
+        TestHelpers::verifyMoveList(generatedMoves, board,
+                                    0, 0);
     }
 
     SECTION ("Random tests2") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/Bn2pnp1/3PN3/4P3/1pN2Q1p/PPPB1PPP/R3K1R1 b Qkq - 0 1");
 
         Move move = {board, h3, g2};
-        board.executeMove(move);
+        board.
+                executeMove(move);
 
 //        std::cout << board << std::endl;
 //        REQUIRE(false);
@@ -279,14 +289,16 @@ TEST_CASE("Board should implement move generation", "[board]") {
     SECTION ("Random tests5") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBPpP/3RK2R b Kkq - 0 1");
         Move move{board, g2, h1, PieceTypes::BISHOP};
-        board.executeMove(move);
+        board.
+                executeMove(move);
         REQUIRE(!board.getHistory().getCurrentFrame().castlingStatus.canCastle(WHITE, MoveBitmasks::KING_CASTLE));
     }
 
     SECTION ("Random tests6") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/1PN2Q1p/P1PBBPPP/R3K2R w KQkq - 1 2");
         Move move{board, b3, c4};
-        board.executeMove(move);
+        board.
+                executeMove(move);
 
         Move move2{board, b4, c3};
         REQUIRE(!move2.isEnPassant());
@@ -295,7 +307,8 @@ TEST_CASE("Board should implement move generation", "[board]") {
     SECTION ("Random tests7") {
         Board board = Board::fromFEN("rnbqk1nr/ppppppbp/8/6p1/8/1P5N/P1PPPPPP/RNBQKBR1 b Qkq - 0 3");
         Move move = {board, g7, a1};
-        board.executeMove(move);
+        board.
+                executeMove(move);
 //        std::cout << board << std::endl;
 
     }
@@ -303,7 +316,8 @@ TEST_CASE("Board should implement move generation", "[board]") {
     SECTION ("Random tests8") {
         Board board = Board::fromFEN("rnbqkbnr/p1pppppp/8/8/Pp6/R6N/1PPPPPPP/1NBQKB1R w Kkq - 0 3");
         Move move{board, g2, g4};
-        board.executeMove(move);
+        board.
+                executeMove(move);
 //        std::cout << board << std::endl;
         Move move2{board, b4, a3};
         REQUIRE(!move2.isEnPassant());
@@ -311,20 +325,22 @@ TEST_CASE("Board should implement move generation", "[board]") {
 
     SECTION ("Random tests9") {
         Board board = Board::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/8/7N/PPPPPPPP/RNBQKBR1 b Qkq - 1 2");
-        std::cout << board << std::endl;
+//        std::cout << board << std::endl;
         const std::vector<Move>& moves = board.getMoves();
-        TestHelpers::verifyMoveList(moves, board, 0, 0);
+        TestHelpers::verifyMoveList(moves, board,
+                                    0, 0);
     }
 
     SECTION ("Qperft is correct") {
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
 
-//        Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/P7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1");
         Board board;
+//        Board board = Board::fromFEN("8/8/4k3/5p2/3Q4/8/5K2/8 w - - 0 1");
 
 
         thc::ChessRules cr;
+//        cr.Forsyth("8/8/4k3/5p2/3Q4/8/5K2/8 w - - 0 1");
 //        cr.Forsyth("rnbqkbnr/pppppppp/8/8/P7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1");
 //        cr.Forsyth("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 //        cr.Forsyth("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");

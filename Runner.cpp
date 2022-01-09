@@ -14,13 +14,13 @@ PieceColor Runner::play () {
     while (true) {
         Player* currentPlayer = players[position.getTurn()];
 
+        ui->updateValues(position);
         if (position.isCheckmate()) {
             std::cout << "WINNER: " << flip(position.getTurn()) << std::endl;
-            std::cout << position << std::endl;
+//            std::cout << position << std::endl;
             return flip(position.getTurn());
         }
 
-        ui->updateValues(position);
 
         auto startTime = std::chrono::system_clock::now();
         Move move = currentPlayer->getMove(position);

@@ -22,7 +22,7 @@ private:
     int nodesSearched = 0;
     int cutoffs = 0;
 
-    int negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta, std::vector<Move>& principalVariation);
+    int negamaxSearch (Board& positionToSearch, int depth, int alpha, int beta);
     int quiescenceSearch (Board& positionToSearch, int alpha, int beta);
 public:
     int negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation);

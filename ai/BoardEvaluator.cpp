@@ -4,9 +4,10 @@
 
 #include "BoardEvaluator.h"
 #include "../BoardAnalysis.h"
+#include "Search.h"
 
 int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspective, int depth) {
-
+    if (board.isCheckmate()) return EvaluationConstants::LOSE - depth;
 
     int value = 0;
     auto pinMask = BoardAnalysis::getPinMask<BOTH>(board, perspective);
@@ -16,9 +17,9 @@ int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspe
 //        value += (board.getPieces(perspective).boards[pieceType] & pinMask).popCount() * pieceValues[pieceType] * 0.5;
     }
 
-    value += InBetween::getInstance().getDistanceToEdge(board.getPieces(perspective).boards[PieceTypes::KING].ls1b()) * 10;
+//    value += InBetween::getInstance().getDistanceToEdge(board.getPieces(perspective).boards[PieceTypes::KING].ls1b()) * 1;
 
-    return value * (depth + 1);
+    return value;
 //    - pinMask.popCount();
 }
 

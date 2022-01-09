@@ -389,6 +389,8 @@ Bitboard Board::getOccupancy (bool includeKings) const {
     if (includeKings) {
         occupancy |= pieces[WHITE].boards[PieceTypes::KING];
         occupancy |= pieces[BLACK].boards[PieceTypes::KING];
+    } else {
+        occupancy |= pieces[flip(getTurn())].boards[PieceTypes::KING];
     }
 
     return occupancy;
