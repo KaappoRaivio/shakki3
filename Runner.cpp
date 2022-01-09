@@ -16,6 +16,7 @@ PieceColor Runner::play () {
 
         if (position.isCheckmate()) {
             std::cout << "WINNER: " << flip(position.getTurn()) << std::endl;
+            std::cout << position << std::endl;
             return flip(position.getTurn());
         }
 

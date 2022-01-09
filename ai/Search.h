@@ -9,8 +9,8 @@
 
 
 namespace EvaluationConstants {
-    constexpr int WIN = 1e9;
-    constexpr int LOSE = -1e9;
+    constexpr int WIN = 32000;
+    constexpr int LOSE = -32000;
     constexpr int DRAW = 0;
 }
 

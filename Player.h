@@ -29,7 +29,10 @@ class AIPlayer : public Player {
 private:
     Search search;
 public:
-    AIPlayer ();
+
+    explicit AIPlayer (int searchDepth);
 
     Move getMove (Board board) override;
+
+    int searchDepth;
 };
