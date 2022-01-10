@@ -30,7 +30,7 @@ public:
 
     Move getBestMove (Board position, int searchDepth);
 
-    Move getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation);
+    Move getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation, int& bestMoveScore);
 
     void orderMoves (Board& positionToSearch, std::vector<Move>& moves, int depth);
 

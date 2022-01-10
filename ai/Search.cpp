@@ -101,7 +101,14 @@ Move Search::getBestMove (Board position, int searchDepth) {
 
 
         std::vector<Move> principalVariation;
-        bestMoveSoFar = getMove(position, depth, principalVariation);
+        int moveScore;
+        bestMoveSoFar = getMove(position, depth, principalVariation, moveScore);
+
+        if (moveScore >= 32000) {
+            std::cout << "Found mate!" << std::endl;
+            break;
+        }
+
         std::cout << "\tBest move so far: " << bestMoveSoFar << std::endl;
 
         std::cout << "\tPrincipal variation: " <<  MyUtils::toString(principalVariation) << std::endl;
@@ -112,7 +119,7 @@ Move Search::getBestMove (Board position, int searchDepth) {
 
 }
 
-Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation) {
+Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation, int& bestMoveScore) {
     const auto& moves = position.getMoves();
 
     std::vector<int> values;
@@ -144,6 +151,7 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
 
     std::cout << "\tBest move value: " << values[index] << std::endl;
 
+    bestMoveScore = values[index];
     for (size_t i = 0; i < moves.size(); ++i) {
         std::cout << "\t\t" << moves[i] << ": " << values[i] << std::endl;
     }

@@ -28,7 +28,7 @@ int main () {
 
     std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
 
-    const auto& aiPlayer = std::make_unique<AIPlayer>(7);
+    const auto& aiPlayer = std::make_unique<AIPlayer>(9);
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
             aiPlayer.get(),

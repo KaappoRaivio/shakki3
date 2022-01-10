@@ -2,6 +2,7 @@
 // Created by kaappo on 6.1.2022.
 //
 
+#include <valarray>
 #include "BoardEvaluator.h"
 #include "../BoardAnalysis.h"
 #include "Search.h"
@@ -35,7 +36,14 @@ int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspe
     }
 
     value += InBetween::getInstance().getDistanceToEdge(board.getPieces(perspective).boards[PieceTypes::KING].ls1b()) * 1;
-    value += evaluateHistoryOneSide(board, perspective, plysFromRoot);
+//    value += evaluateHistoryOneSide(board, perspective, plysFromRoot);
+
+//    if (value > 0) {
+//        const Square& myKing = Square{board.getPieces(perspective).boards[PieceTypes::KING].ls1b()};
+//        const Square& opponentKing = Square{board.getPieces(flip(perspective)).boards[PieceTypes::KING].ls1b()};
+//        double distance = std::sqrt(std::pow(myKing.diffX(opponentKing), 2) + std::pow(myKing.diffY(opponentKing), 2));
+//        value -= distance * 10;
+//    }
 
     return value;
 //    - pinMask.popCount();
