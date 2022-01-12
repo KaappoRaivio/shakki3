@@ -4,13 +4,19 @@
 
 #include "TranspositionTable.h"
 
-TranspositionTable::TranspositionTable () : table{}, collisions{0} {
+TranspositionTable::TranspositionTable () : table{}, collisions{0}, hits{0} {
     table.reserve(1e6);
 }
 
-TranspositionTableEntry TranspositionTable::getEntry (const Board& board) const {
+const TranspositionTableEntry& TranspositionTable::getEntry (const Board& board, int plysFromRoot) const {
     const auto& iterator = table.find(board.hash());
-    return iterator->second;
+    std::cout << (iterator == table.end() ? TranspositionTableEntries::INVALID :
+                  iterator->second.depth <= plysFromRoot ? iterator->second :
+                  TranspositionTableEntries::INVALID).depth << std::endl;
+
+    return iterator == table.end() ? TranspositionTableEntries::INVALID :
+           iterator->second.depth <= plysFromRoot ? iterator->second :
+           TranspositionTableEntries::INVALID;
 }
 
 bool TranspositionTable::hasEntry (const Board& board, int depth) const {
@@ -23,17 +29,10 @@ bool TranspositionTable::hasEntry (const Board& board, int depth) const {
 }
 
 void TranspositionTable::store (const Board& board, TranspositionTableEntry entry) {
-    if (hasEntry(board, 0)) {
-        const TranspositionTableEntry& other = getEntry(board);
-
+    if (const TranspositionTableEntry& other = getEntry(board, entry.depth)) {
         if (other.hitType == TranspositionTableHitType::EXACT) {
             return;
         } else if (entry.hitType != TranspositionTableHitType::EXACT) {
-            return;
-        }
-
-        if (other.depth >= entry.depth) {
-//            ++collisions;
             return;
         }
     }
@@ -46,7 +45,7 @@ void TranspositionTable::getPrincipalVariation (Board& board, int depth, std::ve
 //    std::cout << board << std::endl;
 
     if (hasEntry(board, 0)) {
-        const TranspositionTableEntry& entry = getEntry(board);
+        const TranspositionTableEntry& entry = getEntry(board, 0);
         if (entry.hitType != TranspositionTableHitType::EXACT) std::cerr << "Problem!" << std::endl;
 
         principalVariation.push_back(MyUtils::toString(entry.bestMove));
@@ -60,6 +59,8 @@ void TranspositionTable::getPrincipalVariation (Board& board, int depth, std::ve
 
 TranspositionTableEntry::TranspositionTableEntry (TranspositionTableHitType hitType, int depth, int positionValue, Move bestMove) : hitType{hitType}, depth{depth}, positionValue{positionValue}, bestMove(bestMove) {}
 
-TranspositionTableEntry::TranspositionTableEntry () : hitType{TranspositionTableHitType::EXACT}, depth{255}, positionValue{0}, bestMove{Moves::NO_MOVE} {
-
+TranspositionTableEntry::operator bool () const {
+    std::cout << "At operator bool" << (depth != TranspositionTableEntries::INVALID.depth) << " " << TranspositionTableEntries::INVALID.depth << " " << depth << std::endl;
+    return depth != TranspositionTableEntries::INVALID.depth;
 }
+

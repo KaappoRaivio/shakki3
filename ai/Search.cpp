@@ -7,7 +7,7 @@
 #include "TranspositionTable.h"
 #include "../BoardAnalysis.h"
 
-#define USE_TT 1
+#define USE_TT 0
 #define ORDER_MOVES 1
 
 
@@ -21,9 +21,9 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
 
     int originalAlpha = alpha;
 #if USE_TT
-    if (table.hasEntry(positionToSearch, depth)) {
+    auto entry = table.getEntry(positionToSearch, plysFromRoot);
+    if (entry != TranspositionTableEntries::INVALID) {
         ++tableHits;
-        const TranspositionTableEntry& entry = table.getEntry(positionToSearch);
         switch (entry.hitType) {
             case TranspositionTableHitType::UPPER_BOUND:
                 beta = std::min(beta, entry.positionValue);
@@ -39,6 +39,8 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
 //            ++tableHits;
             return entry.positionValue;
         }
+    } else {
+        std::cout << "NOT FOUND" << std::endl;
     }
 #endif
 
@@ -85,8 +87,8 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
                                                                                  TranspositionTableHitType::EXACT;
 
 
-    TranspositionTableEntry entry{hitType, depth, positionValue, moves[bestMoveIndex]};
-    table.store(positionToSearch, entry);
+    TranspositionTableEntry newEntry{hitType, plysFromRoot, positionValue, moves[bestMoveIndex]};
+    table.store(positionToSearch, newEntry);
 #endif
 
 
@@ -156,7 +158,7 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
         std::cout << "\t\t" << moves[i] << ": " << values[i] << std::endl;
     }
 
-    table.store(position, TranspositionTableEntry{TranspositionTableHitType::EXACT, searchDepth, values[index], moves[index]});
+//    table.store(position, TranspositionTableEntry{TranspositionTableHitType::EXACT, searchDepth, values[index], moves[index]});
     principalVariation.clear();
     principalVariation.push_back(moves[index]);
     std::copy(principalVariations[index].begin(), principalVariations[index].end(), std::back_inserter(principalVariation));
@@ -201,9 +203,10 @@ constexpr int MVV_LVA[7][7] = {
 int scoreMove (const Board& context, const Move& move, TranspositionTable& transpositionTable) {
     int moveScoreGuess = 0;
 
-    if (transpositionTable.hasEntry(context, 0)) {
-        const auto& entry = transpositionTable.getEntry(context);
-//        std::cout << "Found!!" << std::endl;
+//    if (transpositionTable.hasEntry(context, 0)) {
+#if USE_TT
+    auto entry = transpositionTable.getEntry(context, 0);
+    if (entry != TranspositionTableEntries::INVALID) {
         transpositionTable.hits++;
 
         if (entry.bestMove == move) {
@@ -219,6 +222,7 @@ int scoreMove (const Board& context, const Move& move, TranspositionTable& trans
             }
         }
     }
+#endif
     moveScoreGuess += MVV_LVA[context.getPieceAt(move.getDestination()).type][context.getPieceAt(move.getOrigin()).type];
 
     moveScoreGuess += BoardEvaluator::pieceValues[move.getPromotedPiece()];

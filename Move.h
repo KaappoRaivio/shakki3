@@ -34,16 +34,27 @@ private:
     Move_raw move;
 
 public:
-    explicit Move (bool NO_MOVE);
+    constexpr explicit Move (bool NO_MOVE) {
+        if (NO_MOVE) {
+            move = 0xffffull;
+        } else {
+            throw std::runtime_error("NO_MOVE must be true!");
+        }
+
+    };
 
     Move (Move_raw move);
+
     Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::NO_PIECE);
+
     Move (const Move& other) = default;
 
     Square getOrigin () const;
+
     Square getDestination () const;
 
     bool isCapture () const;
+
     bool isPromotion () const;
 
 //    requires IsCastlingSide<SIDE>
@@ -63,7 +74,9 @@ public:
     }
 
     bool operator== (const Move& rhs) const;
+
     bool operator!= (const Move& rhs) const;
+
     friend std::ostream& operator<< (std::ostream& os, const Move& move);
 
     Move_raw raw () const;
@@ -82,7 +95,7 @@ public:
 };
 
 namespace Moves {
-    extern Move NO_MOVE;
+    constexpr Move NO_MOVE{true};
 }
 
 

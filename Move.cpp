@@ -73,13 +73,7 @@ bool Move::isDoublePawnPush () const {
     return move & MoveBitmasks::DOUBLE_PAWN_PUSH;
 }
 
-Move::Move (bool NO_MOVE) {
-    if (NO_MOVE) {
-        move = 0xffffull;
-    } else {
-        throw std::runtime_error("NO_MOVE must be true!");
-    }
-}
+
 
 bool Move::operator== (const Move& rhs) const {
     return move == rhs.move;
@@ -179,9 +173,4 @@ Move Move::fromString (std::string moveString, const Board& context) {
 bool Move::isEnPassant () const {
     if (!isCapture()) return false;
     return move & MoveBitmasks::EN_PASSANT;
-}
-
-
-namespace Moves {
-    Move NO_MOVE{true};
 }
