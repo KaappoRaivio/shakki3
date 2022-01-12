@@ -24,8 +24,16 @@ bool TranspositionTable::hasEntry (const Board& board, int depth) const {
 
 void TranspositionTable::store (const Board& board, TranspositionTableEntry entry) {
     if (hasEntry(board, 0)) {
-        if (getEntry(board).depth >= entry.depth) {
-            ++collisions;
+        const TranspositionTableEntry& other = getEntry(board);
+
+        if (other.hitType == TranspositionTableHitType::EXACT) {
+            return;
+        } else if (entry.hitType != TranspositionTableHitType::EXACT) {
+            return;
+        }
+
+        if (other.depth >= entry.depth) {
+//            ++collisions;
             return;
         }
     }

@@ -7,7 +7,7 @@
 #include "TranspositionTable.h"
 #include "../BoardAnalysis.h"
 
-#define USE_TT 0
+#define USE_TT 1
 #define ORDER_MOVES 1
 
 
@@ -19,8 +19,8 @@ int Search::negamaxSearch (Board positionToSearch, int depth, std::vector<Move>&
 int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth, int alpha, int beta) {
     ++nodesSearched;
 
-#if USE_TT
     int originalAlpha = alpha;
+#if USE_TT
     if (table.hasEntry(positionToSearch, depth)) {
         ++tableHits;
         const TranspositionTableEntry& entry = table.getEntry(positionToSearch);
@@ -54,8 +54,8 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
     }
 
     if (plysFromRoot == depth) {
-//        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
-        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
+        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
+//        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
     }
 
 #if ORDER_MOVES

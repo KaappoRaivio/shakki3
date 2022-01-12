@@ -25,7 +25,7 @@ int evaluateHistoryOneSide (const Board& board, PieceColor perspective, int plys
 
 int BoardEvaluator::evaluateSimpleOneSide (const Board& board, PieceColor perspective, int plysFromRoot) {
 //    if (board.isCheckmate()) return EvaluationConstants::LOSE - plysFromRoot;
-    if (board.isCheckmate()) return EvaluationConstants::LOSE;
+//    if (board.isCheckmate()) return EvaluationConstants::LOSE;
 
     int value = 0;
     auto pinMask = BoardAnalysis::getPinMask<BOTH>(board, perspective);
