@@ -97,6 +97,7 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
 
 Move Search::getBestMove (Board position, int searchDepth) {
     originalDepth = searchDepth;
+    PV.reserve(searchDepth * (searchDepth + 1) / 2);
     Move bestMoveSoFar = Moves::NO_MOVE;
     for (int depth = 1 ; depth <= searchDepth ; ++depth) {
         std::cout << "Iterative deepening for depth: " << depth << std::endl;
