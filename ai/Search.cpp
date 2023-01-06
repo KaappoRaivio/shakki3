@@ -49,6 +49,7 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
 
     if (moves.empty()) {
         if (positionToSearch.isCheck()) {
+            std::cout << "Checkmate!" << std::endl;
             return EvaluationConstants::LOSE;
         } else {
             return EvaluationConstants::DRAW;
@@ -123,7 +124,11 @@ Move Search::getBestMove (Board position, int searchDepth) {
 }
 
 Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation, int& bestMoveScore) {
-    const auto& moves = position.getMoves();
+    auto moves = position.getMoves();
+#if ORDER_MOVES
+    orderMoves(position, moves, searchDepth);
+#endif
+    std::cout << MyUtils::toString(moves) << std::endl;
 
     std::vector<int> values;
     std::vector<std::vector<Move>> principalVariations;
@@ -132,17 +137,27 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
     cutoffs = 0;
     table.hits = 0;
     table.collisions = 0;
-
+    
+    Move bestMoveSoFar = Moves::NO_MOVE;
+    int bestMoveScoreSoFar = EvaluationConstants::LOSE;
+    
     for (size_t index = 0; index < moves.size(); ++index) {
         position.executeMove(moves[index]);
 
 
         principalVariations.emplace_back();
         std::vector<Move>& variation = principalVariations[index];
+        int moveScore = -negamaxSearch(position, searchDepth - 1, variation);
         values.push_back(
-                -negamaxSearch(position, searchDepth - 1, variation)
+                moveScore
                 );
         position.unmakeMove();
+
+        if (moveScore > bestMoveScoreSoFar) {
+            std::cout << "BestMove changed from: " << bestMoveSoFar << "(" << bestMoveScoreSoFar << "), to: " << moves[index] << "(" << moveScore << ")" << std::endl;
+            bestMoveScoreSoFar = moveScore;
+            bestMoveSoFar = moves[index];
+        }
     }
     long index = std::distance(values.begin(), std::max_element(values.begin(), values.end()));
 
@@ -154,7 +169,8 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
 
     std::cout << "\tBest move value: " << values[index] << std::endl;
 
-    bestMoveScore = values[index];
+//    bestMoveScore = values[index];
+    bestMoveScore = bestMoveScoreSoFar;
     for (size_t i = 0; i < moves.size(); ++i) {
         std::cout << "\t\t" << moves[i] << ": " << values[i] << std::endl;
     }
@@ -164,7 +180,8 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
     principalVariation.push_back(moves[index]);
     std::copy(principalVariations[index].begin(), principalVariations[index].end(), std::back_inserter(principalVariation));
 
-    return moves[index];
+//    return moves[index];
+    return bestMoveSoFar;
 }
 
 int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta, int plysFromRoot) {
@@ -236,6 +253,8 @@ int scoreMove (const Board& context, const Move& move, TranspositionTable& trans
         & move.getDestination()) {
             moveScoreGuess -= BoardEvaluator::pieceValues[move.getMovingPiece(context).type];
     }
+
+    if (move.isCapture()) moveScoreGuess += 1000;
 
 
     return moveScoreGuess;

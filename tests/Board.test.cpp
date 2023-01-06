@@ -359,7 +359,7 @@ TEST_CASE("Board should implement move generation", "[board]") {
         REQUIRE(TestHelpers::perft(board, 3) == 8902);
         REQUIRE(TestHelpers::perft(board, 4) == 197281);
         REQUIRE(TestHelpers::perft(board, 5) == 4865609);
-//        REQUIRE(TestHelpers::perft(board, 6) == 119060324);
+        REQUIRE(TestHelpers::perft(board, 6) == 119060324);
 
 //        BENCHMARK_ADVANCED("perft(4)") (Catch::Benchmark::Chronometer meter) {
 //                Attacks::getInstance();
