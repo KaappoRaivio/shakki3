@@ -38,7 +38,8 @@ public:
 
 
     bool hasEntry (const Board& board, int depth) const;
-    const TranspositionTableEntry& getEntry (const Board& board, int plysFromRoot) const;
+    const TranspositionTableEntry& getEntry (const Board& board, int plysFromLeaves) const;
+    void clear ();
 
     void store (const Board& board, TranspositionTableEntry entry);
 

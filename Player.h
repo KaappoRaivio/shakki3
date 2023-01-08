@@ -11,6 +11,7 @@
 
 class Player {
 public:
+virtual ~Player() = default;
     virtual Move getMove (Board board) = 0;
 };
 
@@ -20,6 +21,7 @@ private:
     UI* ui;
 
 public:
+~HumanPlayer() override = default;
     explicit HumanPlayer (UI* ui);
 
     Move getMove (Board board) override;
@@ -29,6 +31,7 @@ class AIPlayer : public Player {
 private:
     Search search;
 public:
+~AIPlayer() override = default;
 
     explicit AIPlayer (int searchDepth);
 

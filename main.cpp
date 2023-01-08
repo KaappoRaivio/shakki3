@@ -14,15 +14,22 @@
 #include "Runner.h"
 
 int main () {
+//    Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
+//    Board board = Board::fromFEN("8/1K6/8/4q2P/8/8/5k2/8 b - - 3 2");
+
+
+
+
 
 //    Board board = Board::fromFEN("8/7p/4kp2/8/2P1r3/8/5K1R/8 w - - 0 1");
 //    Board board = Board::fromFEN("5k2/8/8/3Q4/8/7K/8/8 w - - 0 1");
-        Board board = Board::fromFEN("8/1K6/8/4q2P/8/8/5k2/8 b - - 3 2");
+
+
 //        Board board = Board::fromFEN("3k4/7K/8/q1N5/8/4q3/8/5Q2 w - - 3 2");
 //        board.executeSequenceOfMoves({"c5b7"});
 //    Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 
-//    Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
+
 
 //    Board board = Board::fromFEN("5B2/6P1/1p6/8/1N6/kP6/2K5/8 w - - 0 1");
 //    Board board = Board::fromFEN("8/8/7p/3KNN1k/2p4p/8/3P2p1/8 w - - 0 1");
@@ -31,9 +38,13 @@ int main () {
 //    std::cout << MyUtils::toString(moves) << std::endl;
 
 
+
+    Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b - - 0 1");
+
+
     std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
 
-    const auto& aiPlayer = std::make_unique<AIPlayer>(8);
+    const auto& aiPlayer = std::make_unique<AIPlayer>(7);
 //    const auto& aiPlayer2 = std::make_unique<AIPlayer>(7);
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {

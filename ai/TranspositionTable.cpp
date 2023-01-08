@@ -8,15 +8,19 @@ TranspositionTable::TranspositionTable () : table{}, collisions{0}, hits{0} {
     table.reserve(1e6);
 }
 
-const TranspositionTableEntry& TranspositionTable::getEntry (const Board& board, int plysFromRoot) const {
+const TranspositionTableEntry& TranspositionTable::getEntry (const Board& board, int plysFromLeaves) const {
     const auto& iterator = table.find(board.hash());
-    std::cout << (iterator == table.end() ? TranspositionTableEntries::INVALID :
-                  iterator->second.depth <= plysFromRoot ? iterator->second :
-                  TranspositionTableEntries::INVALID).depth << std::endl;
+//    std::cout << "Getting tt entry!" << std::endl;
+//    std::cout << (iterator == table.end() ? TranspositionTableEntries::INVALID :
+//                  iterator->second.depth <= plysFromLeaves ? iterator->second :
+//                  TranspositionTableEntries::INVALID).depth << std::endl;
 
-    return iterator == table.end() ? TranspositionTableEntries::INVALID :
-           iterator->second.depth <= plysFromRoot ? iterator->second :
-           TranspositionTableEntries::INVALID;
+    if (iterator == table.end()) return TranspositionTableEntries::INVALID;
+
+    const TranspositionTableEntry& entry = iterator->second;
+    if (entry.depth < plysFromLeaves) return TranspositionTableEntries::INVALID;
+
+    return entry;
 }
 
 bool TranspositionTable::hasEntry (const Board& board, int depth) const {
@@ -56,11 +60,13 @@ void TranspositionTable::getPrincipalVariation (Board& board, int depth, std::ve
         principalVariation.emplace_back("Not found");
     }
 }
+void TranspositionTable::clear () {
+    table.clear();
+}
 
 TranspositionTableEntry::TranspositionTableEntry (TranspositionTableHitType hitType, int depth, int positionValue, Move bestMove) : hitType{hitType}, depth{depth}, positionValue{positionValue}, bestMove(bestMove) {}
 
 TranspositionTableEntry::operator bool () const {
-    std::cout << "At operator bool" << (depth != TranspositionTableEntries::INVALID.depth) << " " << TranspositionTableEntries::INVALID.depth << " " << depth << std::endl;
     return depth != TranspositionTableEntries::INVALID.depth;
 }
 
