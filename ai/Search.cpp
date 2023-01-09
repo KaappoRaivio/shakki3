@@ -143,21 +143,7 @@ int scoreMove (const Board& context, const Move& move, TranspositionTable& trans
 #if USE_TT
     auto entry = transpositionTable.getEntry(context, 0);
     if (entry != TranspositionTableEntries::INVALID) {
-//        transpositionTable.hits++;
-
         if (entry.hitType == TranspositionTableHitType::EXACT) moveScoreGuess += 2000;
-//        if (entry.bestMove == move) {
-//            switch (entry.hitType) {
-//                case TranspositionTableHitType::LOWER_BOUND:
-//                case TranspositionTableHitType::UPPER_BOUND:
-//                    moveScoreGuess += 1000;
-//                    break;
-//                case TranspositionTableHitType::EXACT:
-//                    ++transpositionTable.hits;
-//                    moveScoreGuess += 10000;
-//                    break;
-//            }
-//        }
     }
 #endif
     moveScoreGuess += MVV_LVA[context.getPieceAt(move.getDestination()).type][context.getPieceAt(move.getOrigin()).type];
@@ -181,7 +167,7 @@ int scoreMove (const Board& context, const Move& move, TranspositionTable& trans
 
 void Search::orderMoves (Board& positionToSearch, std::vector<Move>& moves, int depth) {
     std::sort(moves.begin(), moves.end(), [&] (const Move& move1, const Move& move2) {
-        return scoreMove(positionToSearch, move1, table) < scoreMove(positionToSearch, move2, table);
+        return scoreMove(positionToSearch, move1, table) > scoreMove(positionToSearch, move2, table);
     });
 }
 Move Search::getBestMove (Board position, int searchDepth) {
