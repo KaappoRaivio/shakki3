@@ -2,7 +2,7 @@
 // Created by kaappo on 6.1.2022.
 //
 
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 #include "../Board.h"
 #include "../ai/BoardEvaluator.h"
 #include "../ai/Search.h"

@@ -1,7 +1,7 @@
 //
 // Created by kaappo on 29.12.2021.
 //
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 #include "../Board.h"
 
 TEST_CASE("Move works correctly") {

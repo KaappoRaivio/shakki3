@@ -14,7 +14,7 @@
 #include "Runner.h"
 
 int main () {
-//    Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
+    Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
 //    Board board = Board::fromFEN("8/1K6/8/4q2P/8/8/5k2/8 b - - 3 2");
 
 
@@ -39,17 +39,17 @@ int main () {
 
 
 
-    Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b - - 0 1");
+//    Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R b - - 0 1");
 
 
     std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
 
-    const auto& aiPlayer = std::make_unique<AIPlayer>(7);
+    const auto& aiPlayer = std::make_unique<AIPlayer>(25);
 //    const auto& aiPlayer2 = std::make_unique<AIPlayer>(7);
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
-            humanPlayer.get(),
             aiPlayer.get(),
+            humanPlayer.get(),
 //            aiPlayer2.get()
     };
 

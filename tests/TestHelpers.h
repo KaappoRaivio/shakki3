@@ -10,6 +10,7 @@
 #include "../Board.h"
 
 #include "thc/thc.h"
+//#include "../include/thc/thc.h"
 
 namespace TestHelpers {
     void verify (const Move& previousMove, const Board& board);

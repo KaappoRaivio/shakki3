@@ -1,7 +1,7 @@
 //
 // Created by kaappo on 26.12.2021.
 //
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 
 #include "../mytypes.h"
 #include "../Bitboard.h"

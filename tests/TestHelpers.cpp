@@ -2,7 +2,7 @@
 // Created by kaappo on 29.12.2021.
 //
 #include <unordered_set>
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 #include "TestHelpers.h"
 
 #include "thc/thc.h"

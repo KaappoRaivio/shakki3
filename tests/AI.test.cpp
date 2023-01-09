@@ -1,7 +1,7 @@
 //
 // Created by kaappo on 1/8/23.
 //
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 //#include "../Board.h"
 #include "../Player.h"
 //#include "../Move.h"
