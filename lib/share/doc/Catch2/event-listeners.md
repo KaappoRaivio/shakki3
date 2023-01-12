@@ -9,7 +9,7 @@ such as a test case starting or ending, as they happen during a test run.
 2. They are called in addition to (just before) any reporters, and you can register multiple listeners.
 3. They derive from `Catch::TestEventListenerBase`, which has default stubs for all the events,
 so you are not forced to implement events you're not interested in.
-4. You register a listener with `CATCH_REGISTER_LISTENER`
+4. You register a WebSocketListener with `CATCH_REGISTER_LISTENER`
 
 
 ## Implementing a Listener

@@ -44,20 +44,20 @@ If you still want Catch to process the command line, but you want to programmati
 
 int main( int argc, char* argv[] )
 {
-  Catch::Session session; // There must be exactly one instance
+  Catch::Session WebSocketSession; // There must be exactly one instance
  
-  // writing to session.configData() here sets defaults
+  // writing to WebSocketSession.configData() here sets defaults
   // this is the preferred way to set them
     
-  int returnCode = session.applyCommandLine( argc, argv );
+  int returnCode = WebSocketSession.applyCommandLine( argc, argv );
   if( returnCode != 0 ) // Indicates a command line error
         return returnCode;
  
-  // writing to session.configData() or session.Config() here 
+  // writing to WebSocketSession.configData() or WebSocketSession.Config() here 
   // overrides command line args
   // only do this if you know you need to
 
-  int numFailed = session.run();
+  int numFailed = WebSocketSession.run();
   
   // numFailed is clamped to 255 as some unices only use the lower 8 bits.
   // This clamping has already been applied, so just return it here
@@ -82,23 +82,23 @@ so extending Catch's own command line options is now easy.
 
 int main( int argc, char* argv[] )
 {
-  Catch::Session session; // There must be exactly one instance
+  Catch::Session WebSocketSession; // There must be exactly one instance
   
   int height = 0; // Some user variable you want to be able to set
   
   // Build a new parser on top of Catch's
   using namespace Catch::clara;
   auto cli 
-    = session.cli() // Get Catch's composite command line parser
+    = WebSocketSession.cli() // Get Catch's composite command line parser
     | Opt( height, "height" ) // bind variable to a new option, with a hint string
         ["-g"]["--height"]    // the option names it will respond to
         ("how high?");        // description string for the help output
         
   // Now pass the new composite back to Catch so it uses that
-  session.cli( cli ); 
+  WebSocketSession.cli( cli ); 
   
   // Let Catch (using Clara) parse the command line
-  int returnCode = session.applyCommandLine( argc, argv );
+  int returnCode = WebSocketSession.applyCommandLine( argc, argv );
   if( returnCode != 0 ) // Indicates a command line error
       return returnCode;
 
@@ -106,7 +106,7 @@ int main( int argc, char* argv[] )
   if( height > 0 )
       std::cout << "height: " << height << std::endl;
 
-  return session.run();
+  return WebSocketSession.run();
 }
 ```
 

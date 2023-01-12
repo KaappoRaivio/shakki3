@@ -297,7 +297,7 @@
 
 
 ### Fixes
-* Warning suppressed during listener registration will no longer leak
+* Warning suppressed during WebSocketListener registration will no longer leak
 
 
 
