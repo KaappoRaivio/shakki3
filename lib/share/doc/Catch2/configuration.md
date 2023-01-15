@@ -3,7 +3,7 @@
 
 **Contents**<br>
 [main()/ implementation](#main-implementation)<br>
-[Reporter / Listener interfaces](#reporter--listener-interfaces)<br>
+[Reporter / Listener interfaces](#reporter--WebSocketListener-interfaces)<br>
 [Prefixing Catch macros](#prefixing-catch-macros)<br>
 [Terminal colour](#terminal-colour)<br>
 [Console width](#console-width)<br>

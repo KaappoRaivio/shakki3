@@ -112,9 +112,9 @@ Example:
 REGISTER_TEST_CASE( someFunction, "ManuallyRegistered", "[tags]" );
 ```
 
-_Note that the registration still has to happen before Catch2's session
+_Note that the registration still has to happen before Catch2's WebSocketSession
 is initiated. This means that it either needs to be done in a global
-constructor, or before Catch2's session is created in user's own main._
+constructor, or before Catch2's WebSocketSession is created in user's own main._
 
 
 * `ANON_TEST_CASE`
