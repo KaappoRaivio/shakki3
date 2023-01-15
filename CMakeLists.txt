@@ -26,8 +26,3 @@ target_link_libraries(tests Catch2::Catch2WithMain)
 include(Catch)
 catch_discover_tests(tests)
 enable_testing()
-
-
-find_package(websocketpp REQUIRED)
-add_executable(websockettest ui/main.cpp ui/MyWebSocketClient.cpp ui/MyWebSocketClient.h ui/WebSocketSession.cpp ui/WebSocketSession.h ui/WebSocketListener.cpp ui/WebSocketListener.h)
-#target_link_libraries(websockettest PUBLIC websocketpp::websocketpp)

@@ -5,6 +5,10 @@
 #include "HTTPUI.h"
 
 HTTPUI::HTTPUI () : listenerThread{}, server{} {
+    server.set_default_headers(httplib::Headers{
+            {"Access-Control-Allow-Origin", "http://localhost:8080"}
+    });
+
     server.Get("/board", [this] (const httplib::Request&, httplib::Response& response) {
         response.set_content(currentBoard.toFEN(), "text/plain");
     });
