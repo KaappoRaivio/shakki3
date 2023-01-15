@@ -157,6 +157,9 @@ CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingS
 }
 
 Move Move::fromString (std::string moveString, const Board& context) {
+    if (moveString.length() < 4) {
+        return Moves::NO_MOVE;
+    }
     const Square& from = Square::fromString(moveString.substr(0, 2));
     const Square& to = Square::fromString(moveString.substr(2, 2));
 

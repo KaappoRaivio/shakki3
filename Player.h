@@ -6,7 +6,7 @@
 
 
 #include "Board.h"
-#include "UI.h"
+#include "ui/UI.h"
 #include "ai/Search.h"
 
 class Player {
