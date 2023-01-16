@@ -13,8 +13,8 @@ HumanPlayer::HumanPlayer (UI* ui) : ui{ui} {}
 Move AIPlayer::getMove (Board board) {
     std::vector<Move> principalVariation;
     std::cout << "Calculating move!" << std::endl;
-    return search.getBestMove(board, searchDepth);
+    return search.getBestMove(board, searchDepth, allowedTime);
 }
 
 
-AIPlayer::AIPlayer (int searchDepth) : search{}, searchDepth{searchDepth} {}
+AIPlayer::AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime) : search{}, allowedTime{allowedTime}, searchDepth{searchDepth} {}

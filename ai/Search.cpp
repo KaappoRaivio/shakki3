@@ -2,10 +2,13 @@
 // Created by kaappo on 6.1.2022.
 //
 
+#include <chrono>
+#include <thread>
 #include "Search.h"
 #include "BoardEvaluator.h"
 #include "TranspositionTable.h"
 #include "../BoardAnalysis.h"
+#include <cmath>
 
 #define USE_TT 1
 #define ORDER_MOVES 1
@@ -156,7 +159,7 @@ int scoreMove (const Board& context, const Move& move, TranspositionTable& trans
                              context.getPieces()[flip(context.getTurn())]
                                      .boards[PieceTypes::PAWN], flip(context.getTurn()))
         & move.getDestination()) {
-            moveScoreGuess -= BoardEvaluator::pieceValues[move.getMovingPiece(context).type];
+        moveScoreGuess -= BoardEvaluator::pieceValues[move.getMovingPiece(context).type];
     }
 
     if (move.isCapture()) moveScoreGuess += 1000;
@@ -170,30 +173,49 @@ void Search::orderMoves (Board& positionToSearch, std::vector<Move>& moves, int 
         return scoreMove(positionToSearch, move1, table) > scoreMove(positionToSearch, move2, table);
     });
 }
-Move Search::getBestMove (Board position, int searchDepth) {
+Move Search::getBestMove (Board position, int searchDepth, std::chrono::milliseconds allowedTime) {
+    std::cout << "Allowed time (ms): " << allowedTime.count() << std::endl;
     table.clear();
     originalDepth = searchDepth;
-    PV.reserve(searchDepth * (searchDepth + 1) / 2);
+
     Move bestMoveSoFar = Moves::NO_MOVE;
+    int searchedDepth = 0;
+
+    std::chrono::steady_clock::time_point actualBegin = std::chrono::steady_clock::now();
 
     for (int depth = 1 ; depth <= searchDepth ; ++depth) {
         std::cout << "Iterative deepening for depth: " << depth << std::endl;
 
         std::vector<Move> principalVariation;
         int moveScore;
+
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         bestMoveSoFar = getMove(position, depth, principalVariation, moveScore);
+        searchedDepth = depth;
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        long elapsedMillis = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
 
-        std::cout << "\tBest move so far: " << bestMoveSoFar << std::endl;
 
-        std::cout << "\tPrincipal variation: " <<  MyUtils::toString(principalVariation) << std::endl;
+        std::cout << "\tBest move so far: " << bestMoveSoFar << ", took " << elapsedMillis << " ms" << std::endl;
+
+        std::cout << "\tPrincipal variation: " << MyUtils::toString(principalVariation) << std::endl;
         if (moveScore >= 32000) {
             std::cout << "Found mate!" << std::endl;
             break;
         }
         principalVariation.clear();
+        auto predictedTimeForNextDepth = (end - begin) * std::sqrt(position.getMoves().size());
+        auto timeLeft = allowedTime - (end - actualBegin);
+        if (predictedTimeForNextDepth > timeLeft) {
+            break;
+        }
     }
 
+
+//    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+    std::cout << "Managed to search to depth " << searchedDepth << ", making move " << bestMoveSoFar << "!";
 
     return bestMoveSoFar;
 
@@ -217,7 +239,7 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
     Move bestMoveSoFar = Moves::NO_MOVE;
     int bestMoveScoreSoFar = EvaluationConstants::LOSE;
 
-    for (size_t index = 0; index < moves.size(); ++index) {
+    for (size_t index = 0 ; index < moves.size() ; ++index) {
         position.executeMove(moves[index]);
 
 
@@ -230,7 +252,8 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
         position.unmakeMove();
 
         if (moveScore > bestMoveScoreSoFar) {
-            std::cout << "BestMove changed from: " << bestMoveSoFar << "(" << bestMoveScoreSoFar << "), to: " << moves[index] << "(" << moveScore << ")" << std::endl;
+            std::cout << "BestMove changed from: " << bestMoveSoFar << "(" << bestMoveScoreSoFar << "), to: " << moves[index] << "(" << moveScore
+                      << ")" << std::endl;
             bestMoveScoreSoFar = moveScore;
             bestMoveSoFar = moves[index];
         }
@@ -247,7 +270,7 @@ Move Search::getMove (Board& position, int searchDepth, std::vector<Move>& princ
 
 //    bestMoveScore = values[index];
     bestMoveScore = bestMoveScoreSoFar;
-    for (size_t i = 0; i < moves.size(); ++i) {
+    for (size_t i = 0 ; i < moves.size() ; ++i) {
         std::cout << "\t\t" << moves[i] << ": " << values[i] << std::endl;
     }
 

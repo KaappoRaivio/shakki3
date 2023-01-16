@@ -4,10 +4,24 @@
 
 #include "HTTPUI.h"
 
-HTTPUI::HTTPUI () : listenerThread{}, server{} {
+bool isInteger (const std::string& s) {
+    return std::regex_match(s, std::regex("[(-|+)|][0-9]+"));
+}
+
+HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
     server.set_default_headers(httplib::Headers{
-            {"Access-Control-Allow-Origin", "http://localhost:8080"}
+            {"Access-Control-Allow-Origin", "http://localhost:8080"},
+            {"Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS"}
     });
+
+//    server.Options("/(.*)",
+//                   [&] (const httplib::Request&, httplib::Response& res) {
+//                       res.set_header("Access-Control-Allow-Methods", " POST, GET, PUT, OPTIONS");
+//                       res.set_header("Content-Type", "text/html; charset=utf-8");
+//                       res.set_header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Accept");
+//                       res.set_header("Access-Control-Allow-Origin", "*");
+//                       res.set_header("Connection", "close");
+//                   });
 
     server.Get("/board", [this] (const httplib::Request&, httplib::Response& response) {
         response.set_content(currentBoard.toFEN(), "text/plain");
@@ -43,6 +57,36 @@ HTTPUI::HTTPUI () : listenerThread{}, server{} {
         } catch (...) {
             response.status = 400;
         }
+    });
+
+    // Yes yes I know it should be put but I wasn't able to get CORS working with PUT
+    server.Post("/controls/maxTime", [this] (const httplib::Request& request, httplib::Response& response) {
+        std::cout << "Moi" << std::endl;
+        auto search = request.params.find("maxTime");
+        if (search != request.params.end()) {
+            const std::string& timeString = search->second;
+            if (!isInteger(timeString)) {
+                response.status = 400;
+                return;
+            } else {
+                std::stringstream ss{timeString};
+                int timeMillis;
+                ss >> timeMillis;
+                std::cout << "New time: " << timeMillis << std::endl;
+
+                this->player->allowedTime = std::chrono::milliseconds{timeMillis};
+                response.set_content(timeString, "text/plain");
+                response.status = 201;
+                return;
+            }
+        }
+    });
+
+    server.Get("/controls/maxTime", [this] (const httplib::Request& request, httplib::Response& response) {
+        std::stringstream ss;
+        ss << this->player->allowedTime.count();
+        response.set_content(ss.str(), "text/plain");
+        response.status = 200;
     });
 
     listenerThread = std::thread{[this] () {

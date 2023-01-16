@@ -2,6 +2,7 @@
 // Created by kaappo on 6.1.2022.
 //
 
+#include <chrono>
 #include "../Board.h"
 #include "TranspositionTable.h"
 
@@ -25,12 +26,14 @@ private:
 
     std::vector<Move> PV;
 
+
+
     int negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
     int quiescenceSearch (Board& positionToSearch, int alpha, int beta, int plysFromRoot);
 public:
     int negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation);
 
-    Move getBestMove (Board position, int searchDepth);
+    Move getBestMove (Board position, int searchDepth, std::chrono::milliseconds allowedTime);
 
     Move getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation, int& bestMoveScore);
 

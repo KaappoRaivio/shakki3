@@ -7,9 +7,11 @@
 #include <optional>
 #include "httplib/httplib.h"
 #include "UI.h"
+#include "../Player.h"
 
 
 class HTTPUI : public UI {
+    AIPlayer* player;
     std::thread listenerThread;
     httplib::Server server;
     Board currentBoard;
@@ -18,7 +20,7 @@ class HTTPUI : public UI {
     std::condition_variable cv;
     std::mutex cv_m;
 public:
-    HTTPUI ();
+    HTTPUI (AIPlayer* player);
     void updateValues (Board board) override;
     Move getMove () override;
 };

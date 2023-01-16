@@ -44,10 +44,10 @@ int main () {
 
 
 //    std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
-    std::unique_ptr<UI> ui = std::make_unique<HTTPUI>();
 
-    const auto& aiPlayer = std::make_unique<AIPlayer>(5);
+    const auto& aiPlayer = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
 //    const auto& aiPlayer2 = std::make_unique<AIPlayer>(7);
+    std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
             humanPlayer.get(),
