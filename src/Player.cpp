@@ -16,5 +16,9 @@ Move AIPlayer::getMove (Board board) {
     return search.getBestMove(board, searchDepth, allowedTime);
 }
 
+Search& AIPlayer::getSearch () {
+    return search;
+}
+
 
 AIPlayer::AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime) : search{}, allowedTime{allowedTime}, searchDepth{searchDepth} {}

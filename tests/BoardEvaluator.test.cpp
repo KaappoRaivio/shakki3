@@ -4,8 +4,8 @@
 
 #include "catch2/catch_all.hpp"
 #include "../src/Board.h"
-#include "../ai/BoardEvaluator.h"
-#include "../ai/Search.h"
+#include "../src/ai/BoardEvaluator.h"
+#include "../src/ai/Search.h"
 #include "TestHelpers.h"
 
 

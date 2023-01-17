@@ -4,13 +4,13 @@
 
 #include "HTTPUI.h"
 
-bool isInteger (const std::string& s) {
+bool isInteger(const std::string &s) {
     return std::regex_match(s, std::regex("[(-|+)|][0-9]+"));
 }
 
-HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
+HTTPUI::HTTPUI(AIPlayer *player) : player{player}, listenerThread{}, server{} {
     server.set_default_headers(httplib::Headers{
-            {"Access-Control-Allow-Origin", "http://localhost:8080"},
+            {"Access-Control-Allow-Origin",  "http://localhost:8080"},
             {"Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS"}
     });
 
@@ -23,18 +23,17 @@ HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
 //                       res.set_header("Connection", "close");
 //                   });
 
-    server.Get("/board", [this] (const httplib::Request&, httplib::Response& response) {
+    server.Get("/board", [this](const httplib::Request &, httplib::Response &response) {
         response.set_content(currentBoard.toFEN(), "text/plain");
     });
 
-    server.Post("/makeMove", [this] (const httplib::Request& request, httplib::Response& response) {
+    server.Post("/makeMove", [this](const httplib::Request &request, httplib::Response &response) {
         auto search = request.params.find("move");
         if (search == request.params.end()) {
             response.status = 400;
             return;
         }
-        const std::string& moveString = search->second;
-        std::cout << "Got move:" << moveString << "!" << std::endl;
+        const std::string &moveString = search->second;
 
         try {
             std::vector<Move> legalMoves = currentBoard.getMoves();
@@ -43,8 +42,9 @@ HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
             if (isValidMove) {
                 Board copy = currentBoard;
                 copy.executeMove(move);
-                response.body = copy.toFEN();
+                response.set_content(copy.toFEN(), "text/plain");
                 response.status = 201;
+                std::cout << "Got move:" << moveString << "!" << std::endl;
 
                 {
                     std::lock_guard<std::mutex> lock{cv_m};
@@ -60,11 +60,10 @@ HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
     });
 
     // Yes yes I know it should be put but I wasn't able to get CORS working with PUT
-    server.Post("/controls/maxTime", [this] (const httplib::Request& request, httplib::Response& response) {
-        std::cout << "Moi" << std::endl;
-        auto search = request.params.find("maxTime");
+    server.Post("/controls/maxTime", [this](const httplib::Request &request, httplib::Response &response) {
+        auto search = request.params.find("value");
         if (search != request.params.end()) {
-            const std::string& timeString = search->second;
+            const std::string &timeString = search->second;
             if (!isInteger(timeString)) {
                 response.status = 400;
                 return;
@@ -72,7 +71,7 @@ HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
                 std::stringstream ss{timeString};
                 int timeMillis;
                 ss >> timeMillis;
-                std::cout << "New time: " << timeMillis << std::endl;
+                std::cout << "New max time set: " << timeMillis << std::endl;
 
                 this->player->allowedTime = std::chrono::milliseconds{timeMillis};
                 response.set_content(timeString, "text/plain");
@@ -82,21 +81,47 @@ HTTPUI::HTTPUI (AIPlayer* player) : player{player}, listenerThread{}, server{} {
         }
     });
 
-    server.Get("/controls/maxTime", [this] (const httplib::Request& request, httplib::Response& response) {
+    server.Get("/controls/maxTime", [this](const httplib::Request &request, httplib::Response &response) {
         std::stringstream ss;
         ss << this->player->allowedTime.count();
         response.set_content(ss.str(), "text/plain");
         response.status = 200;
     });
 
-    listenerThread = std::thread{[this] () {
+    server.Get("/controls/useQuiescence", [this](const httplib::Request &request, httplib::Response& response) {
+        std::cout << "Getting quiescence " << this->player->getSearch().isUseQuiescenceSearch() << std::endl;
+       response.set_content(this->player->getSearch().isUseQuiescenceSearch() ? "true" : "", "text/plain");
+       response.status = 200;
+    });
+
+    server.Post("/controls/useQuiescence", [this](const httplib::Request &request, httplib::Response& response) {
+        auto search = request.params.find("value");
+        if (search != request.params.end()) {
+            std::string value = search->second;
+            if (value.length()) {
+                std::cout << "Enabling quiescence " << std::endl;
+                this->player->getSearch().setUseQuiescenceSearch(true);
+                response.status = 201;
+                return;
+            } else {
+                std::cout << "Disabling quiescence " << std::endl;
+                this->player->getSearch().setUseQuiescenceSearch(false);
+                response.status = 201;
+                return;
+            }
+        }
+    });
+
+    listenerThread = std::thread{[this]() {
         server.listen("0.0.0.0", 8081);
     }};
 }
-void HTTPUI::updateValues (Board board) {
+
+void HTTPUI::updateValues(Board board) {
     currentBoard = board;
 }
-Move HTTPUI::getMove () {
+
+Move HTTPUI::getMove() {
     std::unique_lock<std::mutex> lock{cv_m};
     std::cout << "Waiting for UI move! " << std::endl;
     cv.wait(lock, [this] { return incomingMove.has_value(); });

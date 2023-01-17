@@ -34,10 +34,14 @@ private:
 public:
 ~AIPlayer() override = default;
 
+
+
     explicit AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime);
 
     Move getMove (Board board) override;
 
     std::chrono::milliseconds allowedTime = std::chrono::seconds{10};
     int searchDepth;
+
+    Search &getSearch();
 };

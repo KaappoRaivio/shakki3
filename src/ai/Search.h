@@ -26,7 +26,25 @@ private:
 
     std::vector<Move> PV;
 
+    bool useTranspositionTable = true;
+public:
+    bool isUseTranspositionTable() const;
 
+    bool isUseQuiescenceSearch() const;
+
+    bool isUseMoveOrdering() const;
+
+private:
+    bool useQuiescenceSearch = true;
+    bool useMoveOrdering = true;
+public:
+    void setUseTranspositionTable(bool useTranspositionTable);
+
+    void setUseQuiescenceSearch(bool useQuiescenceSearch);
+
+    void setUseMoveOrdering(bool useMoveOrdering);
+
+private:
 
     int negamaxSearch (Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
     int quiescenceSearch (Board &positionToSearch, int alpha, int beta, int plysFromRoot);
