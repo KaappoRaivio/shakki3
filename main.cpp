@@ -1,18 +1,18 @@
 #include <iostream>
 #include <chrono>
-#include "BitboardOperations.h"
-#include "Board.h"
-#include "Attacks.h"
-#include "StringUtils.h"
-#include "MyMath.h"
-#include "BoardAnalysis.h"
-#include "InBetween.h"
-#include "ai/Search.h"
-#include "ai/BoardEvaluator.h"
-#include "ui/UI.h"
-#include "Player.h"
-#include "Runner.h"
-#include "ui/HTTPUI.h"
+#include "src/BitboardOperations.h"
+#include "src/Board.h"
+#include "src/Attacks.h"
+#include "src/StringUtils.h"
+#include "src/MyMath.h"
+#include "src/BoardAnalysis.h"
+#include "src/InBetween.h"
+#include "src/ai/Search.h"
+#include "src/ai/BoardEvaluator.h"
+#include "src/ui/UI.h"
+#include "src/Player.h"
+#include "src/Runner.h"
+#include "src/ui/HTTPUI.h"
 
 int main () {
 //    Board board = Board::fromFEN("8/3k4/3p4/pK1P1p2/P2P1P2/8/8/8 w - - 12 7");

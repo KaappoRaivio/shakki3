@@ -3,8 +3,8 @@
 //
 
 #include "catch2/catch_all.hpp"
-#include "../Board.h"
-#include "../InBetween.h"
+#include "../src/Board.h"
+#include "../src/InBetween.h"
 
 TEST_CASE ("InBetween") {
     SECTION("Works") {

@@ -8,10 +8,10 @@
 
 #include <catch2/catch_all.hpp>
 
-#include "../Board.h"
+#include "../src/Board.h"
 
 #include "TestHelpers.h"
-#include "../Attacks.h"
+#include "../src/Attacks.h"
 
 TEST_CASE ("Board should implement piece moving", "[board]") {
     SECTION("Board should be able to make FENs") {

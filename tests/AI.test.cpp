@@ -3,7 +3,7 @@
 //
 #include "catch2/catch_all.hpp"
 //#include "../Board.h"
-#include "../Player.h"
+#include "../src/Player.h"
 //#include "../Move.h"
 //#include "../Square.h"
 
@@ -18,5 +18,14 @@ TEST_CASE("Move output regression tests pass") {
         Board board = Board::fromFEN("8/1K6/8/4q2P/8/8/5k2/8 b - - 3 2");
         const auto& aiPlayer = std::make_unique<AIPlayer>(13, std::chrono::seconds{10000000});
         REQUIRE(aiPlayer->getMove(board) == Move{board, f2, e3});
+    }
+
+    SECTION ("Quiescence search works correctly") {
+        Board board = Board::fromFEN("8/3n2b1/8/3KP2k/8/8/1B6/8 b - - 0 1");
+
+        const auto& aiPlayer = std::make_unique<AIPlayer>(3, std::chrono::seconds{10});
+
+        std::cout << aiPlayer->getMove(board);
+        REQUIRE(false);
     }
 }

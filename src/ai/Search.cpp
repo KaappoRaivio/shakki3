@@ -57,8 +57,8 @@ int Search::negamaxSearch (Board &positionToSearch, int plysFromRoot, int depth,
     }
 
     if (plysFromRoot == depth) {
-//        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
-        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
+        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
+//        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
     }
 
 #if ORDER_MOVES

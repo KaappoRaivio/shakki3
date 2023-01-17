@@ -2,8 +2,8 @@
 // Created by kaappo on 26.12.2021.
 //
 #include "catch2/catch_all.hpp"
-#include "../Board.h"
-#include "../BoardAnalysis.h"
+#include "../src/Board.h"
+#include "../src/BoardAnalysis.h"
 
 TEST_CASE ("Attack mask generation works correctly", "[integration][attacks]") {
     SECTION("Attack mask generation includes every possible move", "[integration][attacks]") {

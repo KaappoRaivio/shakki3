@@ -3,10 +3,10 @@
 //
 #include "catch2/catch_all.hpp"
 
-#include "../mytypes.h"
-#include "../Bitboard.h"
-#include "../Square.h"
-#include "../BitboardOperations.h"
+#include "../src/mytypes.h"
+#include "../src/Bitboard.h"
+#include "../src/Square.h"
+#include "../src/BitboardOperations.h"
 
 
 TEST_CASE ("Bitboard works correctly", "[unit][bitboard]") {
