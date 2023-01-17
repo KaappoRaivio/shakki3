@@ -331,6 +331,14 @@ TEST_CASE("Board should implement move generation", "[board]") {
                                     0, 0);
     }
 
+    SECTION ("En passants aren't generated if the destination square isn't in the checkmask") {
+        Board board = Board::fromFEN("rn1q1bnr/pp5p/2p2p2/6p1/4pk2/5N2/PPPP1PPP/RNB1R1K1 w - - 3 3");
+        board.executeSequenceOfMoves({"d2d4"});
+        std::cout << board.toFEN() << std::endl;
+
+        TestHelpers::verifyMoveList(board.getMoves(), board, 0, 0);
+    }
+
     SECTION ("Qperft is correct") {
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");

@@ -28,8 +28,8 @@ private:
 
 
 
-    int negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
-    int quiescenceSearch (Board& positionToSearch, int alpha, int beta, int plysFromRoot);
+    int negamaxSearch (Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
+    int quiescenceSearch (Board &positionToSearch, int alpha, int beta, int plysFromRoot);
 public:
     int negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation);
 

@@ -27,7 +27,7 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
     }
 
 
-    bool isCapture = context.getColorAt(to) == flip(color) || isEnPassant;
+    bool isCapture = isEnPassant or context.getColorAt(to) == flip(color);
     if (isCapture) {
         move |= MoveBitmasks::CAPTURE;
     }

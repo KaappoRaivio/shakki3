@@ -18,7 +18,7 @@ int Search::negamaxSearch (Board positionToSearch, int depth, std::vector<Move>&
     using namespace EvaluationConstants;
     return negamaxSearch(positionToSearch, 0, depth, -1e9, 1e9);
 }
-int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth, int alpha, int beta) {
+int Search::negamaxSearch (Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta) {
     ++nodesSearched;
 
     int originalAlpha = alpha;
@@ -57,8 +57,8 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
     }
 
     if (plysFromRoot == depth) {
-        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
-//        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
+//        return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
+        return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
     }
 
 #if ORDER_MOVES
@@ -105,10 +105,10 @@ int Search::negamaxSearch (Board& positionToSearch, int plysFromRoot, int depth,
 }
 
 
-int Search::quiescenceSearch (Board& positionToSearch, int alpha, int beta, int plysFromRoot) {
+int Search::quiescenceSearch (Board &positionToSearch, int alpha, int beta, int plysFromRoot) {
     int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch, plysFromRoot, originalDepth);
     if (standing_pat >= beta) { return beta; }
-    if (standing_pat > alpha) { alpha = standing_pat; }
+    if (alpha < standing_pat) { alpha = standing_pat; }
 
 
     const std::vector<Move>& captureMoves = positionToSearch.getMoves(true);

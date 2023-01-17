@@ -131,7 +131,7 @@ PieceColor flip (const PieceColor color) {
         case BLACK:
             return WHITE;
         case EMPTY:
-            std::cerr << "Probably shouldn't invert EMPTY color!" << std::endl;
+//            std::cerr << "Probably shouldn't invert EMPTY color!" << std::endl;
             return EMPTY;
         default:
             throw std::runtime_error("Shouldn't happen!");
