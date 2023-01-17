@@ -15,6 +15,7 @@ TEST_CASE("Move output regression tests pass") {
     }
 
     SECTION ("Non-obvious #7") {
+        std::cout << "moi" << std::endl;
         Board board = Board::fromFEN("8/1K6/8/4q2P/8/8/5k2/8 b - - 3 2");
         const auto& aiPlayer = std::make_unique<AIPlayer>(13, std::chrono::seconds{10000000});
         REQUIRE(aiPlayer->getMove(board) == Move{board, f2, e3});
@@ -23,9 +24,18 @@ TEST_CASE("Move output regression tests pass") {
     SECTION ("Quiescence search works correctly") {
         Board board = Board::fromFEN("8/3n2b1/8/3KP2k/8/8/1B6/8 b - - 0 1");
 
-        const auto& aiPlayer = std::make_unique<AIPlayer>(3, std::chrono::seconds{10});
 
-        std::cout << aiPlayer->getMove(board);
-        REQUIRE(false);
+
+        const auto& playerWithoutQuiescenceSearch = std::make_unique<AIPlayer>(1, std::chrono::seconds{10});
+        playerWithoutQuiescenceSearch->getSearch().setUseQuiescenceSearch(false);
+
+        const auto& playerWithQuiescenceSearch = std::make_unique<AIPlayer>(1, std::chrono::seconds{10});
+        playerWithQuiescenceSearch->getSearch().setUseQuiescenceSearch(true);
+
+        const Move &badMove = playerWithoutQuiescenceSearch->getMove(board);
+        const Move &supposedBetterMove = playerWithQuiescenceSearch->getMove(board);
+        std::cout << "Bad: " << badMove << ", Good:" << supposedBetterMove << std::endl;
+        REQUIRE(badMove.getDestination() == e5);
+        REQUIRE(supposedBetterMove.getDestination() != e5);
     }
 }
