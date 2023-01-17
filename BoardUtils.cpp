@@ -244,17 +244,20 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
                 .getPossibleEnPassantSquares(previousMove.getDestination());
 
         const Square& destination = previousMove.getOrigin().move(SOUTH, color);
+        if (destination & checkMask) {
+            for (const Square& pawnSquare : possibleEnPassantCapturers & pawns) {
+                if (pawnSquare & pinMaskHV) continue; // horizonally or vertically pinned pawns cannot en passant
 
-        for (const Square& pawnSquare : possibleEnPassantCapturers & pawns) {
-            if (pawnSquare & pinMaskHV) continue; // horizonally or vertically pinned pawns cannot en passant
+                if ((pawnSquare & pinMaskD12) && !(destination & pinMaskD12)) {
+                    continue;
+                }
 
-            if ((pawnSquare & pinMaskD12) && !(destination & pinMaskD12)) {
-                continue;
+
+
+                moves.emplace_back(context, pawnSquare, destination);
             }
-
-
-            moves.emplace_back(context, pawnSquare, destination);
         }
+
     }
 
 

@@ -359,7 +359,7 @@ Board Board::fromFEN (std::string FEN) {
     if (parts[3].at(0) != '-') {
         const Square& enPassantTargetSquare = Square::fromString(parts[3]);
         switch (enPassantTargetSquare.getY()) {
-            case 3:
+            case 2:
                 previousMove = Move{board, enPassantTargetSquare.move(SOUTH), enPassantTargetSquare.move(NORTH)};
                 break;
             case 5:
