@@ -2,9 +2,9 @@
 // Created by kaappo on 26.12.2021.
 //
 #include "catch2/catch_all.hpp"
-#include "../Square.h"
-#include "../mytypes.h"
-#include "../BitboardOperations.h"
+#include "../src/Square.h"
+#include "../src/mytypes.h"
+#include "../src/BitboardOperations.h"
 
 TEST_CASE ("Square works correctly", "[unit][square]") {
     SECTION("Square should implement initialisation from multiple arguments", "[unit][square]") {

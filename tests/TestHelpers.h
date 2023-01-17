@@ -6,8 +6,8 @@
 
 
 #include <unordered_set>
-#include "../Move.h"
-#include "../Board.h"
+#include "../src/Move.h"
+#include "../src/Board.h"
 
 #include "thc/thc.h"
 //#include "../include/thc/thc.h"

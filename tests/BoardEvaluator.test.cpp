@@ -3,7 +3,7 @@
 //
 
 #include "catch2/catch_all.hpp"
-#include "../Board.h"
+#include "../src/Board.h"
 #include "../ai/BoardEvaluator.h"
 #include "../ai/Search.h"
 #include "TestHelpers.h"
