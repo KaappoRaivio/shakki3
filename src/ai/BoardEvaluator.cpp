@@ -42,7 +42,7 @@ int BoardEvaluator::evaluateSimpleOneSide(const Board &board, PieceColor perspec
         for (const Square &occupiedSquare: ownPiecesOnBoard) {
             middlegameEval += PieceSquareTables::getMiddlegameValue(Pieces::pieces[pieceType][perspective],
                                                                     occupiedSquare);
-            middlegameEval += PieceSquareTables::getEndgameValue(Pieces::pieces[pieceType][perspective],
+            endgameEval += PieceSquareTables::getEndgameValue(Pieces::pieces[pieceType][perspective],
                                                                  occupiedSquare);
         }
 
