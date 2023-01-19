@@ -1,0 +1,20 @@
+[Event "Casual Correspondence game"]
+[Site "https://lichess.org/nwjAZEqC"]
+[Date "2023.01.19"]
+[White "lichess AI level 1"]
+[Black "Anonymous"]
+[Result "0-1"]
+[UTCDate "2023.01.19"]
+[UTCTime "09:02:14"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[Variant "Standard"]
+[TimeControl "-"]
+[ECO "B02"]
+[Opening "Alekhine Defense"]
+[Termination "Normal"]
+[Annotator "lichess.org"]
+
+1. e4 Nf6 { B02 Alekhine Defense } 2. Nc3 Nc6 3. Nf3 d5 4. exd5 Nxd5 5. Bc4 Nf4 6. Ne5 Nxe5 7. b3 Nxg2+ 8. Ke2 Bg4+ 9. f3 Bxf3+ 10. Kf2 Qd4+ 11. Kg3 Qh4# { Black wins by checkmate. } 0-1
+
+

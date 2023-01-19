@@ -1,0 +1,20 @@
+[Event "Casual Correspondence game"]
+[Site "https://lichess.org/ug22nh0S"]
+[Date "2023.01.19"]
+[White "lichess AI level 4"]
+[Black "Anonymous"]
+[Result "0-1"]
+[UTCDate "2023.01.19"]
+[UTCTime "11:45:52"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[Variant "Standard"]
+[TimeControl "-"]
+[ECO "B03"]
+[Opening "Alekhine Defense"]
+[Termination "Normal"]
+[Annotator "lichess.org"]
+
+1. e4 Nf6 2. e5 Nd5 3. d4 { B03 Alekhine Defense } Nc6 4. c4 Nb6 5. f4 d5 6. c5 Nc4 7. Bxc4 dxc4 8. Nf3 Qd7 9. d5 Nb4 10. O-O Qxd5 11. Be3 Qxd1 12. Rxd1 Nc2 13. Bd2 Nxa1 14. Na3 Nb3 15. axb3 cxb3 16. Nb5 Rb8 17. Nxc7+ Kd7 18. Ba5+ Kc6 19. Nd4+ Kxc5 20. Ne2 Bf5 21. g4 Be4 22. Nd4 Kc4 23. Ne2 Bf3 24. Kf2 Bxg4 25. Ke3 Bf5 26. Rd4+ Kc5 27. Rd5+ Kc4 28. Rd4+ Kc5 29. Rb4 Be6 30. Nc3 Kc6 31. Nxe6 fxe6 32. Rxb3 Ra8 33. Nb5 b6 34. Be1 g6 35. Nd4+ Kd7 36. Nb5 Bg7 37. Bh4 a6 38. Nc3 b5 39. Ne2 Rhf8 40. Rd3+ Ke8 41. Nd4 Kf7 42. Rd1 Rfe8 43. Rf1 Rec8 44. Bg3 b4 45. h4 a5 46. Bf2 a4 47. Be1 a3 48. Bd2 axb2 49. Nc2 Rxc2 50. h5 Ra1 51. Rxa1 bxa1=Q 52. hxg6+ Kxg6 53. f5+ Kxf5 54. Ke2 Qc3 55. Ke1 Qxd2+ 56. Kf1 Qf2# { Black wins by checkmate. } 0-1
+
+
