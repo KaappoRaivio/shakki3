@@ -3,6 +3,7 @@
 //
 
 #include "Runner.h"
+#include "ui/UndoException.h"
 
 #include <utility>
 #include <chrono>
@@ -23,11 +24,19 @@ PieceColor Runner::play () {
 
 
         auto startTime = std::chrono::system_clock::now();
-        Move move = currentPlayer->getMove(position);
+        try {
+            Move move = currentPlayer->getMove(position);
 
-        auto endTime = std::chrono::system_clock::now();
-        std::cout << "Took " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count() << " ms!" << std::endl;
+            auto endTime = std::chrono::system_clock::now();
+            std::cout << "Took " << std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count() << " ms!" << std::endl;
 
-        position.executeMove(move);
+            position.executeMove(move);
+        } catch (const UndoException& ignored) {
+            position.unmakeMove();
+            while (not players[position.getTurn()]->isHumanPlayer()) {
+                position.unmakeMove();
+            }
+            std::cout << "Undo!" << std::endl;
+        }
     }
 }

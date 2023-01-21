@@ -33,8 +33,8 @@ int main () {
     std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
-            humanPlayer.get(),
             aiPlayer.get(),
+            humanPlayer.get(),
 //            aiPlayer2.get()
     };
 

@@ -10,6 +10,10 @@ Move HumanPlayer::getMove (Board board) {
 
 HumanPlayer::HumanPlayer (UI* ui) : ui{ui} {}
 
+bool HumanPlayer::isHumanPlayer() {
+    return true;
+}
+
 Move AIPlayer::getMove (Board board) {
     std::vector<Move> principalVariation;
     std::cout << "Calculating move!" << std::endl;
@@ -22,3 +26,7 @@ Search& AIPlayer::getSearch () {
 
 
 AIPlayer::AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime) : search{}, allowedTime{allowedTime}, searchDepth{searchDepth} {}
+
+bool AIPlayer::isHumanPlayer() {
+    return false;
+}

@@ -3,6 +3,7 @@
 //
 
 #include "HTTPUI.h"
+#include "UndoException.h"
 
 bool isInteger(const std::string &s) {
     return std::regex_match(s, std::regex("[(-|+)|][0-9]+"));
@@ -35,28 +36,43 @@ HTTPUI::HTTPUI(AIPlayer *player) : player{player}, listenerThread{}, server{} {
         }
         const std::string &moveString = search->second;
 
-        try {
-            std::vector<Move> legalMoves = currentBoard.getMoves();
-            Move move = Move::fromString(moveString, currentBoard);
-            bool isValidMove = std::find(legalMoves.begin(), legalMoves.end(), move) != legalMoves.end();
-            if (isValidMove) {
-                Board copy = currentBoard;
-                copy.executeMove(move);
-                response.set_content(copy.toFEN(), "text/plain");
-                response.status = 201;
-                std::cout << "Got move:" << moveString << "!" << std::endl;
-
-                {
-                    std::lock_guard<std::mutex> lock{cv_m};
-                    incomingMove = {move};
-                }
-                cv.notify_all();
-            } else {
-                response.status = 422;
+        if (moveString.starts_with("undo")) {
+            Board copy = currentBoard;
+            copy.unmakeMove();
+            response.set_content(copy.toFEN(), "text/plain");
+            response.status = 201;
+            std::cout << "Got undo!" << std::endl;
+            {
+                std::lock_guard<std::mutex> lock{cv_m};
+                undo = true;
             }
-        } catch (...) {
-            response.status = 400;
+            cv.notify_all();
+        } else {
+            try {
+                std::vector<Move> legalMoves = currentBoard.getMoves();
+                Move move = Move::fromString(moveString, currentBoard);
+                bool isValidMove = std::find(legalMoves.begin(), legalMoves.end(), move) != legalMoves.end();
+                if (isValidMove) {
+                    Board copy = currentBoard;
+                    copy.executeMove(move);
+                    response.set_content(copy.toFEN(), "text/plain");
+                    response.status = 201;
+                    std::cout << "Got move:" << moveString << "!" << std::endl;
+
+                    {
+                        std::lock_guard<std::mutex> lock{cv_m};
+                        incomingMove = {move};
+
+                    }
+                    cv.notify_all();
+                } else {
+                    response.status = 422;
+                }
+            } catch (...) {
+                response.status = 400;
+            }
         }
+
     });
 
     // Yes yes I know it should be put but I wasn't able to get CORS working with PUT
@@ -124,10 +140,18 @@ void HTTPUI::updateValues(Board board) {
 Move HTTPUI::getMove() {
     std::unique_lock<std::mutex> lock{cv_m};
     std::cout << "Waiting for UI move! " << std::endl;
-    cv.wait(lock, [this] { return incomingMove.has_value(); });
-    Move move{incomingMove.value()};
-    std::cout << "Got move from UI: " << move << std::endl;
+    cv.wait(lock, [this] { return incomingMove.has_value() or undo; });
+    std::cout << "Wait over!" << std::endl;
+    if (undo) {
+        std::cout << "Throwing undoexception!" << std::endl;
+        undo = false;
+        throw UndoException{};
+    } else {
+        Move move{incomingMove.value()};
+        std::cout << "Got move from UI: " << move << std::endl;
 
-    incomingMove = std::nullopt;
-    return move;
+        incomingMove = std::nullopt;
+        return move;
+    }
+
 }

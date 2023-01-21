@@ -85,7 +85,7 @@ TEST_CASE ("Board should implement piece moving", "[board]") {
         }
     }
 
-    SECTION("Board should make an unmake moves") {
+    SECTION("Board should make and unmake moves") {
         SECTION("quiet moves") {
             Board board;
             Move move{board, e2, e4};

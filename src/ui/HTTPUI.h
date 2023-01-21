@@ -16,6 +16,7 @@ class HTTPUI : public UI {
     httplib::Server server;
     Board currentBoard;
     std::optional<Move> incomingMove = std::nullopt;
+    bool undo = false;
 
     std::condition_variable cv;
     std::mutex cv_m;

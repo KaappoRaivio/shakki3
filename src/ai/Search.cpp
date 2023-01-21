@@ -295,15 +295,15 @@ Move Search::getMove(Board &position, int searchDepth, std::vector<Move> &princi
 }
 
 void Search::setUseTranspositionTable(bool useTranspositionTable) {
-    Search::useTranspositionTable = useTranspositionTable;
+    this->useTranspositionTable = useTranspositionTable;
 }
 
 void Search::setUseQuiescenceSearch(bool useQuiescenceSearch) {
-    Search::useQuiescenceSearch = useQuiescenceSearch;
+    this->useQuiescenceSearch = useQuiescenceSearch;
 }
 
 void Search::setUseMoveOrdering(bool useMoveOrdering) {
-    Search::useMoveOrdering = useMoveOrdering;
+    this->useMoveOrdering = useMoveOrdering;
 }
 
 bool Search::isUseTranspositionTable() const {

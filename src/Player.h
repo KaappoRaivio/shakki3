@@ -14,6 +14,8 @@ class Player {
 public:
 virtual ~Player() = default;
     virtual Move getMove (Board board) = 0;
+
+    virtual bool isHumanPlayer() = 0;
 };
 
 
@@ -26,6 +28,8 @@ public:
     explicit HumanPlayer (UI* ui);
 
     Move getMove (Board board) override;
+
+    bool isHumanPlayer() override;
 };
 
 class AIPlayer : public Player {
@@ -34,6 +38,7 @@ private:
 public:
 ~AIPlayer() override = default;
 
+    bool isHumanPlayer() override;
 
 
     explicit AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime);

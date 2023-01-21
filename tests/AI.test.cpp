@@ -8,6 +8,15 @@
 //#include "../Square.h"
 
 TEST_CASE("Move output regression tests pass") {
+    SECTION ("Knight isn't blundered") {
+        Board board = Board::fromFEN("8/1kp3p1/7p/R4p1n/p5P1/P1Brr3/1KR5/8 b - - 0 41");
+
+        const auto& player = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
+        player->getSearch().setUseQuiescenceSearch(true);
+
+        REQUIRE(player->getMove(board) == Move{board, h5, f6});
+    }
+
     SECTION("Lasker-Reichhelm") {
         Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
         const auto& aiPlayer = std::make_unique<AIPlayer>(26, std::chrono::seconds{10000000});
@@ -18,6 +27,7 @@ TEST_CASE("Move output regression tests pass") {
         std::cout << "moi" << std::endl;
         Board board = Board::fromFEN("8/1K6/8/4q2P/8/8/5k2/8 b - - 3 2");
         const auto& aiPlayer = std::make_unique<AIPlayer>(13, std::chrono::seconds{10000000});
+        aiPlayer->getSearch().setUseQuiescenceSearch(false);
         REQUIRE(aiPlayer->getMove(board) == Move{board, f2, e3});
     }
 
