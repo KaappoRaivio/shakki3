@@ -281,7 +281,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
     if (!captureOnly) {
         Bitboard kingsideAttackMask = 112;
         Bitboard kingsideOccupancyMask = 96;
-        if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE)
+        if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, Specials::KING_CASTLE)
             && !(attackMask & kingsideAttackMask.asColor(color, true))
             && !(context.getOccupancy(true) & kingsideOccupancyMask.asColor(color, true))
                 ) {
@@ -289,7 +289,7 @@ void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& contex
         }
         Bitboard queensideAttackMask = 28;
         Bitboard queensideOccupancyMask = 14;
-        if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE)
+        if (context.getHistory().getCurrentFrame().castlingStatus.canCastle(color, Specials::QUEEN_CASTLE)
             && !(attackMask & queensideAttackMask.asColor(color, true))
             && !(context.getOccupancy(true) & queensideOccupancyMask.asColor(color, true))
                 ) {

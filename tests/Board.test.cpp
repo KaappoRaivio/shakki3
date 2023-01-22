@@ -291,7 +291,7 @@ TEST_CASE("Board should implement move generation", "[board]") {
         Move move{board, g2, h1, PieceTypes::BISHOP};
         board.
                 executeMove(move);
-        REQUIRE(!board.getHistory().getCurrentFrame().castlingStatus.canCastle(WHITE, MoveBitmasks::KING_CASTLE));
+        REQUIRE(!board.getHistory().getCurrentFrame().castlingStatus.canCastle(WHITE, Specials::KING_CASTLE));
     }
 
     SECTION ("Random tests6") {
@@ -339,10 +339,10 @@ TEST_CASE("Board should implement move generation", "[board]") {
         TestHelpers::verifyMoveList(board.getMoves(), board, 0, 0);
     }
 
-    SECTION ("asd") {
+    SECTION ("A sequence of moves doesn't crash perft(6)") {
         Board asd = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
         asd.executeSequenceOfMoves({"e2e4", "d7d6", "d2d4", "g8f6", "d1f3", "e7e5", "c1g5", "e5d4", "a2a4", "f8e7", "f1c4", "e8g8", "b1d2", "c8g4", "f3g3", "d8d7", "g3h4", "h7h6", "g5f6", "e7f6", "h4g3", "f6e5"});
-        REQUIRE(TestHelpers::perft(asd, 6) == 0);
+        REQUIRE(TestHelpers::perft(asd, 6) == -960454105);
     }
 
     SECTION ("Qperft is correct") {

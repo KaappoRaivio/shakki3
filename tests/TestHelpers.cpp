@@ -15,12 +15,12 @@ namespace TestHelpers {
         REQUIRE(Move{board.getHistory().getCurrentFrame().previousMove} == previousMove);
 
         PieceColor color = previousMove.getMovingPiece(board).color;
-        if (previousMove.isCastling(MoveBitmasks::KING_CASTLE)) {
-            REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::KING_CASTLE) == false);
+        if (previousMove.isCastling(Specials::KING_CASTLE)) {
+            REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, Specials::KING_CASTLE) == false);
         }
 
-        if (previousMove.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
-            REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, MoveBitmasks::QUEEN_CASTLE) == false);
+        if (previousMove.isCastling(Specials::QUEEN_CASTLE)) {
+            REQUIRE(board.getHistory().getCurrentFrame().castlingStatus.canCastle(color, Specials::QUEEN_CASTLE) == false);
         }
     }
 

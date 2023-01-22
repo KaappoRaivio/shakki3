@@ -21,9 +21,9 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
                        && context.is(PAWN, from)
                        && context.getPieceAt(Square{from.getY(), to.getX()}) == Pieces::pieces[PAWN][flip(color)];
     if (isEnPassant) {
-        move |= MoveBitmasks::EN_PASSANT;
+        move |= Specials::EN_PASSANT;
     } else {
-        move &= ~MoveBitmasks::EN_PASSANT;
+        move &= ~Specials::EN_PASSANT;
     }
 
 
@@ -33,7 +33,7 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
     }
 
     if (context.is(PAWN, from) && from.diffY(to) == 2) {
-        move |= MoveBitmasks::DOUBLE_PAWN_PUSH;
+        move |= Specials::DOUBLE_PAWN_PUSH;
 
     }
 
@@ -47,7 +47,7 @@ Move::Move (const Board& context, const Square& from, const Square& to, const Pi
     }
 
     if (context.is(KING, from) && from.diffX(to) == 2) {
-        move |= from.getDirection(to, ROOK) == BitboardOperations::Directions::EAST ? MoveBitmasks::KING_CASTLE : MoveBitmasks::QUEEN_CASTLE;
+        move |= from.getDirection(to, ROOK) == BitboardOperations::Directions::EAST ? Specials::KING_CASTLE : Specials::QUEEN_CASTLE;
     }
 
 }
@@ -70,7 +70,7 @@ bool Move::isPromotion () const {
 
 bool Move::isDoublePawnPush () const {
     if (isPromotion() || isCapture()) return false;
-    return move & MoveBitmasks::DOUBLE_PAWN_PUSH;
+    return (move & MoveBitmasks::SPECIAL_MASK) == Specials::DOUBLE_PAWN_PUSH;
 }
 
 
@@ -84,8 +84,8 @@ bool Move::operator!= (const Move& rhs) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Move& move) {
-//    if (move.isCastling(MoveBitmasks::KING_CASTLE)) return os << "O-O";
-//    if (move.isCastling(MoveBitmasks::QUEEN_CASTLE)) return os << "O-O-O";
+//    if (move.isCastling(Specials::KING_CASTLE)) return os << "O-O";
+//    if (move.isCastling(Specials::QUEEN_CASTLE)) return os << "O-O-O";
     os << move.getOrigin() << move.getDestination();
 
     if (move.isPromotion()) {
@@ -128,29 +128,29 @@ CastlingStatus Move::getNewCastlingStatus (const Board& context, const CastlingS
 
     const Piece& movingPiece = getMovingPiece(context);
     PieceColor color = movingPiece.color;
-    if (isCastling(MoveBitmasks::KING_CASTLE) || isCastling(MoveBitmasks::QUEEN_CASTLE)) {
-        newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
-        newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+    if (isCastling(Specials::KING_CASTLE) || isCastling(Specials::QUEEN_CASTLE)) {
+        newStatus.setCanCastle(color, Specials::KING_CASTLE, false);
+        newStatus.setCanCastle(color, Specials::QUEEN_CASTLE, false);
     }
 
     if (movingPiece.type == ROOK) {
-        if (getOrigin() == Square{h1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
-        if (getOrigin() == Square{a1}.asColorFlip(color)) newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+        if (getOrigin() == Square{h1}.asColorFlip(color)) newStatus.setCanCastle(color, Specials::KING_CASTLE, false);
+        if (getOrigin() == Square{a1}.asColorFlip(color)) newStatus.setCanCastle(color, Specials::QUEEN_CASTLE, false);
     }
 
     if (possiblyCapturedPiece.type == ROOK) {
         if (getDestination() == Square{h1}.asColorFlip(flip(color))) {
-            newStatus.setCanCastle(flip(color), MoveBitmasks::KING_CASTLE, false);
+            newStatus.setCanCastle(flip(color), Specials::KING_CASTLE, false);
         }
         if (getDestination() == Square{a1}.asColorFlip(flip(color))) {
-            newStatus.setCanCastle(flip(color), MoveBitmasks::QUEEN_CASTLE, false);
+            newStatus.setCanCastle(flip(color), Specials::QUEEN_CASTLE, false);
         }
     }
 
     if (movingPiece.type == KING) {
         if (getOrigin() == Square{e1}.asColorFlip(color)) {
-            newStatus.setCanCastle(color, MoveBitmasks::KING_CASTLE, false);
-            newStatus.setCanCastle(color, MoveBitmasks::QUEEN_CASTLE, false);
+            newStatus.setCanCastle(color, Specials::KING_CASTLE, false);
+            newStatus.setCanCastle(color, Specials::QUEEN_CASTLE, false);
         }
     }
 
@@ -176,5 +176,5 @@ Move Move::fromString (std::string moveString, const Board& context) {
 
 bool Move::isEnPassant () const {
     if (!isCapture()) return false;
-    return move & MoveBitmasks::EN_PASSANT;
+    return (move & MoveBitmasks::SPECIAL_MASK) == Specials::EN_PASSANT;
 }

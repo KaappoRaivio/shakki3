@@ -147,7 +147,7 @@ void Board::executeMove (const Move& move) {
 
 
     Piece possiblyCapturedPiece{PieceTypes::NO_PIECE, EMPTY};
-    if (move.isCastling(MoveBitmasks::KING_CASTLE) || move.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
+    if (move.isCastling(Specials::KING_CASTLE) || move.isCastling(Specials::QUEEN_CASTLE)) {
         moveCastling(move);
     } else if (move.isPromotion()) {
         possiblyCapturedPiece = movePromotion(move);
@@ -182,9 +182,9 @@ void Board::executeMove (const Move& move) {
 void Board::moveCastling (const Move& move) {
     PieceColor turn = getTurn();
     Square kingPosition{turn == WHITE ? e1 : e8};
-    Square rookPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? h1 : a1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? h8 : a8)};
-    Square newKingPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? g1 : c1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? g8 : c8)};
-    Square newRookPosition{turn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? f1 : d1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? f8 : d8)};
+    Square rookPosition{turn == WHITE ? (move.isCastling(Specials::KING_CASTLE) ? h1 : a1) : (move.isCastling(Specials::KING_CASTLE) ? h8 : a8)};
+    Square newKingPosition{turn == WHITE ? (move.isCastling(Specials::KING_CASTLE) ? g1 : c1) : (move.isCastling(Specials::KING_CASTLE) ? g8 : c8)};
+    Square newRookPosition{turn == WHITE ? (move.isCastling(Specials::KING_CASTLE) ? f1 : d1) : (move.isCastling(Specials::KING_CASTLE) ? f8 : d8)};
 
     movePiece(kingPosition, newKingPosition);
     movePiece(rookPosition, newRookPosition);
@@ -193,10 +193,10 @@ void Board::moveCastling (const Move& move) {
 void Board::unmoveCastling (const Move& move) {
     PieceColor oldTurn = getTurn();
     Square oldKingPosition{oldTurn == WHITE ? e1 : e8};
-    Square oldRookPosition{oldTurn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? h1 : a1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? h8 : a8)};
+    Square oldRookPosition{oldTurn == WHITE ? (move.isCastling(Specials::KING_CASTLE) ? h1 : a1) : (move.isCastling(Specials::KING_CASTLE) ? h8 : a8)};
 
-    Square kingPosition{oldTurn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? g1 : c1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? g8 : c8)};
-    Square rookPosition{oldTurn == WHITE ? (move.isCastling(MoveBitmasks::KING_CASTLE) ? f1 : d1) : (move.isCastling(MoveBitmasks::KING_CASTLE) ? f8 : d8)};
+    Square kingPosition{oldTurn == WHITE ? (move.isCastling(Specials::KING_CASTLE) ? g1 : c1) : (move.isCastling(Specials::KING_CASTLE) ? g8 : c8)};
+    Square rookPosition{oldTurn == WHITE ? (move.isCastling(Specials::KING_CASTLE) ? f1 : d1) : (move.isCastling(Specials::KING_CASTLE) ? f8 : d8)};
 
     unmovePiece(Pieces::NO_PIECE, oldKingPosition, kingPosition);
     unmovePiece(Pieces::NO_PIECE, oldRookPosition, rookPosition);
@@ -208,7 +208,7 @@ void Board::unmakeMove () {
     const Move& moveToUnmake = currentState.previousMove;
     const Piece& capturedPiece = currentState.capturedPiece;
 
-    if (moveToUnmake.isCastling(MoveBitmasks::KING_CASTLE) || moveToUnmake.isCastling(MoveBitmasks::QUEEN_CASTLE)) {
+    if (moveToUnmake.isCastling(Specials::KING_CASTLE) || moveToUnmake.isCastling(Specials::QUEEN_CASTLE)) {
         unmoveCastling(moveToUnmake);
     } else if (moveToUnmake.isPromotion()) {
         unmovePromotion(capturedPiece, moveToUnmake);
@@ -375,7 +375,7 @@ Board Board::fromFEN (std::string FEN) {
     newState.plysSinceFiftyMoveReset = plysSinceFiftyMoveReset;
     newState.fullMoveCount = fullMoveCount;
     newState.castlingStatus = status;
-    newState.previousMove = previousMove.raw() | MoveBitmasks::DOUBLE_PAWN_PUSH;
+    newState.previousMove = previousMove.raw() | Specials::DOUBLE_PAWN_PUSH;
     board.history.popFrame();
     board.history.pushState(newState);
 

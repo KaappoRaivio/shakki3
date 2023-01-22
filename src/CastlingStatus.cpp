@@ -16,19 +16,19 @@ void CastlingStatus::setCanCastle (PieceColor color, CastlingSide side, bool can
 
 CastlingStatus::CastlingStatus (const std::string& FENCastlingStatus) : status{} {
     if (FENCastlingStatus.find('K') != std::string::npos) {
-        setCanCastle(WHITE, MoveBitmasks::KING_CASTLE, true);
+        setCanCastle(WHITE, Specials::KING_CASTLE, true);
     }
 
     if (FENCastlingStatus.find('Q') != std::string::npos) {
-        setCanCastle(WHITE, MoveBitmasks::QUEEN_CASTLE, true);
+        setCanCastle(WHITE, Specials::QUEEN_CASTLE, true);
     }
 
     if (FENCastlingStatus.find('k') != std::string::npos) {
-        setCanCastle(BLACK, MoveBitmasks::KING_CASTLE, true);
+        setCanCastle(BLACK, Specials::KING_CASTLE, true);
     }
 
     if (FENCastlingStatus.find('q') != std::string::npos) {
-        setCanCastle(BLACK, MoveBitmasks::QUEEN_CASTLE, true);
+        setCanCastle(BLACK, Specials::QUEEN_CASTLE, true);
     }
 }
 
@@ -38,10 +38,10 @@ std::ostream& operator<< (std::ostream& os, const CastlingStatus& status) {
     if (status.status.none()) return os << '-';
 
 
-    if (status.canCastle(WHITE, MoveBitmasks::KING_CASTLE)) os << 'K';
-    if (status.canCastle(WHITE, MoveBitmasks::QUEEN_CASTLE)) os << 'Q';
-    if (status.canCastle(BLACK, MoveBitmasks::KING_CASTLE)) os << 'k';
-    if (status.canCastle(BLACK, MoveBitmasks::QUEEN_CASTLE)) os << 'q';
+    if (status.canCastle(WHITE, Specials::KING_CASTLE)) os << 'K';
+    if (status.canCastle(WHITE, Specials::QUEEN_CASTLE)) os << 'Q';
+    if (status.canCastle(BLACK, Specials::KING_CASTLE)) os << 'k';
+    if (status.canCastle(BLACK, Specials::QUEEN_CASTLE)) os << 'q';
 
     return os;
 }

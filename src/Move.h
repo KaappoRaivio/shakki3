@@ -20,6 +20,11 @@
 namespace MoveBitmasks {
     constexpr int CAPTURE = 1 << 2;
     constexpr int PROMOTION = 1 << 3;
+
+    constexpr int SPECIAL_MASK = 0b11;
+}
+
+namespace Specials {
     constexpr int DOUBLE_PAWN_PUSH = 1;
     constexpr int KING_CASTLE = 2;
     constexpr int QUEEN_CASTLE = 3;
@@ -61,11 +66,11 @@ public:
 //    template<CastlingSide SIDE>
     bool isCastling (CastlingSide SIDE) const {
         if (!isPromotion() && !isCapture()) {
-            return (move & 0b11) == SIDE;
-//            if (SIDE == MoveBitmasks::KING_CASTLE && ((move & 0b11) == MoveBitmasks::KING_CASTLE)) {
+            return (move & MoveBitmasks::SPECIAL_MASK) == SIDE;
+//            if (SIDE == Specials::KING_CASTLE && ((move & 0b11) == Specials::KING_CASTLE)) {
 //                return true;
 //            }
-//            if (SIDE == MoveBitmasks::QUEEN_CASTLE && ((move & 0b11) == MoveBitmasks::QUEEN_CASTLE)) {
+//            if (SIDE == Specials::QUEEN_CASTLE && ((move & 0b11) == Specials::QUEEN_CASTLE)) {
 //                return true;
 //            }
         }
