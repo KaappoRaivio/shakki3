@@ -13,9 +13,9 @@
 #include "src/Player.h"
 #include "src/Runner.h"
 #include "src/ui/HTTPUI.h"
+#include "tests/TestHelpers.h"
 
 int main () {
-
     Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 //    Board board = Board::fromFEN("rn1q1bnr/pp5p/2p1kp2/6p1/4p2N/8/PPPP1PPP/RNB1R1K1 b - - 0 1");
 //    std::cout << BoardEvaluator::evaluateSimple(board, 1, 1) << std::endl;

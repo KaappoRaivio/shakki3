@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 23)
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}  -Wall -Wextra -fconcepts -O0 -DDEBUG=1")
 set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  -Wall -Wextra -fconcepts -O3 -flto -DDEBUG=0")
 
-set (CMAKE_BUILD_TYPE RELEASE)
+#set (CMAKE_BUILD_TYPE RELEASE)
 
 
 add_executable(shakki3
@@ -23,7 +23,7 @@ add_executable(shakki3
         src/ai/Search.h src/ZobristHash.cpp src/ZobristHash.h src/ai/TranspositionTable.cpp src/ai/TranspositionTable.h
         src/Runner.cpp src/Runner.h src/Player.cpp src/Player.h src/ui/UI.h src/ui/UI.cpp src/ui/HTTPUI.cpp src/ui/HTTPUI.h
         src/ai/eval/PieceSquareTables.cpp src/ai/eval/PieceSquareTables.h
-        src/ui/UndoException.cpp src/ui/UndoException.h)
+        src/ui/UndoException.cpp src/ui/UndoException.h lib/include/thc/thc.h lib/include/thc/thc.cpp tests/TestHelpers.h tests/TestHelpers.cpp)
 
 add_executable(tests
         tests/all.cpp tests/Bitboard.test.cpp tests/Square.test.cpp tests/BoardAnalysis.test.cpp tests/Board.test.cpp
@@ -37,6 +37,7 @@ add_executable(tests
         src/CastlingStatus.h src/ai/BoardEvaluator.cpp src/ai/BoardEvaluator.h src/ai/Search.cpp src/ai/Search.h
         src/ZobristHash.cpp src/ZobristHash.h src/ai/TranspositionTable.cpp src/ai/TranspositionTable.h src/Runner.cpp
         src/Runner.h src/Player.cpp src/Player.h src/ui/UI.h src/ui/UI.cpp src/ai/eval/PieceSquareTables.cpp src/ai/eval/PieceSquareTables.h
+        src/ui/UndoException.cpp src/ui/UndoException.h
         )
 
 
@@ -45,6 +46,7 @@ include_directories(lib/include)
 find_package(Catch2 3 REQUIRED)
 
 target_link_libraries(tests Catch2::Catch2WithMain)
+target_link_libraries(shakki3 Catch2::Catch2)
 
 include(Catch)
 catch_discover_tests(tests)
