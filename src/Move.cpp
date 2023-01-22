@@ -119,6 +119,7 @@ const Piece& Move::getMovingPiece (const Board& context) const {
     if (piece2) return piece2;
 
     std::cerr << context << *this << std::endl;
+    std::cerr << context.toFEN() << std::endl;
     throw std::runtime_error("Problem");
 }
 

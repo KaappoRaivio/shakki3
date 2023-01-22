@@ -339,6 +339,12 @@ TEST_CASE("Board should implement move generation", "[board]") {
         TestHelpers::verifyMoveList(board.getMoves(), board, 0, 0);
     }
 
+    SECTION ("asd") {
+        Board asd = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        asd.executeSequenceOfMoves({"e2e4", "d7d6", "d2d4", "g8f6", "d1f3", "e7e5", "c1g5", "e5d4", "a2a4", "f8e7", "f1c4", "e8g8", "b1d2", "c8g4", "f3g3", "d8d7", "g3h4", "h7h6", "g5f6", "e7f6", "h4g3", "f6e5"});
+        REQUIRE(TestHelpers::perft(asd, 6) == 0);
+    }
+
     SECTION ("Qperft is correct") {
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
@@ -380,6 +386,8 @@ TEST_CASE("Board should implement move generation", "[board]") {
 //        REQUIRE(TestHelpers::perft(board, 5));
 //        REQUIRE(TestHelpers::perftTHC(cr, 5));
 //        REQUIRE(TestHelpers::perft(board, 5) == TestHelpers::perftTHC(cr, 5));
+
+//        Board asd = Board::fromFEN("rn3rk1/pppq1pp1/3p3p/4b3/P1BpP1b1/6Q1/1PPN1PPP/R3K1NR w KQ - 0 13");
     }
 
 }
