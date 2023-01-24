@@ -12,7 +12,7 @@
 
 
 
-int Search::negamaxSearch(Board positionToSearch, int depth, std::vector<Move> &principalVariation) {
+int Search::negamaxSearch(Board positionToSearch, int depth, MOVES &principalVariation) {
     using namespace EvaluationConstants;
     return negamaxSearch(positionToSearch, 0, depth, -1e9, 1e9);
 }
@@ -46,7 +46,7 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
     }
 
 
-    std::vector<Move> moves = positionToSearch.getMoves();
+    MOVES moves = positionToSearch.getMoves();
 
     if (moves.empty()) {
         if (positionToSearch.isCheck()) {
@@ -117,7 +117,7 @@ int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int p
     if (alpha < standing_pat) { alpha = standing_pat; }
 
 
-    const std::vector<Move> &captureMoves = positionToSearch.getMoves(true);
+    const MOVES &captureMoves = positionToSearch.getMoves(true);
 
     for (const Move &captureMove: captureMoves) {
         positionToSearch.executeMove(captureMove);
@@ -176,7 +176,7 @@ int scoreMove(const Board &context, const Move &move, TranspositionTable &transp
     return moveScoreGuess;
 }
 
-void Search::orderMoves(Board &positionToSearch, std::vector<Move> &moves, int depth) {
+void Search::orderMoves(Board &positionToSearch, MOVES &moves, int depth) {
     std::sort(moves.begin(), moves.end(), [&](const Move &move1, const Move &move2) {
         return scoreMove(positionToSearch, move1, table, useTranspositionTable) > scoreMove(positionToSearch, move2, table, useTranspositionTable);
     });
@@ -195,7 +195,7 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
     for (int depth = 1; depth <= searchDepth; ++depth) {
         std::cout << "Iterative deepening for depth: " << depth << std::endl;
 
-        std::vector<Move> principalVariation;
+        MOVES principalVariation;
         int moveScore;
 
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -229,7 +229,7 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
 
 }
 
-Move Search::getMove(Board &position, int searchDepth, std::vector<Move> &principalVariation, int &bestMoveScore) {
+Move Search::getMove(Board &position, int searchDepth, MOVES &principalVariation, int &bestMoveScore) {
     auto moves = position.getMoves();
     if (useMoveOrdering) {
         orderMoves(position, moves, searchDepth);
@@ -238,7 +238,7 @@ Move Search::getMove(Board &position, int searchDepth, std::vector<Move> &princi
     std::cout << MyUtils::toString(moves) << std::endl;
 
     std::vector<int> values;
-    std::vector<std::vector<Move>> principalVariations;
+    std::vector<MOVES> principalVariations;
     nodesSearched = 0;
     tableHits = 0;
     cutoffs = 0;
@@ -253,7 +253,7 @@ Move Search::getMove(Board &position, int searchDepth, std::vector<Move> &princi
 
 
         principalVariations.emplace_back();
-        std::vector<Move> &variation = principalVariations[index];
+        MOVES &variation = principalVariations[index];
         int moveScore = -negamaxSearch(position, searchDepth - 1, variation);
         values.push_back(
                 moveScore

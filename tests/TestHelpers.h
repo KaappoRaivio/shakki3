@@ -27,7 +27,7 @@ namespace TestHelpers {
         return s.str();
     }
 
-    void verifyMoveList (const std::vector<Move>& moves, const Board& context, int index, bool captureOnly);
+    void verifyMoveList (const MOVES& moves, const Board& context, int index, bool captureOnly);
     void verifyMoveList (const std::unordered_set<std::string>& movesString, const Board& context, int index, bool captureOnly);
 
     void qperftTHC (thc::ChessRules& board, int depth, int& out);

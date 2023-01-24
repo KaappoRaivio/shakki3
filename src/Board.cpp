@@ -283,9 +283,9 @@ const PieceSet* Board::getPieces () const {
     return pieces;
 }
 
-std::vector<Move> Board::getMoves (bool captureOnly) const {
-    std::vector<Move> moves;
-    moves.reserve(40);
+MOVES Board::getMoves (bool captureOnly) const {
+    MOVES moves;
+//    moves.reserve(40);
 
     const Bitboard& checkMask = BoardAnalysis::getCheckMask(*this, getTurn());
     const Bitboard& attackMask = BoardAnalysis::getAttackMask(*this, flip(getTurn()));

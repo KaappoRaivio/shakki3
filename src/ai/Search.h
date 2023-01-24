@@ -24,7 +24,7 @@ private:
     int nodesSearched = 0;
     int cutoffs = 0;
 
-    std::vector<Move> PV;
+    MOVES PV;
 
     bool useTranspositionTable = true;
 public:
@@ -49,13 +49,13 @@ private:
     int negamaxSearch (Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
     int quiescenceSearch (Board &positionToSearch, int alpha, int beta, int plysFromRoot);
 public:
-    int negamaxSearch (Board positionToSearch, int depth, std::vector<Move>& principalVariation);
+    int negamaxSearch (Board positionToSearch, int depth, MOVES& principalVariation);
 
     Move getBestMove (Board position, int searchDepth, std::chrono::milliseconds allowedTime);
 
-    Move getMove (Board& position, int searchDepth, std::vector<Move>& principalVariation, int& bestMoveScore);
+    Move getMove (Board& position, int searchDepth, MOVES& principalVariation, int& bestMoveScore);
 
-    void orderMoves (Board& positionToSearch, std::vector<Move>& moves, int depth);
+    void orderMoves (Board& positionToSearch, MOVES& moves, int depth);
 
 };
 

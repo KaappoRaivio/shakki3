@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <sstream>
+#include "boost/container/static_vector.hpp"
 
 #ifndef DEBUG
     #define DEBUG true
@@ -141,6 +142,15 @@ namespace MyUtils {
     [[nodiscard]] std::string toString (std::vector<T> vector) {
         std::stringstream ss;
         for (T item : vector) {
+            ss << item << ", ";
+        }
+        return ss.str();
+    }
+
+    template <typename T, size_t V>
+    [[nodiscard]] std::string toString (boost::container::static_vector<T, V> staticVector) {
+        std::stringstream ss;
+        for (T item : staticVector) {
             ss << item << ", ";
         }
         return ss.str();

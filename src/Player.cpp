@@ -15,7 +15,7 @@ bool HumanPlayer::isHumanPlayer() {
 }
 
 Move AIPlayer::getMove (Board board) {
-    std::vector<Move> principalVariation;
+    MOVES principalVariation;
     std::cout << "Calculating move!" << std::endl;
     return search.getBestMove(board, searchDepth, allowedTime);
 }

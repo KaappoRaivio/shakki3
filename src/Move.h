@@ -13,6 +13,10 @@
 #include "CastlingStatus.h"
 //#include "BoardUtils.h"
 //#include "Board.h"
+#include "boost/container/static_vector.hpp"
+
+//#define MOVES std::vector<Move>
+#define MOVES boost::container::static_vector<Move, 128>
 
 
 // 000000 000000 0         0       0        0

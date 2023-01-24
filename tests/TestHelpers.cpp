@@ -25,7 +25,7 @@ namespace TestHelpers {
     }
 
 //
-//    std::string vectorToString (const std::vector<Move>& moves) {
+//    std::string vectorToString (const MOVES& moves) {
 //
 //    }
     void verifyMoveList (const std::unordered_set<std::string>& movesString, const Board& context, int index, bool captureOnly) {
@@ -105,7 +105,7 @@ namespace TestHelpers {
         REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} == correctMoves);
     }
 
-    void verifyMoveList (const std::vector<Move>& moves, const Board& context, int index, bool captureOnly) {
+    void verifyMoveList (const MOVES& moves, const Board& context, int index, bool captureOnly) {
         std::unordered_set<std::string> movesString;
         std::transform(moves.begin(), moves.end(), std::inserter(movesString, movesString.begin()), [] (const Move& move) {
             std::stringstream s;

@@ -281,7 +281,7 @@ TEST_CASE("Board should implement move generation", "[board]") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBPpP/R3KR2 b Qkq - 0 1");
 //        std::cout << board << std::endl;
 
-        const std::vector<Move>& vector = board.getMoves();
+        const MOVES& vector = board.getMoves();
 //        TestHelpers::verifyMoveList(vector, {}, board, 0);
 
     }
@@ -326,7 +326,7 @@ TEST_CASE("Board should implement move generation", "[board]") {
     SECTION ("Random tests9") {
         Board board = Board::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/8/7N/PPPPPPPP/RNBQKBR1 b Qkq - 1 2");
 //        std::cout << board << std::endl;
-        const std::vector<Move>& moves = board.getMoves();
+        const MOVES& moves = board.getMoves();
         TestHelpers::verifyMoveList(moves, board,
                                     0, 0);
     }
@@ -378,10 +378,10 @@ TEST_CASE("Board should implement move generation", "[board]") {
 //        BENCHMARK_ADVANCED("perft(4)") (Catch::Benchmark::Chronometer meter) {
 //                Attacks::getInstance();
 //                meter.measure([&] { return TestHelpers::perft(board, 4); });
-//            };
-//        BENCHMARK ("perft(6)") {
-//            return TestHelpers::perft(board, 6);
 //        };
+        BENCHMARK ("perft(6)") {
+            return TestHelpers::perft(board, 6);
+        };
 
 //        REQUIRE(TestHelpers::perft(board, 5));
 //        REQUIRE(TestHelpers::perftTHC(cr, 5));

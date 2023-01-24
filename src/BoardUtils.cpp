@@ -55,7 +55,7 @@ const BoardState& BoardStateHistory::getFrame (int index) const {
     return states[states.size() - 1 - index];
 }
 
-void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
+void MoveGeneration::addBishopMoves (MOVES& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& bishops = context.getPieces()[color].boards[PieceTypes::BISHOP];
 
 
@@ -87,7 +87,7 @@ void MoveGeneration::addBishopMoves (std::vector<Move>& moves, const Board& cont
     }
 }
 
-void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
+void MoveGeneration::addRookMoves (MOVES& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& rooks = context.getPieces()[color].boards[PieceTypes::ROOK];
     const Bitboard& occupancy = context.getOccupancy(true);
 
@@ -118,7 +118,7 @@ void MoveGeneration::addRookMoves (std::vector<Move>& moves, const Board& contex
     }
 }
 
-void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
+void MoveGeneration::addQueenMoves (MOVES& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& queens = context.getPieces()[color].boards[PieceTypes::QUEEN];
     const Bitboard& occupancy = context.getOccupancy(false);
 
@@ -144,7 +144,7 @@ void MoveGeneration::addQueenMoves (std::vector<Move>& moves, const Board& conte
     }
 }
 
-void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMask, bool captureOnly) {
+void MoveGeneration::addKnightMoves (MOVES& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMask, bool captureOnly) {
     const Bitboard& knights = context.getPieces()[color].boards[PieceTypes::KNIGHT];
 
     for (const Square& knightSquare : knights) {
@@ -164,7 +164,7 @@ void MoveGeneration::addKnightMoves (std::vector<Move>& moves, const Board& cont
     }
 }
 
-void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
+void MoveGeneration::addPawnMoves (MOVES& moves, const Board& context, PieceColor color, const Bitboard& checkMask, const Bitboard& pinMaskHV, const Bitboard& pinMaskD12, bool captureOnly) {
     const Bitboard& occupancy = context.getOccupancy(true);
     const Bitboard& pawns = context.getPieces()[color].boards[PieceTypes::PAWN];
 
@@ -263,7 +263,7 @@ void MoveGeneration::addPawnMoves (std::vector<Move>& moves, const Board& contex
 
 }
 
-void MoveGeneration::addKingMoves (std::vector<Move>& moves, const Board& context, PieceColor color, Bitboard attackMask, bool captureOnly) {
+void MoveGeneration::addKingMoves (MOVES& moves, const Board& context, PieceColor color, Bitboard attackMask, bool captureOnly) {
     const Square& kingSquare = context.getPieces()[color].boards[PieceTypes::KING].ls1b();
 
     Bitboard possibleSquares = Attacks::getInstance().getKingAttacks().getAttacksAt(context, kingSquare, color)

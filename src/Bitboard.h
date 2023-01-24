@@ -88,7 +88,11 @@ public:
             return &square;
         }
 
-        Iterator& operator++() { bitboard ^= bitboard & -bitboard; return *this;}
+        Iterator& operator++() {
+            bitboard ^= bitboard & -bitboard;
+//            square.value = __builtin_ctzl(bitboard);
+            return *this;
+        }
         Iterator operator++(int) { const Iterator tmp = *this; ++(*this); return tmp; }
 
         friend bool operator== (const Iterator& a, const Iterator& b) { return a.bitboard == b.bitboard; };

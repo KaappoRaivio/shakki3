@@ -49,7 +49,7 @@ HTTPUI::HTTPUI(AIPlayer *player) : player{player}, listenerThread{}, server{} {
             cv.notify_all();
         } else {
             try {
-                std::vector<Move> legalMoves = currentBoard.getMoves();
+                MOVES legalMoves = currentBoard.getMoves();
                 Move move = Move::fromString(moveString, currentBoard);
                 bool isValidMove = std::find(legalMoves.begin(), legalMoves.end(), move) != legalMoves.end();
                 if (isValidMove) {

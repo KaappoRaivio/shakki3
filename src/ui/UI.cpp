@@ -25,7 +25,7 @@ Move TtyUI::getMove () {
         try {
 
             const Move& move = Move::fromString(moveString, board);
-            std::vector<Move> legalMoves = board.getMoves();
+            MOVES legalMoves = board.getMoves();
             if (std::find(legalMoves.begin(), legalMoves.end(), move) != legalMoves.end()) {
                 return move;
             } else {
