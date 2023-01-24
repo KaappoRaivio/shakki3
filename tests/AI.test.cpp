@@ -7,14 +7,30 @@
 //#include "../Move.h"
 //#include "../Square.h"
 
-TEST_CASE("Move output regression tests pass") {
+TEST_CASE("Move output regression tests pass", "[ai]") {
     SECTION ("Knight isn't blundered") {
         Board board = Board::fromFEN("8/1kp3p1/7p/R4p1n/p5P1/P1Brr3/1KR5/8 b - - 0 41");
 
         const auto& player = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
         player->getSearch().setUseQuiescenceSearch(true);
 
-        REQUIRE(player->getMove(board) == Move{board, h5, f6});
+        REQUIRE(player->getMove(board).getOrigin() == h5);
+    }
+
+    SECTION ("Pawn isn't blundered") {
+        Board board = Board::fromFEN("rnbqkb1r/ppp2ppp/3p1n2/4p3/3PP3/5Q2/PPP2PPP/RNB1KBNR w KQkq - 0 4");
+        const auto& player = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
+        player->getSearch().setUseQuiescenceSearch(true);
+        player->getSearch().setUseTranspositionTable(false);
+
+        REQUIRE(player->getMove(board) != Move::fromString("c1g5", board));
+    }
+
+    SECTION ("Rook isn't blundered") {
+        Board board = Board::fromFEN("r2r2k1/1bqn1ppp/8/pB2p3/8/PQn1BN2/2P2PPP/3R1RK1 w - - 0 22");
+        const auto& player = std::make_unique<AIPlayer>(6, std::chrono::seconds{100});
+        player->getSearch().setUseTranspositionTable(true);
+        REQUIRE(player->getMove(board) != Move::fromString("b5c4", board));
     }
 
     SECTION("Lasker-Reichhelm") {

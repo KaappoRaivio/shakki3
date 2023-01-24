@@ -387,7 +387,7 @@ TEST_CASE("Board should implement move generation", "[board]") {
 //        REQUIRE(TestHelpers::perftTHC(cr, 5));
 //        REQUIRE(TestHelpers::perft(board, 5) == TestHelpers::perftTHC(cr, 5));
 
-//        Board asd = Board::fromFEN("rn3rk1/pppq1pp1/3p3p/4b3/P1BpP1b1/6Q1/1PPN1PPP/R3K1NR w KQ - 0 13");
+//        Board fromFEN = Board::asd("rn3rk1/pppq1pp1/3p3p/4b3/P1BpP1b1/6Q1/1PPN1PPP/R3K1NR w KQ - 0 13");
     }
 
 }
