@@ -17,6 +17,7 @@
 
 //#define MOVES std::vector<Move>
 #define MOVES boost::container::static_vector<Move, 128>
+#define SCORES boost::container::static_vector<int, 128>
 
 
 // 000000 000000 0         0       0        0

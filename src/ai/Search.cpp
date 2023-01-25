@@ -72,12 +72,20 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
 
     int positionValue = -1e9;
     size_t bestMoveIndex = -1;
-    for (auto move: moves) {
+
+
+
+    for (size_t moveIndex = 0; moveIndex < moves.size(); ++moveIndex) {
+        const Move& move = moves[moveIndex];
         positionToSearch.executeMove(move);
         int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha);
         positionToSearch.unmakeMove();
 
-        positionValue = std::max(positionValue, newValue);
+//        positionValue = std::max(positionValue, newValue);
+        if (newValue > positionValue) {
+            positionValue = newValue;
+            bestMoveIndex = moveIndex;
+        }
         alpha = std::max(alpha, newValue);
 
         if (alpha >= beta) {
@@ -152,7 +160,12 @@ int scoreMove(const Board &context, const Move &move, TranspositionTable &transp
     if (useTranspositionTable) {
         auto entry = transpositionTable.getEntry(context, 0);
         if (entry != TranspositionTableEntries::INVALID) {
-            if (entry.hitType == TranspositionTableHitType::EXACT) moveScoreGuess += 2000;
+            if (entry.hitType == TranspositionTableHitType::EXACT) {
+//                std::cout << "Hit!" << std::endl;
+                moveScoreGuess += 2000;
+            } else {
+//                std::cout << "No hit!" << std::endl;
+            }
         }
     }
 
@@ -176,10 +189,31 @@ int scoreMove(const Board &context, const Move &move, TranspositionTable &transp
     return moveScoreGuess;
 }
 
+struct move_hash
+{
+    std::size_t operator () (Move const &move) const
+    {
+        return std::hash<Move_raw>()(move.raw());
+    }
+};
+
 void Search::orderMoves(Board &positionToSearch, MOVES &moves, int depth) {
+//    std::cout << "Sorting moves with size " << moves.size() << "!"  << std::endl;
+    int comparisons = 0;
+
+//    SCORES moveScores;
+    std::unordered_map<Move, int, move_hash> moveScores{moves.size()};
+    for (size_t i = 0; i < moves.size(); ++i) {
+        moveScores[moves[i]] = scoreMove(positionToSearch, moves[i], table, useTranspositionTable);
+    }
+
+
     std::sort(moves.begin(), moves.end(), [&](const Move &move1, const Move &move2) {
-        return scoreMove(positionToSearch, move1, table, useTranspositionTable) > scoreMove(positionToSearch, move2, table, useTranspositionTable);
+//        ++comparisons;
+//        return scoreMove(positionToSearch, move1, table, useTranspositionTable) > scoreMove(positionToSearch, move2, table, useTranspositionTable);
+        return moveScores[move1] > moveScores[move2];
     });
+//    std::cout << "Sorted moves with " << comparisons << " comparisons performed!" << std::endl;
 }
 
 Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseconds allowedTime) {
