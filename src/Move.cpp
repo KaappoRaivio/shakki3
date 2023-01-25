@@ -178,3 +178,10 @@ bool Move::isEnPassant () const {
     if (!isCapture()) return false;
     return (move & MoveBitmasks::SPECIAL_MASK) == Specials::EN_PASSANT;
 }
+
+bool Move::isCastling(CastlingSide SIDE) const {
+    if (!isPromotion() && !isCapture()) {
+        return (move & MoveBitmasks::SPECIAL_MASK) == SIDE;
+    }
+    return false;
+}

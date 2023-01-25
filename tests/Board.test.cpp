@@ -345,7 +345,7 @@ TEST_CASE("Board should implement move generation", "[board]") {
         REQUIRE(TestHelpers::perft(asd, 6) == -960454105);
     }
 
-    SECTION ("Qperft is correct") {
+    SECTION ("Perft is correct") {
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
 //        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
 

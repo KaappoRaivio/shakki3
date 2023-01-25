@@ -9,20 +9,16 @@
 #include "TranspositionTable.h"
 #include "../BoardAnalysis.h"
 #include <cmath>
+#include "../mytypes.h"
 
-
-
-int Search::negamaxSearch(Board positionToSearch, int depth, MOVES &principalVariation) {
-    using namespace EvaluationConstants;
-    return negamaxSearch(positionToSearch, 0, depth, -1e9, 1e9);
+int Search::negamaxSearch(Board positionToSearch, int depth) {
+    return negamaxSearch(positionToSearch, 0, depth, EvaluationConstants::LOSE, EvaluationConstants::WIN);
 }
 
 int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta) {
     ++nodesSearched;
 
     int originalAlpha = alpha;
-
-
     if (this->useTranspositionTable) {
         auto entry = table.getEntry(positionToSearch, depth - plysFromRoot);
         if (entry != TranspositionTableEntries::INVALID) {
@@ -50,7 +46,6 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
 
     if (moves.empty()) {
         if (positionToSearch.isCheck()) {
-//            std::cout << "Checkmate!" << std::endl;
             return EvaluationConstants::LOSE;
         } else {
             return EvaluationConstants::DRAW;
@@ -69,14 +64,12 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
         orderMoves(positionToSearch, moves, depth);
     }
 
-
-    int positionValue = -1e9;
+    int positionValue = EvaluationConstants::LOSE - 1;
     size_t bestMoveIndex = -1;
 
 
-
     for (size_t moveIndex = 0; moveIndex < moves.size(); ++moveIndex) {
-        const Move& move = moves[moveIndex];
+        const Move &move = moves[moveIndex];
         positionToSearch.executeMove(move);
         int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha);
         positionToSearch.unmakeMove();
@@ -85,6 +78,14 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
         if (newValue > positionValue) {
             positionValue = newValue;
             bestMoveIndex = moveIndex;
+//            std::cout << "Setting depth " << depth << " at " << plysFromRoot << " to " << moves[moveIndex] << std::endl;
+            if (depth == 4) {
+//                std::cout << MyUtils::toString(moves[bestMoveIndex]) << std::endl;
+            }
+            PV[depth + 1][plysFromRoot] = moves[bestMoveIndex];
+            for (int i = plysFromRoot + 1; i < MAX_SEARCH_DEPTH; ++i) {
+                PV[depth + 1][i] = Moves::NO_MOVE;
+            }
         }
         alpha = std::max(alpha, newValue);
 
@@ -103,16 +104,15 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
         } else {
             hitType = TranspositionTableHitType::EXACT;
         }
-    //    TranspositionTableHitType hitType = positionValue <= originalAlpha ?
-    //                                        TranspositionTableHitType::UPPER_BOUND : positionValue >= beta ?
-    //                                                                                 TranspositionTableHitType::LOWER_BOUND :
-    //                                                                                 TranspositionTableHitType::EXACT;
+        //    TranspositionTableHitType hitType = positionValue <= originalAlpha ?
+        //                                        TranspositionTableHitType::UPPER_BOUND : positionValue >= beta ?
+        //                                                                                 TranspositionTableHitType::LOWER_BOUND :
+        //                                                                                 TranspositionTableHitType::EXACT;
 
 
         TranspositionTableEntry newEntry{hitType, depth - plysFromRoot, positionValue, moves[bestMoveIndex]};
         table.store(positionToSearch, newEntry);
     }
-
 
 
     return positionValue;
@@ -153,7 +153,8 @@ constexpr int MVV_LVA[7][7] = {
         {0,  0,   0,   0,   0,   0,   0},       // victim None, attacker K, Q, R, B, N, P, None
 };
 
-int scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
+int
+scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
     int moveScoreGuess = 0;
 
 //    if (transpositionTable.hasEntry(context, 0)) {
@@ -189,10 +190,8 @@ int scoreMove(const Board &context, const Move &move, TranspositionTable &transp
     return moveScoreGuess;
 }
 
-struct move_hash
-{
-    std::size_t operator () (Move const &move) const
-    {
+struct move_hash {
+    std::size_t operator()(Move const &move) const {
         return std::hash<Move_raw>()(move.raw());
     }
 };
@@ -228,12 +227,10 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
 
     for (int depth = 1; depth <= searchDepth; ++depth) {
         std::cout << "Iterative deepening for depth: " << depth << std::endl;
-
-        MOVES principalVariation;
         int moveScore;
 
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-        bestMoveSoFar = getMove(position, depth, principalVariation, moveScore);
+        bestMoveSoFar = getMove(position, depth, moveScore);
         searchedDepth = depth;
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
         long elapsedMillis = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
@@ -241,12 +238,12 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
 
         std::cout << "\tBest move so far: " << bestMoveSoFar << ", took " << elapsedMillis << " ms" << std::endl;
 
-        std::cout << "\tPrincipal variation: " << MyUtils::toString(principalVariation) << std::endl;
+        std::cout << "\tPrincipal variation: "
+                  << MyUtils::toString(PV[depth], [](const Move &move) { return move == Moves::NO_MOVE; }) << std::endl;
         if (moveScore >= 32000) {
             std::cout << "Found mate!" << std::endl;
             break;
         }
-        principalVariation.clear();
         auto predictedTimeForNextDepth = (end - begin) * std::sqrt(position.getMoves().size());
         auto timeLeft = allowedTime - (end - actualBegin);
         if (predictedTimeForNextDepth > timeLeft) {
@@ -263,7 +260,7 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
 
 }
 
-Move Search::getMove(Board &position, int searchDepth, MOVES &principalVariation, int &bestMoveScore) {
+Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
     auto moves = position.getMoves();
     if (useMoveOrdering) {
         orderMoves(position, moves, searchDepth);
@@ -272,7 +269,6 @@ Move Search::getMove(Board &position, int searchDepth, MOVES &principalVariation
     std::cout << MyUtils::toString(moves) << std::endl;
 
     std::vector<int> values;
-    std::vector<MOVES> principalVariations;
     nodesSearched = 0;
     tableHits = 0;
     cutoffs = 0;
@@ -285,13 +281,9 @@ Move Search::getMove(Board &position, int searchDepth, MOVES &principalVariation
     for (size_t index = 0; index < moves.size(); ++index) {
         position.executeMove(moves[index]);
 
+        int moveScore = -negamaxSearch(position, searchDepth - 1);
+        values.push_back(moveScore);
 
-        principalVariations.emplace_back();
-        MOVES &variation = principalVariations[index];
-        int moveScore = -negamaxSearch(position, searchDepth - 1, variation);
-        values.push_back(
-                moveScore
-        );
         position.unmakeMove();
 
         if (moveScore > bestMoveScoreSoFar) {
@@ -319,10 +311,6 @@ Move Search::getMove(Board &position, int searchDepth, MOVES &principalVariation
     }
 
 //    table.store(position, TranspositionTableEntry{TranspositionTableHitType::EXACT, searchDepth, values[index], moves[index]});
-    principalVariation.clear();
-    principalVariation.push_back(moves[index]);
-    std::copy(principalVariations[index].begin(), principalVariations[index].end(),
-              std::back_inserter(principalVariation));
 
 //    return moves[index];
     return bestMoveSoFar;
