@@ -72,6 +72,7 @@ public:
 
     bool operator== (const Move& rhs) const;
     bool operator!= (const Move& rhs) const;
+    operator int () const;
     friend std::ostream& operator<< (std::ostream& os, const Move& move);
 
     static Move fromString (std::string moveString, const Board& context);

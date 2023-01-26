@@ -16,6 +16,11 @@ namespace EvaluationConstants {
     constexpr int DRAW = 0;
 }
 
+typedef struct LINE {
+    int moveCount;
+    Move moves[MAX_SEARCH_DEPTH];
+} LINE;
+
 class Search {
 private:
     TranspositionTable table;
@@ -24,16 +29,17 @@ private:
     int tableHits = 0;
     int nodesSearched = 0;
     int cutoffs = 0;
-    std::array<std::array<Move, MAX_SEARCH_DEPTH>, MAX_SEARCH_DEPTH> PV;
+//    std::array<Move[], MAX_SEARCH_DEPTH> PV;
+    LINE PV;
 
     bool useTranspositionTable = true;
     bool useQuiescenceSearch = true;
     bool useMoveOrdering = true;
 
-    int negamaxSearch (Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta);
+    int negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta, LINE *pline);
     int quiescenceSearch (Board &positionToSearch, int alpha, int beta, int plysFromRoot);
 public:
-    int negamaxSearch(Board positionToSearch, int depth);
+    int negamaxSearch(Board positionToSearch, int depth, LINE *PV);
     Move getBestMove (Board position, int searchDepth, std::chrono::milliseconds allowedTime);
     Move getMove(Board &position, int searchDepth, int &bestMoveScore);
     void orderMoves (Board& positionToSearch, MOVES& moves, int depth);
@@ -45,6 +51,8 @@ public:
     bool isUseTranspositionTable() const;
     bool isUseQuiescenceSearch() const;
     bool isUseMoveOrdering() const;
+
+    static void copyPV(Move *destination, const Move *source, size_t n);
 };
 
 

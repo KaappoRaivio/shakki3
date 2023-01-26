@@ -11,11 +11,12 @@
 #include <cmath>
 #include "../mytypes.h"
 
-int Search::negamaxSearch(Board positionToSearch, int depth) {
-    return negamaxSearch(positionToSearch, 0, depth, EvaluationConstants::LOSE, EvaluationConstants::WIN);
+int Search::negamaxSearch(Board positionToSearch, int depth, LINE *PV) {
+    return negamaxSearch(positionToSearch, 0, depth, EvaluationConstants::LOSE, EvaluationConstants::WIN, PV);
 }
 
-int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta) {
+
+int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta, LINE *pline) {
     ++nodesSearched;
 
     int originalAlpha = alpha;
@@ -52,7 +53,10 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
         }
     }
 
+    LINE line;
+
     if (plysFromRoot == depth) {
+        pline->moveCount = 0;
         if (useQuiescenceSearch) {
             return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
         } else {
@@ -69,19 +73,25 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
 
 
     for (size_t moveIndex = 0; moveIndex < moves.size(); ++moveIndex) {
-        const Move &move = moves[moveIndex];
+        Move move = moves[moveIndex];
         positionToSearch.executeMove(move);
-        int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha);
+        int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha, &line);
         positionToSearch.unmakeMove();
 
 //        positionValue = std::max(positionValue, newValue);
         if (newValue > positionValue) {
             positionValue = newValue;
             bestMoveIndex = moveIndex;
-            PV[depth + 1][plysFromRoot] = moves[bestMoveIndex];
-            for (int i = plysFromRoot + 1; i < MAX_SEARCH_DEPTH; ++i) {
-                PV[depth + 1][i] = Moves::NO_MOVE;
+
+            pline->moves[0] = move;
+//            copyPV(pline->moves + 1, line.moves, line.moveCount);
+            for (int i = 0; i < line.moveCount; ++i) {
+                if (line.moves[i])
+                    pline->moves[1 + i] = line.moves[i];
+                else
+                    break;
             }
+            pline->moveCount = line.moveCount + 1;
         }
         alpha = std::max(alpha, newValue);
 
@@ -146,17 +156,6 @@ int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int p
 
 
 // MVV_LVA[victim][attacker]
-//constexpr int MVV_LVA[7][7] = {
-//        {0,  0,   0,   0,   0,   0,   0}, // victim K, attacker K, Q, R, B, N, P, None
-//        {10, 100, 180, 300, 300, 900, 0}, // victim Q, attacker K, Q, R, B, N, P, None
-//        {6,  56,  100, 166, 166, 500, 0}, // victim R, attacker K, Q, R, B, N, P, None
-//        {3,  33,  60,  100, 100, 300, 0}, // victim B, attacker K, Q, R, B, N, P, None
-//        {3,  33,  60,  100, 100, 300, 0}, // victim N, attacker K, Q, R, B, N, P, None
-//        {1,  11,  20,  33,  33,  100, 0}, // victim P, attacker K, Q, R, B, N, P, None
-//        {0,  0,   0,   0,   0,   0,   0}, // victim None, attacker K, Q, R, B, N, P, None
-//};
-
-
 constexpr int MVV_LVA[7][7] = {
         {100, 100, 60,  33,  300, 3, 0}, // victim N,    attacker N, B, R, Q, P, K, None
         {100, 100, 60,  33,  300, 3, 0}, // victim B,    attacker N, B, R, Q, P, K, None
@@ -168,8 +167,7 @@ constexpr int MVV_LVA[7][7] = {
 };
 
 
-int
-scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
+int scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
     int moveScoreGuess = 0;
 
 //    if (transpositionTable.hasEntry(context, 0)) {
@@ -254,7 +252,7 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
         std::cout << "\tBest move so far: " << bestMoveSoFar << ", took " << elapsedMillis << " ms" << std::endl;
 
         std::cout << "\tPrincipal variation: "
-                  << MyUtils::toString(PV[depth], [](const Move &move) { return move == Moves::NO_MOVE; }) << std::endl;
+                  << MyUtils::toString(PV.moves, MAX_SEARCH_DEPTH, [](const Move &move) { return move == Moves::NO_MOVE; }) << std::endl;
         if (moveScore >= 32000) {
             std::cout << "Found mate!" << std::endl;
             break;
@@ -290,13 +288,16 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
     table.hits = 0;
     table.collisions = 0;
 
+
     Move bestMoveSoFar = Moves::NO_MOVE;
     int bestMoveScoreSoFar = EvaluationConstants::LOSE;
 
     for (size_t index = 0; index < moves.size(); ++index) {
         position.executeMove(moves[index]);
 
-        int moveScore = -negamaxSearch(position, searchDepth - 1);
+        LINE PVCandidate;
+
+        int moveScore = -negamaxSearch(position, searchDepth - 1, &PVCandidate);
         values.push_back(moveScore);
 
         position.unmakeMove();
@@ -307,6 +308,7 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
                       << ")" << std::endl;
             bestMoveScoreSoFar = moveScore;
             bestMoveSoFar = moves[index];
+            PV = PVCandidate;
         }
     }
     long index = std::distance(values.begin(), std::max_element(values.begin(), values.end()));
@@ -353,4 +355,8 @@ bool Search::isUseQuiescenceSearch() const {
 
 bool Search::isUseMoveOrdering() const {
     return useMoveOrdering;
+}
+
+void Search::copyPV(Move *destination, const Move *source, size_t n) {
+    while (n-- and (*destination++ = *source++));
 }

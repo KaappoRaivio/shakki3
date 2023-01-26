@@ -185,3 +185,7 @@ bool Move::isCastling(CastlingSide SIDE) const {
     }
     return false;
 }
+
+Move::operator int() const {
+    return move;
+}

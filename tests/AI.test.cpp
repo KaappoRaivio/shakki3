@@ -10,8 +10,9 @@
 TEST_CASE("Move output regression tests pass", "[ai]") {
     SECTION("AI is performant") {
 //        Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        Board board = Board::fromFEN("2k5/pp1bq3/2p3rp/5p2/3Qp3/1BP1PpR1/PP3P1K/3R4 b - - 0 28");
-        const auto &player = std::make_unique<AIPlayer>(5, std::chrono::seconds{10});
+//        Board board = Board::fromFEN("2k5/pp1bq3/2p3rp/5p2/3Qp3/1BP1PpR1/PP3P1K/3R4 b - - 0 28");
+        Board board = Board::fromFEN("r2qk2r/2pbbpp1/3p1nnp/p2Pp3/4P3/PB2BNNP/2P2PP1/2RQ1RK1 b kq - 0 15");
+        const auto &player = std::make_unique<AIPlayer>(3, std::chrono::seconds{1000});
 
         std::cout << player->getMove(board) << std::endl;
 

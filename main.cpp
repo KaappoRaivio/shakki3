@@ -16,7 +16,8 @@
 #include "tests/TestHelpers.h"
 
 int main () {
-    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+//    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+    Board board = Board::fromFEN("2k5/pp1bq3/2p3rp/5p2/3Qp3/1BP1PpR1/PP3P1K/3R4 b - - 0 28");
 //    Board board = Board::fromFEN("rn1q1bnr/pp5p/2p1kp2/6p1/4p2N/8/PPPP1PPP/RNB1R1K1 b - - 0 1");
 //    std::cout << BoardEvaluator::evaluateSimple(board, 1, 1) << std::endl;
 //    return 0;
@@ -33,8 +34,8 @@ int main () {
     std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
-            aiPlayer.get(),
             humanPlayer.get(),
+            aiPlayer.get(),
 //            aiPlayer2.get()
     };
 
