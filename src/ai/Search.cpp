@@ -78,10 +78,6 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
         if (newValue > positionValue) {
             positionValue = newValue;
             bestMoveIndex = moveIndex;
-//            std::cout << "Setting depth " << depth << " at " << plysFromRoot << " to " << moves[moveIndex] << std::endl;
-            if (depth == 4) {
-//                std::cout << MyUtils::toString(moves[bestMoveIndex]) << std::endl;
-            }
             PV[depth + 1][plysFromRoot] = moves[bestMoveIndex];
             for (int i = plysFromRoot + 1; i < MAX_SEARCH_DEPTH; ++i) {
                 PV[depth + 1][i] = Moves::NO_MOVE;
@@ -94,6 +90,12 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
             break;
         }
     }
+
+#if DEBUG
+    if (bestMoveIndex > moves.size()) {
+        throw std::runtime_error{"BestMoveIndex too large!"};
+    }
+#endif
 
     if (useTranspositionTable) {
         TranspositionTableHitType hitType;
@@ -125,7 +127,8 @@ int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int p
     if (alpha < standing_pat) { alpha = standing_pat; }
 
 
-    const MOVES &captureMoves = positionToSearch.getMoves(true);
+    MOVES captureMoves = positionToSearch.getMoves(true);
+    orderMoves(positionToSearch, captureMoves, plysFromRoot);
 
     for (const Move &captureMove: captureMoves) {
         positionToSearch.executeMove(captureMove);
@@ -143,15 +146,27 @@ int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int p
 
 
 // MVV_LVA[victim][attacker]
+//constexpr int MVV_LVA[7][7] = {
+//        {0,  0,   0,   0,   0,   0,   0}, // victim K, attacker K, Q, R, B, N, P, None
+//        {10, 100, 180, 300, 300, 900, 0}, // victim Q, attacker K, Q, R, B, N, P, None
+//        {6,  56,  100, 166, 166, 500, 0}, // victim R, attacker K, Q, R, B, N, P, None
+//        {3,  33,  60,  100, 100, 300, 0}, // victim B, attacker K, Q, R, B, N, P, None
+//        {3,  33,  60,  100, 100, 300, 0}, // victim N, attacker K, Q, R, B, N, P, None
+//        {1,  11,  20,  33,  33,  100, 0}, // victim P, attacker K, Q, R, B, N, P, None
+//        {0,  0,   0,   0,   0,   0,   0}, // victim None, attacker K, Q, R, B, N, P, None
+//};
+
+
 constexpr int MVV_LVA[7][7] = {
-        {0,  0,   0,   0,   0,   0,   0},       // victim K, attacker K, Q, R, B, N, P, None
-        {10, 100, 180, 300, 300, 900, 0}, // victim Q, attacker K, Q, R, B, N, P, None
-        {6,  56,  100, 166, 166, 500, 0}, // victim R, attacker K, Q, R, B, N, P, None
-        {3,  33,  60,  100, 100, 300, 0}, // victim B, attacker K, Q, R, B, N, P, None
-        {3,  33,  60,  100, 100, 300, 0}, // victim N, attacker K, Q, R, B, N, P, None
-        {1,  11,  20,  33,  33,  100, 0}, // victim P, attacker K, Q, R, B, N, P, None
-        {0,  0,   0,   0,   0,   0,   0},       // victim None, attacker K, Q, R, B, N, P, None
+        {100, 100, 60,  33,  300, 3, 0}, // victim N,    attacker N, B, R, Q, P, K, None
+        {100, 100, 60,  33,  300, 3, 0}, // victim B,    attacker N, B, R, Q, P, K, None
+        {166, 166, 100, 56,  500, 6, 0}, // victim R,    attacker N, B, R, Q, P, K, None
+        {300, 300, 180, 100, 900, 9, 0}, // victim Q,    attacker N, B, R, Q, P, K, None
+        {33,  33,  20,  11,  100, 1, 0}, // victim P,    attacker N, B, R, Q, P, K, None
+        {0,   0,   0,   0,   0,   0, 0}, // victim K,    attacker N, B, R, Q, P, K, None
+        {0,   0,   0,   0,   0,   0, 0}, // victim None, attacker N, B, R, Q, P, K, None
 };
+
 
 int
 scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
@@ -161,11 +176,10 @@ scoreMove(const Board &context, const Move &move, TranspositionTable &transposit
     if (useTranspositionTable) {
         auto entry = transpositionTable.getEntry(context, 0);
         if (entry != TranspositionTableEntries::INVALID) {
-            if (entry.hitType == TranspositionTableHitType::EXACT) {
-//                std::cout << "Hit!" << std::endl;
-                moveScoreGuess += 2000;
+            if (entry.hitType == TranspositionTableHitType::EXACT and entry.bestMove == move) {
+                moveScoreGuess += 10000;
             } else {
-//                std::cout << "No hit!" << std::endl;
+
             }
         }
     }
@@ -185,6 +199,7 @@ scoreMove(const Board &context, const Move &move, TranspositionTable &transposit
     }
 
     if (move.isCapture()) moveScoreGuess += 1000;
+    if (move.isPromotion()) moveScoreGuess += 1000;
 
 
     return moveScoreGuess;
