@@ -282,6 +282,7 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
     std::cout << MyUtils::toString(moves) << std::endl;
 
     std::vector<int> values;
+    std::vector<LINE> PVs;
     nodesSearched = 0;
     tableHits = 0;
     cutoffs = 0;
@@ -299,6 +300,7 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
 
         int moveScore = -negamaxSearch(position, searchDepth - 1, &PVCandidate);
         values.push_back(moveScore);
+        PVs.push_back(PVCandidate);
 
         position.unmakeMove();
 
@@ -318,13 +320,13 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
     std::cout << "\tCutoffs " << cutoffs << std::endl;
     std::cout << "\tCollisions " << table.collisions << std::endl;
     std::cout << "\tHits " << table.hits << std::endl;
-
+    std::cout << "\tGame phase " << BoardEvaluator::getGamePhase(position) << std::endl;
     std::cout << "\tBest move value: " << values[index] << std::endl;
 
 //    bestMoveScore = values[index];
     bestMoveScore = bestMoveScoreSoFar;
     for (size_t i = 0; i < moves.size(); ++i) {
-        std::cout << "\t\t" << moves[i] << ": " << values[i] << std::endl;
+        std::cout << "\t\t" << moves[i] << ": " << values[i] << ", PV: " << MyUtils::toString(PVs[i].moves, MAX_SEARCH_DEPTH, [](auto move){return move == Moves::NO_MOVE;}) << std::endl;
     }
 
 //    table.store(position, TranspositionTableEntry{TranspositionTableHitType::EXACT, searchDepth, values[index], moves[index]});

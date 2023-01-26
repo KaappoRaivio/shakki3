@@ -8,7 +8,7 @@
 
 #pragma once
 
-#define MAX_SEARCH_DEPTH 20
+#define MAX_SEARCH_DEPTH 210
 
 namespace EvaluationConstants {
     constexpr int WIN = 32000;

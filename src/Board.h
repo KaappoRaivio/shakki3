@@ -36,7 +36,7 @@ public:
 
     PieceColor getTurn () const;
 
-    MOVES getMoves (bool captureOnly=false) const;
+    MOVES getMoves (bool onlyNonQuiet=false) const;
 
     const Piece& getPieceAt (const Square& square) const;
     const PieceSet* getPieces () const;

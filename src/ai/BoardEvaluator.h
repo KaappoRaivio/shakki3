@@ -21,6 +21,12 @@ namespace BoardEvaluator {
 
     int evaluateSimpleOneSide (const Board& board, PieceColor perspective, int plysFromRoot);
     int evaluateSimple (const Board& board, int plysFromRoot, int originalDepth);
+
+    int getGamePhase(const Board &board);
+
+    int pawnStructure(const Board &board, PieceColor perspective, int root);
+
+
 }
 
 

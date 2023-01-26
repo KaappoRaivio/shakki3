@@ -169,12 +169,11 @@ void MoveGeneration::addPawnMoves (MOVES& moves, const Board& context, PieceColo
     const Bitboard& pawns = context.getPieces()[color].boards[PieceTypes::PAWN];
 
     // pushes
-    if (!captureOnly) {
-        const Bitboard& pushes = Attacks::getInstance()
+    {
+        const Bitboard &pushes = Attacks::getInstance()
                                          .getPawnAttacks()
                                          .getPawnPushes(occupancy, color, pawns) & checkMask;
-
-        for (const Square& pawnSquare : pawns) {
+        for (const Square &pawnSquare: pawns) {
             if (pawnSquare & pinMaskD12) continue; // diagonally pinned pawns cannot push
 
             auto possiblePushSquares = Attacks::getInstance()
@@ -185,20 +184,22 @@ void MoveGeneration::addPawnMoves (MOVES& moves, const Board& context, PieceColo
                 possiblePushSquares &= pinMaskHV;
             }
 
-            const Bitboard& pushableSquares = pushes & possiblePushSquares;
+            const Bitboard &pushableSquares = pushes & possiblePushSquares;
 
             if (occupancy & pawnSquare.move(NORTH, color)) {
                 continue;
             }
 
-            for (const Square& destinationSquare : pushableSquares) {
-                if (destinationSquare.asColorRotate(color).getY() == 7) {
+            for (const Square &destinationSquare: pushableSquares) {
+                if (destinationSquare.asColorRotate(color).getY() != 7) {
+                    if (not captureOnly) {
+                        moves.emplace_back(context, pawnSquare, destinationSquare);
+                    }
+                } else {
                     moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::QUEEN);
                     moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::ROOK);
                     moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::BISHOP);
                     moves.emplace_back(context, pawnSquare, destinationSquare, PieceTypes::KNIGHT);
-                } else {
-                    moves.emplace_back(context, pawnSquare, destinationSquare);
                 }
 
             }

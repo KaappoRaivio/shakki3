@@ -17,8 +17,11 @@
 
 int main () {
 //    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-    Board board = Board::fromFEN("2k5/pp1bq3/2p3rp/5p2/3Qp3/1BP1PpR1/PP3P1K/3R4 b - - 0 28");
-//    Board board = Board::fromFEN("rn1q1bnr/pp5p/2p1kp2/6p1/4p2N/8/PPPP1PPP/RNB1R1K1 b - - 0 1");
+
+//    Board board = Board::fromFEN("r2qk2r/2pbbpp1/3p1nnp/p2Pp3/4P3/pB2BNNP/1PP2PP1/2RQ1RK1 w kq - 0 15");
+    Board board = Board::fromFEN("1r3bk1/2p2pp1/3p4/1B1P1P1n/p2Q1p1p/q1PN1P1P/6P1/3R1K2 w - - 0 1");
+
+    //    Board board = Board::fromFEN("rn1q1bnr/pp5p/2p1kp2/6p1/4p2N/8/PPPP1PPP/RNB1R1K1 b - - 0 1");
 //    std::cout << BoardEvaluator::evaluateSimple(board, 1, 1) << std::endl;
 //    return 0;
 
@@ -34,8 +37,8 @@ int main () {
     std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
-            humanPlayer.get(),
             aiPlayer.get(),
+            humanPlayer.get(),
 //            aiPlayer2.get()
     };
 

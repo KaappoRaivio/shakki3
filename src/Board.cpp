@@ -283,7 +283,7 @@ const PieceSet* Board::getPieces () const {
     return pieces;
 }
 
-MOVES Board::getMoves (bool captureOnly) const {
+MOVES Board::getMoves (bool onlyNonQuiet) const {
     MOVES moves;
 //    moves.reserve(40);
 
@@ -292,12 +292,12 @@ MOVES Board::getMoves (bool captureOnly) const {
     const Bitboard& pinMaskHV = BoardAnalysis::getPinMask<HV>(*this, getTurn());
     const Bitboard& pinMaskD12 = BoardAnalysis::getPinMask<D12>(*this, getTurn());
 
-    MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, captureOnly);
-    MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, captureOnly);
-    MoveGeneration::addQueenMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, captureOnly);
-    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask, pinMaskHV | pinMaskD12, captureOnly); // a combination of the pinmasks as pinned knights can never move
-    MoveGeneration::addPawnMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, captureOnly);
-    MoveGeneration::addKingMoves(moves, *this, getTurn(), attackMask, captureOnly); // no pinMask as kings cannot be pinned
+    MoveGeneration::addBishopMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, onlyNonQuiet);
+    MoveGeneration::addRookMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, onlyNonQuiet);
+    MoveGeneration::addQueenMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, onlyNonQuiet);
+    MoveGeneration::addKnightMoves(moves, *this, getTurn(), checkMask, pinMaskHV | pinMaskD12, onlyNonQuiet); // a combination of the pinmasks as pinned knights can never move
+    MoveGeneration::addPawnMoves(moves, *this, getTurn(), checkMask, pinMaskHV, pinMaskD12, onlyNonQuiet);
+    MoveGeneration::addKingMoves(moves, *this, getTurn(), attackMask, onlyNonQuiet); // no pinMask as kings cannot be pinned
 
     return moves;
 }
