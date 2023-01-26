@@ -53,55 +53,29 @@ public:
 
     };
 
+    Move () : Move{true} {}
     Move (Move_raw move);
-
     Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::NO_PIECE);
-
     Move (const Move& other) = default;
 
     Square getOrigin () const;
-
     Square getDestination () const;
-
+    const Piece& getMovingPiece (const Board& context) const;
     bool isCapture () const;
-
     bool isPromotion () const;
-
-//    requires IsCastlingSide<SIDE>
-//    template<CastlingSide SIDE>
-    bool isCastling (CastlingSide SIDE) const {
-        if (!isPromotion() && !isCapture()) {
-            return (move & MoveBitmasks::SPECIAL_MASK) == SIDE;
-//            if (SIDE == Specials::KING_CASTLE && ((move & 0b11) == Specials::KING_CASTLE)) {
-//                return true;
-//            }
-//            if (SIDE == Specials::QUEEN_CASTLE && ((move & 0b11) == Specials::QUEEN_CASTLE)) {
-//                return true;
-//            }
-        }
-
-        return false;
-    }
-
-    bool operator== (const Move& rhs) const;
-
-    bool operator!= (const Move& rhs) const;
-
-    friend std::ostream& operator<< (std::ostream& os, const Move& move);
-
+    PieceType getPromotedPiece () const;
+    bool isCastling (CastlingSide SIDE) const;
+    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus, const Piece& possiblyCapturedPiece) const;
+    bool isEnPassant () const;
+    bool isDoublePawnPush () const;
     Move_raw raw () const;
 
-    const Piece& getMovingPiece (const Board& context) const;
-
-    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus, const Piece& possiblyCapturedPiece) const;
-
-    PieceType getPromotedPiece () const;
+    bool operator== (const Move& rhs) const;
+    bool operator!= (const Move& rhs) const;
+    operator int () const;
+    friend std::ostream& operator<< (std::ostream& os, const Move& move);
 
     static Move fromString (std::string moveString, const Board& context);
-
-    bool isEnPassant () const;
-
-    bool isDoublePawnPush () const;
 };
 
 namespace Moves {

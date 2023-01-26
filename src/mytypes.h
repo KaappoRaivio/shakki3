@@ -12,7 +12,7 @@
 #include "boost/container/static_vector.hpp"
 
 #ifndef DEBUG
-    #define DEBUG true
+#define DEBUG true
 #endif
 
 typedef uint64_t Bitboard_raw;
@@ -50,17 +50,17 @@ public:
 //    constexpr PieceType () = default;
 
 
-    char getSymbol (PieceColor color) const;
+    char getSymbol(PieceColor color) const;
 
-    operator int () const;
+    operator int() const;
 
-    bool operator== (const PieceType& rhs) const;
+    bool operator==(const PieceType &rhs) const;
 
-    bool operator!= (const PieceType& rhs) const;
+    bool operator!=(const PieceType &rhs) const;
 
-    friend std::ostream& operator<< (std::ostream& os, const PieceType& type);
+    friend std::ostream &operator<<(std::ostream &os, const PieceType &type);
 
-    std::string getSymbolFancy (PieceColor color) const;
+    std::string getSymbolFancy(PieceColor color) const;
 };
 
 namespace PieceTypes {
@@ -80,13 +80,13 @@ struct Piece {
 
 //    Piece (PieceType type, PieceColor color);
 
-    bool operator== (const Piece& rhs) const;
+    bool operator==(const Piece &rhs) const;
 
-    bool operator!= (const Piece& rhs) const;
+    bool operator!=(const Piece &rhs) const;
 
-    operator bool () const;
+    operator bool() const;
 
-    friend std::ostream& operator<< (std::ostream& os, const Piece& piece);
+    friend std::ostream &operator<<(std::ostream &os, const Piece &piece);
 };
 
 namespace Pieces {
@@ -119,38 +119,59 @@ namespace Pieces {
             {WHITE_KING,   BLACK_KING}
     };
 
-    Piece parsePiece (char asChar);
+    Piece parsePiece(char asChar);
 }
 
-PieceColor flip (PieceColor color);
+PieceColor flip(PieceColor color);
 
 template<typename T>
-concept IsCastlingSide = requires (T a) {
+concept IsCastlingSide = requires(T a) {
     a == 2 || a == 3;
 };
 
 
 namespace MyUtils {
     template<typename T>
-    [[nodiscard]] std::string toString (T object) {
+    [[nodiscard]] std::string toString(T object) {
         std::stringstream ss;
         ss << object;
         return ss.str();
     }
 
     template<typename T>
-    [[nodiscard]] std::string toString (std::vector<T> vector) {
+    [[nodiscard]] std::string toString(std::vector<T> vector) {
         std::stringstream ss;
-        for (T item : vector) {
+        for (T item: vector) {
             ss << item << ", ";
         }
         return ss.str();
     }
 
-    template <typename T, size_t V>
-    [[nodiscard]] std::string toString (boost::container::static_vector<T, V> staticVector) {
+    template<typename T, size_t V>
+    [[nodiscard]] std::string toString(boost::container::static_vector<T, V> staticVector) {
         std::stringstream ss;
-        for (T item : staticVector) {
+        for (T item: staticVector) {
+            ss << item << ", ";
+        }
+        return ss.str();
+    }
+
+    template<typename T, size_t V>
+    [[nodiscard]] std::string toString(std::array<T, V> array, auto shouldStop = [](const T& item) { return false; }) {
+        std::stringstream ss;
+        for (T item: array) {
+            if (shouldStop(item)) break;
+            ss << item << ", ";
+        }
+        return ss.str();
+    }
+
+    template<typename T>
+    [[nodiscard]] std::string toString(T* array, size_t N,  auto shouldStop = [](const T& item) { return false; }) {
+        std::stringstream ss;
+        for (int i = 0; i < N; ++i) {
+            T item = array[i];
+            if (shouldStop(item) or !item) break;
             ss << item << ", ";
         }
         return ss.str();
