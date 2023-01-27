@@ -12,8 +12,9 @@
 
 class Player {
 public:
-virtual ~Player() = default;
-    virtual Move getMove (Board board) = 0;
+    virtual ~Player() = default;
+
+    virtual Move getMove(Board board) = 0;
 
     virtual bool isHumanPlayer() = 0;
 };
@@ -21,13 +22,14 @@ virtual ~Player() = default;
 
 class HumanPlayer : public Player {
 private:
-    UI* ui;
+    UI *ui;
 
 public:
-~HumanPlayer() override = default;
-    explicit HumanPlayer (UI* ui);
+    ~HumanPlayer() override = default;
 
-    Move getMove (Board board) override;
+    explicit HumanPlayer(UI *ui);
+
+    Move getMove(Board board) override;
 
     bool isHumanPlayer() override;
 };
@@ -36,14 +38,15 @@ class AIPlayer : public Player {
 private:
     Search search;
 public:
-~AIPlayer() override = default;
+    ~AIPlayer() override = default;
 
     bool isHumanPlayer() override;
 
+    AIPlayer(int searchDepth, std::chrono::milliseconds allowedTime)
+            : search{}, allowedTime{allowedTime}, searchDepth{searchDepth} {}
 
-    explicit AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime);
 
-    Move getMove (Board board) override;
+    Move getMove(Board board) override;
 
     std::chrono::milliseconds allowedTime = std::chrono::seconds{10};
     int searchDepth;

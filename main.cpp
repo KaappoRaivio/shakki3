@@ -16,6 +16,13 @@
 #include "tests/TestHelpers.h"
 
 int main () {
+//    Board b = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
+//    const auto &ai = std::make_unique<AIPlayer>(26, std::chrono::seconds{10});
+//    ai->getSearch().setUseQuiescenceSearch(true);
+//    std::cout << ai->getMove(b);
+//    return 0;
+
+
 //    Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
 
 //    Board board = Board::fromFEN("r2qk2r/2pbbpp1/3p1nnp/p2Pp3/4P3/pB2BNNP/1PP2PP1/2RQ1RK1 w kq - 0 15");

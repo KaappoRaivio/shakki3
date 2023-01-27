@@ -180,11 +180,15 @@ bool Square::isInvalid () const {
 Square Square::asColorRotate (PieceColor color) const {
     if (color == WHITE) return *this;
     if (color == BLACK) return rotate180();
+
+    throw std::runtime_error("Perspective empty color!");
 }
 
 Square Square::asColorFlip (PieceColor color) const {
     if (color == WHITE) return *this;
     if (color == BLACK) return flip();
+
+    throw std::runtime_error("Perspective empty color!");
 }
 
 

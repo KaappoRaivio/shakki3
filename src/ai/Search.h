@@ -8,7 +8,7 @@
 
 #pragma once
 
-#define MAX_SEARCH_DEPTH 210
+#define MAX_SEARCH_DEPTH 351
 
 namespace EvaluationConstants {
     constexpr int WIN = 32000;
@@ -16,10 +16,11 @@ namespace EvaluationConstants {
     constexpr int DRAW = 0;
 }
 
-typedef struct LINE {
+struct LINE {
     int moveCount;
-    Move moves[MAX_SEARCH_DEPTH];
-} LINE;
+//    Move moves[MAX_SEARCH_DEPTH];
+    std::vector<Move> moves;
+};
 
 class Search {
 private:

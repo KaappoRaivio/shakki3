@@ -57,6 +57,7 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
 
     if (plysFromRoot == depth) {
         pline->moveCount = 0;
+
         if (useQuiescenceSearch) {
             return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
         } else {
@@ -83,13 +84,22 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
             positionValue = newValue;
             bestMoveIndex = moveIndex;
 
-            pline->moves[0] = move;
+            if (not pline->moves.empty()) {
+                pline->moves[0] = move;
+            } else {
+                pline->moves.push_back(move);
+            }
 //            copyPV(pline->moves + 1, line.moves, line.moveCount);
-            for (int i = 0; i < line.moveCount; ++i) {
-                if (line.moves[i])
-                    pline->moves[1 + i] = line.moves[i];
-                else
-                    break;
+            for (int i = 0; i < line.moveCount and i < line.moves.size(); ++i) {
+                if (pline->moves.size() > i + 1) {
+                    pline->moves[i + 1] = line.moves[i];
+                } else {
+                    pline->moves.push_back(line.moves[i]);
+                }
+//                if (line.moves[i])
+//                    pline->moves[1 + i] = line.moves[i];
+//                else
+//                    break;
             }
             pline->moveCount = line.moveCount + 1;
         }
@@ -167,7 +177,8 @@ constexpr int MVV_LVA[7][7] = {
 };
 
 
-int scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
+int
+scoreMove(const Board &context, const Move &move, TranspositionTable &transpositionTable, bool useTranspositionTable) {
     int moveScoreGuess = 0;
 
 //    if (transpositionTable.hasEntry(context, 0)) {
@@ -252,7 +263,8 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
         std::cout << "\tBest move so far: " << bestMoveSoFar << ", took " << elapsedMillis << " ms" << std::endl;
 
         std::cout << "\tPrincipal variation: "
-                  << MyUtils::toString(PV.moves, MAX_SEARCH_DEPTH, [](const Move &move) { return move == Moves::NO_MOVE; }) << std::endl;
+                  << MyUtils::toString(PV.moves,
+                                       [](const Move &move) { return move == Moves::NO_MOVE; }) << std::endl;
         if (moveScore >= 32000) {
             std::cout << "Found mate!" << std::endl;
             break;
@@ -326,7 +338,9 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
 //    bestMoveScore = values[index];
     bestMoveScore = bestMoveScoreSoFar;
     for (size_t i = 0; i < moves.size(); ++i) {
-        std::cout << "\t\t" << moves[i] << ": " << values[i] << ", PV: " << MyUtils::toString(PVs[i].moves, MAX_SEARCH_DEPTH, [](auto move){return move == Moves::NO_MOVE;}) << std::endl;
+        std::cout << "\t\t" << moves[i] << ": " << values[i] << ", PV: "
+                  << MyUtils::toString(PVs[i].moves, [](auto move) { return move == Moves::NO_MOVE; })
+                  << std::endl;
     }
 
 //    table.store(position, TranspositionTableEntry{TranspositionTableHitType::EXACT, searchDepth, values[index], moves[index]});

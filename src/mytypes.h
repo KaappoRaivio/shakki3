@@ -167,6 +167,16 @@ namespace MyUtils {
     }
 
     template<typename T>
+    [[nodiscard]] std::string toString(std::vector<T> array, auto shouldStop = [](const T& item) { return false; }) {
+        std::stringstream ss;
+        for (T item: array) {
+            if (shouldStop(item)) break;
+            ss << item << ", ";
+        }
+        return ss.str();
+    }
+
+    template<typename T>
     [[nodiscard]] std::string toString(T* array, size_t N,  auto shouldStop = [](const T& item) { return false; }) {
         std::stringstream ss;
         for (int i = 0; i < N; ++i) {

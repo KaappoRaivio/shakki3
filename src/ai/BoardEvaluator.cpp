@@ -123,7 +123,11 @@ int BoardEvaluator::pawnStructure(const Board &board, PieceColor perspective, in
             if (rightFile & opponentPawns) rightClear = false;
         }
 
-        if (leftClear and rightClear) {
+        bool centerClear = true;
+        auto centerFile = ::SquareMasks::files[ownPawnSquare.getX()];
+        if (centerFile & opponentPawns) centerClear = false;
+
+        if (leftClear and rightClear and centerClear) {
             score += 500;
         }
 
@@ -134,4 +138,5 @@ int BoardEvaluator::pawnStructure(const Board &board, PieceColor perspective, in
 //            score += 500;
 //        }
     }
+    return score;
 }

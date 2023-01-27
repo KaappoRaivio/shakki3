@@ -25,7 +25,6 @@ Search& AIPlayer::getSearch () {
 }
 
 
-AIPlayer::AIPlayer (int searchDepth, std::chrono::milliseconds allowedTime) : search{}, allowedTime{allowedTime}, searchDepth{searchDepth} {}
 
 bool AIPlayer::isHumanPlayer() {
     return false;
