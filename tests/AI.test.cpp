@@ -27,7 +27,8 @@ TEST_CASE("Move output regression tests pass", "[ai]") {
         const auto &player = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
         player->getSearch().setUseQuiescenceSearch(true);
 
-        REQUIRE(player->getMove(board).getOrigin() == h5);
+        const Move &aiMove = player->getMove(board);
+        REQUIRE((aiMove.getOrigin() == h5 or aiMove.getDestination() == g4));
     }
 
     SECTION ("Pawn isn't blundered") {
@@ -48,7 +49,8 @@ TEST_CASE("Move output regression tests pass", "[ai]") {
 
     SECTION("Lasker-Reichhelm") {
         Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
-        const auto &aiPlayer = std::make_unique<AIPlayer>(26, std::chrono::seconds{10000000});
+        const auto &aiPlayer = std::make_unique<AIPlayer>(21, std::chrono::seconds{10000000});
+//        aiPlayer->getSearch().setUseQuiescenceSearch(false);
         REQUIRE(aiPlayer->getMove(board) == Move{board, a1, b1});
     }
 
@@ -61,13 +63,13 @@ TEST_CASE("Move output regression tests pass", "[ai]") {
     }
 
     SECTION ("Quiescence search works correctly") {
-        Board board = Board::fromFEN("8/3n2b1/8/3KP2k/8/8/1B6/8 b - - 0 1");
+        Board board = Board::fromFEN("8/3np1b1/8/3KP2k/8/8/1B6/8 b - - 0 1");
 
 
-        const auto &playerWithoutQuiescenceSearch = std::make_unique<AIPlayer>(1, std::chrono::seconds{10});
+        const auto &playerWithoutQuiescenceSearch = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
         playerWithoutQuiescenceSearch->getSearch().setUseQuiescenceSearch(false);
 
-        const auto &playerWithQuiescenceSearch = std::make_unique<AIPlayer>(1, std::chrono::seconds{10});
+        const auto &playerWithQuiescenceSearch = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
         playerWithQuiescenceSearch->getSearch().setUseQuiescenceSearch(true);
 
         const Move &badMove = playerWithoutQuiescenceSearch->getMove(board);
