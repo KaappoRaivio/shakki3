@@ -260,7 +260,7 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
         long elapsedMillis = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
 
-        std::cout << "\tBest move so far: " << bestMoveSoFar << ", took " << elapsedMillis << " ms" << std::endl;
+        std::cout << "\tBest move so far: " << bestMoveSoFar.toShortAlgebraic(position) << ", took " << elapsedMillis << " ms" << std::endl;
 
         std::cout << "\tPrincipal variation: "
                   << MyUtils::toString(PV.moves,
@@ -279,7 +279,7 @@ Move Search::getBestMove(Board position, int searchDepth, std::chrono::milliseco
 
 //    std::this_thread::sleep_for(std::chrono::seconds(5));
 
-    std::cout << "Managed to search to depth " << searchedDepth << ", making move " << bestMoveSoFar << "!";
+    std::cout << "Managed to search to depth " << searchedDepth << ", making move " << bestMoveSoFar.toShortAlgebraic(position) << "! ";
 
     return bestMoveSoFar;
 
@@ -336,10 +336,15 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
     std::cout << "\tBest move value: " << values[index] << std::endl;
 
 //    bestMoveScore = values[index];
+
+
     bestMoveScore = bestMoveScoreSoFar;
     for (size_t i = 0; i < moves.size(); ++i) {
+        Board positionWithMoveMade = position;
+        positionWithMoveMade.executeMove(moves[i]);
         std::cout << "\t\t" << moves[i] << ": " << values[i] << ", PV: "
-                  << MyUtils::toString(PVs[i].moves, [](auto move) { return move == Moves::NO_MOVE; })
+//                  << MyUtils::toString(PVs[i].moves, [](auto move) { return move == Moves::NO_MOVE; })
+                  << MoveUtils::movesToString(PVs[i].moves, positionWithMoveMade)
                   << std::endl;
     }
 

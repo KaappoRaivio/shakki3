@@ -44,7 +44,7 @@ private:
     Move_raw move;
 
 public:
-    constexpr explicit Move (bool NO_MOVE) {
+    constexpr explicit Move(bool NO_MOVE) {
         if (NO_MOVE) {
             move = 0xffffull;
         } else {
@@ -53,34 +53,59 @@ public:
 
     };
 
-    Move () : Move{true} {}
-    Move (Move_raw move);
-    Move (const Board& context, const Square& from, const Square& to, const PieceType& pieceToPromoteTo = PieceTypes::NO_PIECE);
-    Move (const Move& other) = default;
-    Move& operator = (const Move& other) = default;
+    Move() : Move{true} {}
 
-    Square getOrigin () const;
-    Square getDestination () const;
-    const Piece& getMovingPiece (const Board& context) const;
-    bool isCapture () const;
-    bool isPromotion () const;
-    PieceType getPromotedPiece () const;
-    bool isCastling (CastlingSide SIDE) const;
-    CastlingStatus getNewCastlingStatus (const Board& context, const CastlingStatus& oldStatus, const Piece& possiblyCapturedPiece) const;
-    bool isEnPassant () const;
-    bool isDoublePawnPush () const;
-    Move_raw raw () const;
+    Move(Move_raw move);
 
-    bool operator== (const Move& rhs) const;
-    bool operator!= (const Move& rhs) const;
-    operator int () const;
-    friend std::ostream& operator<< (std::ostream& os, const Move& move);
+    Move(const Board &context, const Square &from, const Square &to,
+         const PieceType &pieceToPromoteTo = PieceTypes::NO_PIECE);
 
-    static Move fromString (std::string moveString, const Board& context);
+    Move(const Move &other) = default;
+
+    Move &operator=(const Move &other) = default;
+
+    Square getOrigin() const;
+
+    Square getDestination() const;
+
+    const Piece &getMovingPiece(const Board &context) const;
+
+    bool isCapture() const;
+
+    bool isPromotion() const;
+
+    PieceType getPromotedPiece() const;
+
+    bool isCastling(CastlingSide SIDE) const;
+
+    CastlingStatus getNewCastlingStatus(const Board &context, const CastlingStatus &oldStatus,
+                                        const Piece &possiblyCapturedPiece) const;
+
+    bool isEnPassant() const;
+
+    bool isDoublePawnPush() const;
+
+    Move_raw raw() const;
+
+    bool operator==(const Move &rhs) const;
+
+    bool operator!=(const Move &rhs) const;
+
+    operator int() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Move &move);
+
+    std::string toShortAlgebraic(Board context) const;
+
+    static Move fromString(std::string moveString, const Board &context);
 };
 
 namespace Moves {
     constexpr Move NO_MOVE{true};
 }
 
+class Board;
 
+namespace MoveUtils {
+    std::string movesToString(const std::vector<Move>& moves, Board context);
+}

@@ -66,7 +66,7 @@ uint8_t Square::diffX (Square square) const {
 }
 
 std::ostream& operator<< (std::ostream& os, const Square& square) {
-    os << (char) (square.getX() + 'A') << (int) square.getY() + 1;
+    os << (char) (square.getX() + 'a') << (int) square.getY() + 1;
     return os;
 }
 
