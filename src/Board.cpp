@@ -130,7 +130,20 @@ void Board::unmovePiece (const Piece& capturedPiece, const Square& from, const S
     setSquare(to, capturedPiece);
 }
 
+bool Board::isMoveLegal(const Move& move) const {
+    auto moves = getMoves(false);
+//    return std::find(moves.begin(), moves.end(), move) != moves.end();
+    return std::find_if(moves.begin(), moves.end(), [&](const Move& other) {
+        return (other.raw() & ~MoveBitmasks::CAPTURE) == (move.raw() & ~MoveBitmasks::CAPTURE);
+    }) != moves.end();
+}
+
 void Board::executeMove (const Move& move) {
+#if DEBUG
+    if (not isMoveLegal(move)) {
+        throw IllegalMoveException{move};
+    }
+#endif
     const Piece movingPiece = letterbox[move.getOrigin()];
 
     if (DEBUG) {
@@ -520,4 +533,10 @@ namespace std {
         }
     };
 
+}
+
+const char *IllegalMoveException::what() const noexcept {
+    std::stringstream ss;
+    ss << "Move " << move << " is illegal!";
+    return (new std::string{ss.str()})->c_str();
 }

@@ -16,6 +16,24 @@
 #include "tests/TestHelpers.h"
 
 int main () {
+//    Board e = Board::fromFEN("1r3bk1/2p2pp1/3p4/1B1P1P1n/p2Q1p1p/q1PN1P1P/6P1/3R1K2 w - - 0 1");
+////    e.executeSequenceOfMoves({"d3f2"});
+//    const auto& ai = std::make_unique<AIPlayer>(5, std::chrono::seconds{10});
+//    ai->getSearch().setUseQuiescenceSearch(false);
+////    ai->getSearch().setUseTranspositionTable(false);
+//    std::cout << ai->getMove(e);
+//    return 0;
+
+//    Board d = Board::fromFEN("1r3bk1/2p2pp1/3p4/1B1P1P1n/p2Q1p1p/q1PN1P1P/6P1/3R1K2 w - - 0 1");
+//    d.executeSequenceOfMoves({"d3c1", "b8b5", "c1d3"});
+//    std::cout << Move{d, a3, c1}.isCapture();
+//    return 0;
+
+//    Board c = Board::fromFEN("5bk1/2p2pp1/3p4/1r1P1P1n/p2Q1p1p/q1PN1P1P/6P1/3R1K2 b - - 1 2");
+//    std::cout << MyUtils::toString(c.getMoves(false)) << std::endl;
+//    return 0;
+
+
 //    Board b = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
 //    const auto &ai = std::make_unique<AIPlayer>(26, std::chrono::seconds{10});
 //    ai->getSearch().setUseQuiescenceSearch(true);
@@ -38,7 +56,8 @@ int main () {
 
 //    std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
 
-    const auto& aiPlayer = std::make_unique<AIPlayer>(20, std::chrono::seconds{10});
+    const auto& aiPlayer = std::make_unique<AIPlayer>(20, std::chrono::seconds{100});
+//    aiPlayer->getSearch().setUseQuiescenceSearch(false);
 //    const auto& aiPlayer = std::make_unique<AIPlayer>(13, std::chrono::seconds{10000000});
 
     std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());

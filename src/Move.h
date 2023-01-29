@@ -15,8 +15,8 @@
 //#include "Board.h"
 #include "boost/container/static_vector.hpp"
 
-//#define MOVES std::vector<Move>
-#define MOVES boost::container::static_vector<Move, 128>
+#define MOVES std::vector<Move>
+//#define MOVES boost::container::static_vector<Move, 128>
 #define SCORES boost::container::static_vector<int, 128>
 
 
@@ -98,6 +98,8 @@ public:
     std::string toShortAlgebraic(Board context) const;
 
     static Move fromString(std::string moveString, const Board &context);
+
+    std::string toStringSimple() const;
 };
 
 namespace Moves {

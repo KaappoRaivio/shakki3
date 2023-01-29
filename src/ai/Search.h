@@ -37,10 +37,10 @@ private:
     bool useQuiescenceSearch = true;
     bool useMoveOrdering = true;
 
-    int negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta, LINE *pline);
+    int negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta, LINE &pline);
     int quiescenceSearch (Board &positionToSearch, int alpha, int beta, int plysFromRoot);
 public:
-    int negamaxSearch(Board positionToSearch, int depth, LINE *PV);
+    int negamaxSearch(Board positionToSearch, int depth, LINE &PV);
     Move getBestMove (Board position, int searchDepth, std::chrono::milliseconds allowedTime);
     Move getMove(Board &position, int searchDepth, int &bestMoveScore);
     void orderMoves (Board& positionToSearch, MOVES& moves, int depth);

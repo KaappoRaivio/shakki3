@@ -84,16 +84,21 @@ bool Move::operator!=(const Move &rhs) const {
     return !(rhs == *this);
 }
 
+std::string Move::toStringSimple () const {
+    std::stringstream ss;
+    ss << getOrigin() << getDestination();
+
+    if (isPromotion()) {
+        ss << getPromotedPiece().getSymbol(WHITE);
+    }
+
+    return ss.str();
+}
+
 std::ostream &operator<<(std::ostream &os, const Move &move) {
 //    if (move.isCastling(Specials::KING_CASTLE)) return os << "O-O";
 //    if (move.isCastling(Specials::QUEEN_CASTLE)) return os << "O-O-O";
-    os << move.getOrigin() << move.getDestination();
-
-    if (move.isPromotion()) {
-        os << move.getPromotedPiece().getSymbol(WHITE);
-    }
-
-    return os;
+    return os << move.toStringSimple();
 }
 
 PieceType Move::getPromotedPiece() const {
@@ -119,9 +124,12 @@ const Piece &Move::getMovingPiece(const Board &context) const {
     const Piece &piece2 = context.getPieceAt(getDestination());
     if (piece2) return piece2;
 
-    std::cerr << context << *this << std::endl;
-    std::cerr << context.toFEN() << std::endl;
-    throw std::runtime_error("Problem");
+
+    std::stringstream ss;
+    ss << "Problem" << std::endl;
+    ss << context << *this << std::endl;
+    ss << context.toFEN() << std::endl;
+    throw std::runtime_error(ss.str());
 }
 
 CastlingStatus Move::getNewCastlingStatus(const Board &context, const CastlingStatus &oldStatus,
@@ -220,7 +228,7 @@ std::string Move::toShortAlgebraic(Board context) const {
         ss << getMovingPiece(context).type.getSymbol(WHITE);
     }
 
-    if (needsFileDisambiguation or isPawnMove) {
+    if (needsFileDisambiguation or (isPawnMove and isCapture())) {
         ss << MyUtils::toString(getOrigin())[0];
     }
 
@@ -263,35 +271,44 @@ std::string MoveUtils::movesToString(const std::vector<Move> &moves, Board conte
 
 //    std::cout << "Transforming " << MyUtils::toString(moves) << " on board " << context.toFEN() << std::endl;
 
-    if (blackStartsSequence) {
-        ss << startingFullMoveCount << ". ";
-        ss << "... ";
-        ss << moves[0].toShortAlgebraic(context) << " ";
-        currentFullMoveCount += 1;
-        context.executeMove(moves[0]);
+    if (context.getHistory().getCurrentFrame().previousMove == Move{context, d3, f2}.raw() and moves.size() == 4) {
+//        std::cout << "Debug lol " << Move{context, a3, c1}.isCapture() << std::endl;
+    }
 
 
-        for (size_t i = 1; i < moves.size(); i++) {
-            auto move = moves[i];
-            if (i % 2 == 1) {
-                ss << currentFullMoveCount << ". ";
-                currentFullMoveCount += 1;
+    try {
+        if (blackStartsSequence) {
+            ss << startingFullMoveCount << ". ";
+            ss << "... ";
+            ss << moves[0].toShortAlgebraic(context) << " ";
+            currentFullMoveCount += 1;
+            context.executeMove(moves[0]);
+
+
+            for (size_t i = 1; i < moves.size(); i++) {
+                auto move = moves[i];
+                if (i % 2 == 1) {
+                    ss << currentFullMoveCount << ". ";
+                    currentFullMoveCount += 1;
+                }
+
+                ss << move.toShortAlgebraic(context) << " ";
+                context.executeMove(move);
             }
+        } else {
+            for (size_t i = 0; i < moves.size(); i++) {
+                auto move = moves[i];
+                if (i % 2 == 0) {
+                    ss << currentFullMoveCount << ". ";
+                    currentFullMoveCount += 1;
+                }
 
-            ss << move.toShortAlgebraic(context) << " ";
-            context.executeMove(move);
-        }
-    } else {
-        for (size_t i = 0; i < moves.size(); i++) {
-            auto move = moves[i];
-            if (i % 2 == 0) {
-                ss << currentFullMoveCount << ". ";
-                currentFullMoveCount += 1;
+                ss << move << " ";
+                context.executeMove(move);
             }
-
-            ss << move << " ";
-            context.executeMove(move);
         }
+    } catch (...) {
+        ss << "<illegal (TT shenanigans)>";
     }
 
 
