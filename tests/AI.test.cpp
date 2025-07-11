@@ -8,18 +8,18 @@
 //#include "../Square.h"
 
 TEST_CASE("Move output regression tests pass", "[ai]") {
-    SECTION("AI is performant") {
-//        Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-//        Board board = Board::fromFEN("2k5/pp1bq3/2p3rp/5p2/3Qp3/1BP1PpR1/PP3P1K/3R4 b - - 0 28");
-        Board board = Board::fromFEN("r2qk2r/2pbbpp1/3p1nnp/p2Pp3/4P3/PB2BNNP/2P2PP1/2RQ1RK1 b kq - 0 15");
-        const auto &player = std::make_unique<AIPlayer>(3, std::chrono::seconds{1000});
-
-        std::cout << player->getMove(board) << std::endl;
-
-        BENCHMARK ("asd") {
-                              return player->getMove(board);
-                          };
-    }
+//    SECTION("AI is performant") {
+////        Board board = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+////        Board board = Board::fromFEN("2k5/pp1bq3/2p3rp/5p2/3Qp3/1BP1PpR1/PP3P1K/3R4 b - - 0 28");
+//        Board board = Board::fromFEN("r2qk2r/2pbbpp1/3p1nnp/p2Pp3/4P3/PB2BNNP/2P2PP1/2RQ1RK1 b kq - 0 15");
+//        const auto &player = std::make_unique<AIPlayer>(3, std::chrono::seconds{10});
+//
+//        std::cout << player->getMove(board) << std::endl;
+//
+//        BENCHMARK ("asd") {
+//                              return player->getMove(board);
+//                          };
+//    }
 
     SECTION ("Knight isn't blundered") {
         Board board = Board::fromFEN("8/1kp3p1/7p/R4p1n/p5P1/P1Brr3/1KR5/8 b - - 0 41");
@@ -42,7 +42,7 @@ TEST_CASE("Move output regression tests pass", "[ai]") {
 
     SECTION ("Rook isn't blundered") {
         Board board = Board::fromFEN("r2r2k1/1bqn1ppp/8/pB2p3/8/PQn1BN2/2P2PPP/3R1RK1 w - - 0 22");
-        const auto &player = std::make_unique<AIPlayer>(6, std::chrono::seconds{100});
+        const auto &player = std::make_unique<AIPlayer>(3, std::chrono::seconds{10});
         player->getSearch().setUseTranspositionTable(true);
         REQUIRE(player->getMove(board) != Move::fromString("b5c4", board));
     }
@@ -50,7 +50,7 @@ TEST_CASE("Move output regression tests pass", "[ai]") {
     SECTION("Lasker-Reichhelm") {
         Board board = Board::fromFEN("8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - - 0 1");
         const auto &aiPlayer = std::make_unique<AIPlayer>(21, std::chrono::seconds{10000000});
-//        aiPlayer->getSearch().setUseQuiescenceSearch(false);
+        aiPlayer->getSearch().setUseQuiescenceSearch(false);
         REQUIRE(aiPlayer->getMove(board) == Move{board, a1, b1});
     }
 

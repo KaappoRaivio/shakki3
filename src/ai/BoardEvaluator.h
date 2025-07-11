@@ -20,7 +20,7 @@ namespace BoardEvaluator {
 
 
     int evaluateSimpleOneSide (const Board& board, PieceColor perspective, int plysFromRoot);
-    int evaluateSimple (const Board& board, int plysFromRoot, int originalDepth);
+    int evaluateSimple (const Board& board, int plysFromRoot, int originalDepth, PieceColor aiColor);
 
     int getGamePhase(const Board &board);
 

@@ -13,6 +13,16 @@
 #include "TestHelpers.h"
 #include "../src/Attacks.h"
 
+
+template<typename T>
+std::vector<uint8_t> get_object_bits(const T& obj) {
+    static_assert(std::is_object_v<T>, "T must be an object type");
+
+    std::vector<uint8_t > buffer(sizeof(T));
+    std::memcpy(buffer.data(), &obj, sizeof(T));  // Allowed: reading bytes
+    return buffer;
+}
+
 TEST_CASE ("Board should implement piece moving", "[board]") {
     SECTION("Board should be able to make FENs") {
         std::vector<std::string> randomFENs = {
@@ -338,13 +348,21 @@ TEST_CASE("Board should implement move generation", "[board]") {
 //        REQUIRE(TestHelpers::perft(asd, 6) == -960454105);
 //    }
 
+
+
     SECTION ("Perft is correct") {
+
+
         Board board;
+        std::cout << sizeof board << std::endl;
         REQUIRE(TestHelpers::perft(board, 2) == 400);
         REQUIRE(TestHelpers::perft(board, 3) == 8902);
         REQUIRE(TestHelpers::perft(board, 4) == 197281);
         REQUIRE(TestHelpers::perft(board, 5) == 4865609);
-//        REQUIRE(TestHelpers::perft(board, 6) == 119060324);
+
+        Board board2;
+        REQUIRE(board.hash() == board2.hash());
+
     }
 
 //    SECTION ("Perft benchmark") {

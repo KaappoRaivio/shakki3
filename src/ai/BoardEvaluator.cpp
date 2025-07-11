@@ -75,13 +75,13 @@ int BoardEvaluator::evaluateSimpleOneSide(const Board &board, PieceColor perspec
 
     value += (middlegameEval * middlegamePhase + endgameEval * endgamePhase) / 24;
 
-
+//    return middlegameEval;
     return value;
 }
 
-int BoardEvaluator::evaluateSimple(const Board &board, int plysFromRoot, int originalDepth) {
-    return evaluateSimpleOneSide(board, board.getTurn(), plysFromRoot) -
-           evaluateSimpleOneSide(board, flip(board.getTurn()), plysFromRoot);
+int BoardEvaluator::evaluateSimple(const Board &board, int plysFromRoot, int originalDepth, PieceColor aiColor) {
+    return /*(board.getTurn() == WHITE ? 1 : -1) * */ (evaluateSimpleOneSide(board, board.getTurn(), plysFromRoot) -
+                                                    evaluateSimpleOneSide(board, flip(board.getTurn()), plysFromRoot));
 }
 
 int BoardEvaluator::getGamePhase(const Board &board) {

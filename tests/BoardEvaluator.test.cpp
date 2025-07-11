@@ -25,13 +25,21 @@ TEST_CASE("BoardEvaluator") {
         Board board = Board::fromFEN("8/8/8/5k2/8/8/5K2/8 w - - 0 1");
 //        std::cout << BoardEvaluator::evaluateSimple(board, 1) << std::endl;
         REQUIRE(
-                BoardEvaluator::evaluateSimple(board, 1, 0) < 0
+                BoardEvaluator::evaluateSimple(board, 1, 0, WHITE) < 0
         );
     }
 
     SECTION ("Evaluator test 2") {
         Board board = Board::fromFEN("8/7K/8/7P/6q1/8/5k2/8 b - - 1 1");
 
-        std::cout << BoardEvaluator::evaluateSimple(board, 0, 0) << std::endl;
+        std::cout << BoardEvaluator::evaluateSimple(board, 0, 0, BLACK) << std::endl;
+    }
+
+    SECTION ("vittu") {
+        Board board = Board::fromFEN("1r3bk1/2p2pp1/3p4/1B1P1P1n/p2Q1p1p/q1PN1P1P/6P1/3R1K2 w - - 0 1");
+        std::cout << BoardEvaluator::evaluateSimple(board, 1, 1, WHITE) << std::endl;
+
+        Board board2 = Board::fromFEN("1r3bk1/2p2pp1/3p4/1B1P1P1n/p2Q1p1p/q1PN1P1P/6P1/3R1K2 b - - 0 1");
+        std::cout << BoardEvaluator::evaluateSimple(board2, 1, 1, BLACK) << std::endl;
     }
 }

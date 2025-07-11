@@ -530,6 +530,7 @@ void Board::executeSequenceOfMoves (const std::vector<std::string>& moves) {
 }
 
 
+
 namespace std {
     template <>
     struct hash<Board>

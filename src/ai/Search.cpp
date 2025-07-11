@@ -12,12 +12,13 @@
 #include "../mytypes.h"
 #include <algorithm>
 
-int Search::negamaxSearch(Board positionToSearch, int depth, LINE &PV) {
-    return negamaxSearch(positionToSearch, 0, depth, EvaluationConstants::LOSE, EvaluationConstants::WIN, PV);
+int Search::negamaxSearch(Board positionToSearch, int depth, LINE &PV, PieceColor aiColor) {
+    return negamaxSearch(positionToSearch, 0, depth, EvaluationConstants::LOSE, EvaluationConstants::WIN, PV, aiColor);
 }
 
 
-int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta, LINE &pline) {
+int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, int alpha, int beta, LINE &pline,
+                          PieceColor aiColor) {
     ++nodesSearched;
 
     int originalAlpha = alpha;
@@ -60,9 +61,9 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
         pline.moveCount = 0;
 
         if (useQuiescenceSearch) {
-            return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1);
+            return quiescenceSearch(positionToSearch, alpha, beta, plysFromRoot + 1, aiColor);
         } else {
-            return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth);
+            return BoardEvaluator::evaluateSimple(positionToSearch, depth, originalDepth, aiColor);
         }
     }
 
@@ -77,7 +78,7 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
     for (size_t moveIndex = 0; moveIndex < moves.size(); ++moveIndex) {
         Move move = moves[moveIndex];
         positionToSearch.executeMove(move);
-        int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha, line);
+        int newValue = -negamaxSearch(positionToSearch, plysFromRoot + 1, depth, -beta, -alpha, line, aiColor);
         positionToSearch.unmakeMove();
 
 //        positionValue = std::max(positionValue, newValue);
@@ -142,8 +143,8 @@ int Search::negamaxSearch(Board &positionToSearch, int plysFromRoot, int depth, 
 }
 
 
-int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int plysFromRoot) {
-    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch, plysFromRoot, originalDepth);
+int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int plysFromRoot, PieceColor aiColor) {
+    int standing_pat = BoardEvaluator::evaluateSimple(positionToSearch, plysFromRoot, originalDepth, aiColor);
     if (standing_pat >= beta) { return beta; }
     if (alpha < standing_pat) { alpha = standing_pat; }
 
@@ -162,7 +163,7 @@ int Search::quiescenceSearch(Board &positionToSearch, int alpha, int beta, int p
             positionToSearch.executeMove(move);
         }
 
-        int score = -quiescenceSearch(positionToSearch, -beta, -alpha, plysFromRoot + 1);
+        int score = -quiescenceSearch(positionToSearch, -beta, -alpha, plysFromRoot + 1, aiColor);
         positionToSearch.unmakeMove();
         if (score >= beta) {
             return beta;
@@ -325,16 +326,18 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
 
 
     Move bestMoveSoFar = Moves::NO_MOVE;
-    int bestMoveScoreSoFar = EvaluationConstants::LOSE;
+    int bestMoveScoreSoFar = EvaluationConstants::LOSE - 1;
 
     std::vector<SearchResult> results;
+
+    auto aiColor = BLACK;
 
     for (size_t index = 0; index < moves.size(); ++index) {
         position.executeMove(moves[index]);
 
         LINE PVCandidate;
 
-        int moveScore = -negamaxSearch(position, searchDepth - 1, PVCandidate);
+        int moveScore = -negamaxSearch(position, searchDepth - 1, PVCandidate, aiColor);
         values.push_back(moveScore);
         PVs.push_back(PVCandidate);
         results.push_back({moves[index], moveScore, PVCandidate.moves});
@@ -374,7 +377,7 @@ Move Search::getMove(Board &position, int searchDepth, int &bestMoveScore) {
 //                  << std::endl;
 //    }
     for (size_t i = 0; i < results.size(); ++i) {
-        auto res = results[i];
+        const auto& res = results[i];
         Board positionWithMoveMade = position;
         positionWithMoveMade.executeMove(res.move);
         std::cout << "\t\t" << res.move.toShortAlgebraic(position) << ": " << res.value << ", PV: "

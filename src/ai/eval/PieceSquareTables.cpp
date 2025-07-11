@@ -9,7 +9,7 @@ int PieceSquareTables::getMiddlegameValue(const Piece &piece, const Square &at) 
     Square normalizedPerspective = at.asColorFlip(piece.color)
             .flip(); // to account for array literal Y indexing
 
-    return middlegamePieceValues[piece.type] + middlegameTable[piece.type.index][normalizedPerspective];
+    return middlegamePieceValues[piece.type];// + middlegameTable[piece.type.index][normalizedPerspective];
 }
 
 int PieceSquareTables::getEndgameValue(const Piece &piece, const Square &at) {
@@ -18,7 +18,7 @@ int PieceSquareTables::getEndgameValue(const Piece &piece, const Square &at) {
     Square normalizedPerspective = at.asColorFlip(piece.color)
             .flip(); // to account for array literal Y indexing
 
-    return endgamePieceValues[piece.type] + endgameTable[piece.type.index][normalizedPerspective];
+    return endgamePieceValues[piece.type];// + endgameTable[piece.type.index][normalizedPerspective];
 }
 
 int PieceSquareTables::getGamePhaseValue(PieceType pieceType) {

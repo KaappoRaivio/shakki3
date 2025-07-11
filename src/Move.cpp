@@ -271,9 +271,6 @@ std::string MoveUtils::movesToString(const std::vector<Move> &moves, Board conte
 
 //    std::cout << "Transforming " << MyUtils::toString(moves) << " on board " << context.toFEN() << std::endl;
 
-    if (context.getHistory().getCurrentFrame().previousMove == Move{context, d3, f2}.raw() and moves.size() == 4) {
-//        std::cout << "Debug lol " << Move{context, a3, c1}.isCapture() << std::endl;
-    }
 
 
     try {
@@ -303,7 +300,7 @@ std::string MoveUtils::movesToString(const std::vector<Move> &moves, Board conte
                     currentFullMoveCount += 1;
                 }
 
-                ss << move << " ";
+                ss << move.toShortAlgebraic(context) << " ";
                 context.executeMove(move);
             }
         }
