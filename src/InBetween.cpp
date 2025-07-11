@@ -3,6 +3,7 @@
 //
 
 #include "InBetween.h"
+#include <algorithm>
 
 constexpr Bitboard InBetween::inBetween (Square_raw square1, Square_raw square2) {
     const Bitboard_raw m1 = -1;

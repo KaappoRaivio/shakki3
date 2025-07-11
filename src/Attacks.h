@@ -55,6 +55,8 @@ RayDirection getIterationStartDirection () {
         return NORTH;
     } else if (TYPE == PieceTypes::BISHOP) {
         return NORTH_EAST;
+    } else {
+        return NORTH;
     }
 //    return TYPE == PieceTypes::ROOK ? NORTH : NORTH_EAST;
 }
@@ -65,6 +67,8 @@ RayDirection getIterationEndDirection () {
         return WEST;
     } else if (TYPE == PieceTypes::BISHOP || TYPE == PieceTypes::QUEEN) {
         return NORTH_WEST;
+    } else {
+        return WEST;
     }
 //    return TYPE == PieceTypes::ROOK ? WEST : NORTH_WEST;
 }
@@ -172,7 +176,7 @@ public:
     }
 
 
-    Bitboard getRaysToAllDirections (const Board& context, const Square& square, PieceColor color, bool includeKingInOccupancy) const {
+    Bitboard getRaysToAllDirections(const Board &context, const Square &square, bool includeKingInOccupancy) const {
         return getRaysToAllDirectionsFromOccupancy(context.getOccupancy(includeKingInOccupancy), 0, square);
     }
 
@@ -192,7 +196,7 @@ public:
         Bitboard result{0};
 
         for (const Square& square : pieces) {
-            result |= getRaysToAllDirections(context, square, color, includeKingInOccupancy);
+            result |= getRaysToAllDirections(context, square, includeKingInOccupancy);
         }
 
         return result;

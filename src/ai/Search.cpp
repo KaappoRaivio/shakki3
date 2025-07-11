@@ -10,6 +10,7 @@
 #include "../BoardAnalysis.h"
 #include <cmath>
 #include "../mytypes.h"
+#include <algorithm>
 
 int Search::negamaxSearch(Board positionToSearch, int depth, LINE &PV) {
     return negamaxSearch(positionToSearch, 0, depth, EvaluationConstants::LOSE, EvaluationConstants::WIN, PV);

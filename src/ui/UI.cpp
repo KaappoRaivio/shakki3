@@ -5,6 +5,7 @@
 #include "UI.h"
 
 #include <utility>
+#include <algorithm>
 
 void TtyUI::updateValues (Board board) {
     this->board = board;

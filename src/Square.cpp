@@ -4,6 +4,7 @@
 
 #include "Square.h"
 #include "BitboardOperations.h"
+#include <algorithm>
 
 Square flip ();
 

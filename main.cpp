@@ -12,7 +12,7 @@
 #include "src/ui/UI.h"
 #include "src/Player.h"
 #include "src/Runner.h"
-#include "src/ui/HTTPUI.h"
+//#include "src/ui/HTTPUI.h"
 #include "tests/TestHelpers.h"
 
 int main () {
@@ -54,13 +54,13 @@ int main () {
 
 
 
-//    std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
+    std::unique_ptr<UI> ui = std::make_unique<TtyUI>(board);
 
     const auto& aiPlayer = std::make_unique<AIPlayer>(20, std::chrono::seconds{100});
 //    aiPlayer->getSearch().setUseQuiescenceSearch(false);
 //    const auto& aiPlayer = std::make_unique<AIPlayer>(13, std::chrono::seconds{10000000});
 
-    std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());
+//    std::unique_ptr<UI> ui = std::make_unique<HTTPUI>(aiPlayer.get());
     const auto& humanPlayer = std::make_unique<HumanPlayer>(ui.get());
     std::vector<Player*> players = {
             aiPlayer.get(),

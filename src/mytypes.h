@@ -179,7 +179,7 @@ namespace MyUtils {
     template<typename T>
     [[nodiscard]] std::string toString(T* array, size_t N,  auto shouldStop = [](const T& item) { return false; }) {
         std::stringstream ss;
-        for (int i = 0; i < N; ++i) {
+        for (size_t i = 0; i < N; ++i) {
             T item = array[i];
             if (shouldStop(item) or !item) break;
             ss << item << ", ";

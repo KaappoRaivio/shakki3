@@ -89,5 +89,5 @@ class IllegalMoveException : public std::exception {
     Move move;
 public:
     IllegalMoveException (Move move) : move{move} {};
-    const char *what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override;
+    const char *what() const _NOEXCEPT override;
 };

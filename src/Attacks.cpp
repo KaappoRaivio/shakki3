@@ -10,9 +10,9 @@
 using namespace BitboardOperations::SquareMasks;
 namespace Directions = BitboardOperations::Directions;
 
-void KnightAttacks::initializeKnightAttacks () {
-    for (int y = 0 ; y < 8 ; ++y) {
-        for (int x = 0 ; x < 8 ; ++x) {
+void KnightAttacks::initializeKnightAttacks() {
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
             Bitboard piece = 1ULL << (8 * y + x);
 
             Bitboard result = 0;
@@ -38,18 +38,18 @@ void KnightAttacks::initializeKnightAttacks () {
     }
 }
 
-KnightAttacks::KnightAttacks () : knightAttacks{} {
+KnightAttacks::KnightAttacks() : knightAttacks{} {
     initializeKnightAttacks();
 }
 
-Bitboard KnightAttacks::getAttackAt (const Square& square) const {
+Bitboard KnightAttacks::getAttackAt(const Square &square) const {
     return knightAttacks[square];
 }
 
-Bitboard KnightAttacks::getAttacksAt (const Board& context, const Bitboard& knights, PieceColor color) const {
+Bitboard KnightAttacks::getAttacksAt(const Board &context, const Bitboard &knights, PieceColor color) const {
     Bitboard result{0};
 
-    for (const auto& square : knights) {
+    for (const auto &square: knights) {
         result |= getAttackAt(square);
     }
 
@@ -57,7 +57,7 @@ Bitboard KnightAttacks::getAttacksAt (const Board& context, const Bitboard& knig
     return result;
 }
 
-Bitboard KnightAttacks::getAttackAt (int y, int x) {
+Bitboard KnightAttacks::getAttackAt(int y, int x) {
     return knightAttacks[y * 8 + x];
 }
 
@@ -228,7 +228,7 @@ Bitboard KnightAttacks::getAttackAt (int y, int x) {
 
 
 
-const KnightAttacks& Attacks::getKnightAttacks () const {
+const KnightAttacks &Attacks::getKnightAttacks() const {
     return knightAttackGenerator;
 }
 
@@ -247,53 +247,53 @@ const KnightAttacks& Attacks::getKnightAttacks () const {
 //    }
 //}
 
-const PawnAttacks& Attacks::getPawnAttacks () const {
+const PawnAttacks &Attacks::getPawnAttacks() const {
     return pawnAttackGenerator;
 }
 
-const KingAttacks& Attacks::getKingAttacks () const {
+const KingAttacks &Attacks::getKingAttacks() const {
     return kingAttackGenerator;
 }
 
-Attacks::Attacks () : knightAttackGenerator{}, rookAttackGenerator{}, bishopAttackGenerator{}, queenAttackGenerator{},
-                      pawnAttackGenerator{}, kingAttackGenerator{} {}
+Attacks::Attacks() : knightAttackGenerator{}, rookAttackGenerator{}, bishopAttackGenerator{}, queenAttackGenerator{},
+                     pawnAttackGenerator{}, kingAttackGenerator{} {}
 
-SlidingPieceAttacks<PieceTypes::BISHOP> Attacks::getBishopAttacks () const {
+SlidingPieceAttacks<PieceTypes::BISHOP> Attacks::getBishopAttacks() const {
     return bishopAttackGenerator;
 }
 
-SlidingPieceAttacks<PieceTypes::ROOK> Attacks::getRookAttacks () const {
+SlidingPieceAttacks<PieceTypes::ROOK> Attacks::getRookAttacks() const {
     return rookAttackGenerator;
 }
 
-SlidingPieceAttacks<PieceTypes::QUEEN> Attacks::getQueenAttacks () const {
+SlidingPieceAttacks<PieceTypes::QUEEN> Attacks::getQueenAttacks() const {
     return queenAttackGenerator;
 }
 
-PawnAttacks::PawnAttacks () : possiblePawnPushesOnEmptyBoard{}, possiblePawnCapturesOnEmptyBoard{} {
+PawnAttacks::PawnAttacks() : possiblePawnPushesOnEmptyBoard{}, possiblePawnCapturesOnEmptyBoard{} {
     populatePossiblePawnPushes();
     populatePossiblePawnCaptures();
 }
 
-Bitboard PawnAttacks::getPawnPushes (const Bitboard& occupancy, PieceColor color, const Bitboard& pawns) const {
-    const auto& singlePush = pawns.move(NORTH, color) & ~occupancy;
-    const auto& doublePush = singlePush.move(NORTH, color) & SquareMasks::rank4.asColor(color, false) & ~occupancy;
+Bitboard PawnAttacks::getPawnPushes(const Bitboard &occupancy, PieceColor color, const Bitboard &pawns) const {
+    const auto &singlePush = pawns.move(NORTH, color) & ~occupancy;
+    const auto &doublePush = singlePush.move(NORTH, color) & SquareMasks::rank4.asColor(color, false) & ~occupancy;
 
     return doublePush | singlePush;
 }
 
-Bitboard PawnAttacks::getCaptures (const Board& context, const Bitboard& pawns, PieceColor color) const {
-    const auto& east = pawns.move(NORTH_EAST, color, 1, false);
-    const auto& west = pawns.move(NORTH_WEST, color, 1, false);
+Bitboard PawnAttacks::getCaptures(const Board &context, const Bitboard &pawns, PieceColor color) const {
+    const auto &east = pawns.move(NORTH_EAST, color, 1, false);
+    const auto &west = pawns.move(NORTH_WEST, color, 1, false);
 
     return east | west;
 }
 
-void PawnAttacks::populatePossiblePawnPushes () {
+void PawnAttacks::populatePossiblePawnPushes() {
     // white
-    for (int y = 1 ; y < 7 ; ++y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
-        for (int x = 0 ; x < 8 ; ++x) {
-            const Square& square = Square{y, x};
+    for (int y = 1; y < 7; ++y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
+        for (int x = 0; x < 8; ++x) {
+            const Square &square = Square{y, x};
             Bitboard start = square;
             start |= start.move(NORTH);
             if (y == 1) start |= start.move(NORTH);
@@ -303,9 +303,9 @@ void PawnAttacks::populatePossiblePawnPushes () {
     }
 
     // black
-    for (int y = 6 ; y >= 1 ; --y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
-        for (int x = 0 ; x < 8 ; ++x) {
-            const Square& square = Square{y, x};
+    for (int y = 6; y >= 1; --y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
+        for (int x = 0; x < 8; ++x) {
+            const Square &square = Square{y, x};
             Bitboard start = square;
             start |= start.move(SOUTH);
             if (y == 6) start |= start.move(SOUTH);
@@ -315,54 +315,60 @@ void PawnAttacks::populatePossiblePawnPushes () {
     }
 }
 
-void PawnAttacks::populatePossiblePawnCaptures () {
+void PawnAttacks::populatePossiblePawnCaptures() {
     // white
-    for (int color = WHITE ; color < EMPTY ; ++color) {
-        for (int y = 1 ; y < 7 ; ++y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
-            for (int x = 0 ; x < 8 ; ++x) {
-                const Square& square = Square{y, x};
-                const Bitboard& start = square;
+    for (int color = WHITE; color < EMPTY; ++color) {
+        for (int y = 1; y < 7; ++y) { // only from rank 2 to 6 since no pawns can exist on rank 1 nor 8
+            for (int x = 0; x < 8; ++x) {
+                const Square &square = Square{y, x};
+                const Bitboard &start = square;
 
-                const Bitboard& east = start.move(NORTH_EAST, static_cast<PieceColor>(color), 1, false);
-                const Bitboard& west = start.move(NORTH_WEST, static_cast<PieceColor>(color), 1, false);
+                const Bitboard &east = start.move(NORTH_EAST, static_cast<PieceColor>(color), 1, false);
+                const Bitboard &west = start.move(NORTH_WEST, static_cast<PieceColor>(color), 1, false);
 
-                possiblePawnCapturesOnEmptyBoard[color][square] = east | west;
+
+                possiblePawnCapturesOnEmptyBoard[color][square] =
+                        (east != Square::INVALID ? east : 0) | (west != Square::INVALID ? west : 0);
             }
         }
     }
 
 
-    for (int y = 3 ; y <= 4 ; y += 1) {
-        for (int x = 0 ; x < 8 ; ++x) {
+    for (int y = 3; y <= 4; y += 1) {
+        for (int x = 0; x < 8; ++x) {
             Square square{y, x};
 
             Bitboard b;
-            b |= square.move(WEST);
-            b |= square.move(EAST);
+            if (square.move(WEST) != Square::INVALID) {
+                b |= square.move(WEST);
+            }
+            if (square.move(EAST) != Square::INVALID) {
+                b |= square.move(EAST);
+            }
 
             possibleEnPassantCapturerSquares[square] = b;
         }
     }
 }
 
-const Bitboard& PawnAttacks::getPossiblePushesOnEmptyBoard (PieceColor color, const Square& square) const {
+const Bitboard &PawnAttacks::getPossiblePushesOnEmptyBoard(PieceColor color, const Square &square) const {
     return possiblePawnPushesOnEmptyBoard[color][square];
 }
 
-const Bitboard& PawnAttacks::getPossibleCapturesOnEmptyBoard (PieceColor color, const Square& square) const {
+const Bitboard &PawnAttacks::getPossibleCapturesOnEmptyBoard(PieceColor color, const Square &square) const {
     return possiblePawnCapturesOnEmptyBoard[color][square];
 }
 
-const Bitboard& PawnAttacks::getPossibleEnPassantSquares (const Square& square) const {
+const Bitboard &PawnAttacks::getPossibleEnPassantSquares(const Square &square) const {
     return possibleEnPassantCapturerSquares[square];
 }
 
 
 namespace Directions = BitboardOperations::Directions;
 
-void KingAttacks::initializeKingAttacks () {
-    for (int y = 0 ; y < 8 ; ++y) {
-        for (int x = 0 ; x < 8 ; ++x) {
+void KingAttacks::initializeKingAttacks() {
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
             Bitboard king = 1ull << (8 * y + x);
 //            king |= BitboardOperations::move(king, Directions::EAST, 1, false)
 //                    | BitboardOperations::move(king, Directions::WEST, 1, false);
@@ -380,14 +386,14 @@ void KingAttacks::initializeKingAttacks () {
     }
 }
 
-KingAttacks::KingAttacks () : attacks{} {
+KingAttacks::KingAttacks() : attacks{} {
     initializeKingAttacks();
 }
 
-Bitboard KingAttacks::getAttacksAt (const Board& context, const Square& square, PieceColor color) const {
+Bitboard KingAttacks::getAttacksAt(const Board &context, const Square &square, PieceColor color) const {
     return attacks[square];
 }
 
-Bitboard KingAttacks::getKingAttackAt (int y, int x) {
+Bitboard KingAttacks::getKingAttackAt(int y, int x) {
     return attacks[8 * y + x];
 }

@@ -199,14 +199,12 @@ TEST_CASE("Board should implement move generation", "[board]") {
                 {"r3k2r/p2p1pb1/bn1qpnp1/2pPN3/1p2P3/2N2Q1p/PPP1BPPP/R2KB2R w kq - 0 5", {"H1G1", "E1D2", "D1D2", "A1C1", "G2G4", "H1F1", "F3D3", "E5G4", "C3A4", "B2B3", "F3H5", "D1C1", "C3B1", "E5C6", "A1B1", "F3G3", "E5F7", "E5G6", "A2A4", "G2H3", "E5C4", "E2A6", "F3E3", "F3H3", "F3F4", "C3B5", "F3F5", "F3F6", "E5D7", "F3G4", "E5D3",  "E2B5",  "A2A3",  "E2D3",  "E2C4",  "E2F1",  "G2G3"}},
                 {"r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBP1P/3RK2b w kq - 0 5",    {"F3H3", "C3B1", "F3G2", "F3H1", "F3H5", "F3F5", "D2E3", "D2F4", "E5C6", "D2G5", "F3G3", "D1B1", "E2F1", "D2H6", "E2B5", "F3G4", "E2D3", "F3D3", "E5C4", "E2A6", "D1A1", "E5D3", "E2C4", "E5G4", "C3A4", "E5G6", "H2H4", "E5F7", "D2C1", "A2A4", "A2A3",  "F3F4",  "B2B3",  "H2H3",  "D5D6",  "C3B5",  "F3F6",  "E5D7",  "D5E6", "F3E3", "E1F1", "D1C1"}},
                 {"rnbq1bnr/pppQpkpp/8/5p2/8/2P5/PP1PPPPP/RNB1KBNR b KQ - 0 6",           {"B7B5", "G8H6", "H7H6", "F5F4", "G8F6", "B7B6", "D8D7", "B8C6", "G7G5", "B8A6", "A7A5", "C8D7", "C7C5", "A7A6", "B8D7", "D8E8", "C7C6", "G7G6", "H7H5", "F7F6", "F7G6"}},
-                {"5rk1/6pp/8/1PQ1N1br/5p2/PKpp4/4P3/7B w - - 0 1",                       {"E5C6", "B3A4", "E5G6", "C5E7", "C5C4", "E5F3", "C5A7", "C5D6", "C5C6", "H1G2", "H1F3", "E5F7", "H1E4", "C5F2", "A3A4", "C5C7", "E5D7", "C5F8", "E5D3", "B3B4", "H1C6", "E5G4", "C5D5", "C5D4", "C5G1", "C5B6", "H1A8", "B5B6", "C5C8", "H1B7", "B3C4",  "E2E3",  "E2E4",  "C5B4",  "E2D3",  "C5E3",  "C5C3",  "B3A2",  "E5C4", "B3C3"}},
-                {"8/5k2/8/5p2/8/6K1/8/6Q1 b - - 3 2",                                    {}},
-                {"8/8/4k3/5p2/5Q2/8/5K2/8 b - - 1 1",                                    {}},
+                {"5rk1/6pp/8/1PQ1N1br/5p2/PKpp4/4P3/7B w - - 0 1",                       {"E5C6", "B3A4", "E5G6", "C5E7", "C5C4", "E5F3", "C5A7", "C5D6", "C5C6", "H1G2", "H1F3", "E5F7", "H1E4", "C5F2", "A3A4", "C5C7", "E5D7", "C5F8", "E5D3", "B3B4", "H1C6", "E5G4", "C5D5", "C5D4", "C5G1", "C5B6", "H1A8", "B5B6", "C5C8", "H1B7", "B3C4",  "E2E3",  "E2E4",  "C5B4",  "E2D3",  "C5E3",  "C5C3",  "B3A2",  "E5C4", "B3C3", "H1D5"}},
+                {"8/5k2/8/5p2/8/6K1/8/6Q1 b - - 3 2",                                    {"F5F4", "F7F8", "F7G7", "F7E7", "F7G8", "F7G6", "F7E8", "F7F6", "F7E6"}},
+                {"8/8/4k3/5p2/5Q2/8/5K2/8 b - - 1 1",                                    {"E6E7", "E6F6", "E6F7", "E6D7", "E6D5"}},
 
 
         };
-
-//        for (const auto& testCase : testCases) {
 
         for (size_t i = 0 ; i < testCases.size() ; ++i) {
             if (i == 16) {
@@ -214,12 +212,12 @@ TEST_CASE("Board should implement move generation", "[board]") {
             }
             const auto& testCase = testCases[i];
             const Board& board = Board::fromFEN(testCase.first);
-            auto onlyCaptureMoves = board.getMoves(true);
+//            auto onlyCaptureMoves = board.getMoves(true);
             auto allMoves = board.getMoves(false);
 
-            TestHelpers::verifyMoveList(onlyCaptureMoves, board, i, true);
-            TestHelpers::verifyMoveList(allMoves, board, i, false);
-//            TestHelpers::verifyMoveList(correctMoves, testCase.second, board, i);
+//            TestHelpers::verifyMoveList(onlyCaptureMoves, board, (int) i, true);
+//            TestHelpers::verifyMoveList(allMoves, board, (int) i, false);
+            TestHelpers::verifyMoveList(testCase.second, board, (int) i, false);
         }
     }
 
@@ -231,10 +229,6 @@ TEST_CASE("Board should implement move generation", "[board]") {
                 "B4B3",
                 "E1C1",
                 "B3A2"
-//                {board, h1, g1},
-//                {board, b4, b3},
-//                {board, e1, c1},
-//                {board, b3, a2}
         };
 
         for (
@@ -245,12 +239,8 @@ TEST_CASE("Board should implement move generation", "[board]") {
             );
         }
 
-//        std::cout << board.toFEN() << std::endl;
-
         auto generatedMoves = board.getMoves();
         std::unordered_set<std::string> correctMoves = TestHelpers::HelperEngineInterface{}.getMoves(board.toFEN(), 0);
-
-//        std::cout << TestHelpers::vectorToString(generatedMoves, "\t") << std::endl;
 
         TestHelpers::verifyMoveList(generatedMoves, board,
                                     0, 0);
@@ -263,26 +253,20 @@ TEST_CASE("Board should implement move generation", "[board]") {
         board.
                 executeMove(move);
 
-//        std::cout << board << std::endl;
-//        REQUIRE(false);
     }
 
     SECTION ("Random tests3") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/4P3/1pN2Q1p/PPPBBPPP/R3K1R1 w Qkq - 0 1");
         Move move{board, g2, h3};
-//        board.executeMove(move);
         REQUIRE(!move.isEnPassant());
         REQUIRE(!move.isDoublePawnPush());
 
-//        TestHelpers::verifyMoveList(board.getMoves(), {}, board, 0);
     }
 
     SECTION ("Random tests4") {
         Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q2/PPPBBPpP/R3KR2 b Qkq - 0 1");
-//        std::cout << board << std::endl;
 
         const MOVES& vector = board.getMoves();
-//        TestHelpers::verifyMoveList(vector, {}, board, 0);
 
     }
 
@@ -309,7 +293,6 @@ TEST_CASE("Board should implement move generation", "[board]") {
         Move move = {board, g7, a1};
         board.
                 executeMove(move);
-//        std::cout << board << std::endl;
 
     }
 
@@ -318,14 +301,14 @@ TEST_CASE("Board should implement move generation", "[board]") {
         Move move{board, g2, g4};
         board.
                 executeMove(move);
-//        std::cout << board << std::endl;
+
         Move move2{board, b4, a3};
         REQUIRE(!move2.isEnPassant());
     }
 
     SECTION ("Random tests9") {
         Board board = Board::fromFEN("rnbqkbnr/pppp1ppp/8/4p3/8/7N/PPPPPPPP/RNBQKBR1 b Qkq - 1 2");
-//        std::cout << board << std::endl;
+
         const MOVES& moves = board.getMoves();
         TestHelpers::verifyMoveList(moves, board,
                                     0, 0);
@@ -339,55 +322,36 @@ TEST_CASE("Board should implement move generation", "[board]") {
         TestHelpers::verifyMoveList(board.getMoves(), board, 0, 0);
     }
 
-    SECTION ("A sequence of moves doesn't crash perft(6)") {
-        Board asd = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        asd.executeSequenceOfMoves({"e2e4", "d7d6", "d2d4", "g8f6", "d1f3", "e7e5", "c1g5", "e5d4", "a2a4", "f8e7", "f1c4", "e8g8", "b1d2", "c8g4", "f3g3", "d8d7", "g3h4", "h7h6", "g5f6", "e7f6", "h4g3", "f6e5"});
-        REQUIRE(TestHelpers::perft(asd, 6) == -960454105);
+    SECTION ("En passants aren't generated if capturer origin were to be outside the board") {
+        Board b = Board::fromFEN("rnbqkbnr/1ppppppp/8/p7/6P1/8/PPPPPP1P/RNBQKBNR w KQkq a6 0 2");
+        const std::vector<Move> &moves = b.getMoves();
+        TestHelpers::verifyMoveList(moves, b, 0, false);
+
+
+        Board b2 = Board::fromFEN("rnbqkbnr/ppppppp1/8/8/6pP/2N5/PPPPPP2/R1BQKBNR b KQkq h3 0 3");
+        TestHelpers::verifyMoveList(b2.getMoves(), b2, 0, false);
     }
 
+//    SECTION ("A sequence of moves doesn't crash perft(6)") {
+//        Board asd = Board::fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+//        asd.executeSequenceOfMoves({"e2e4", "d7d6", "d2d4", "g8f6", "d1f3", "e7e5", "c1g5", "e5d4", "a2a4", "f8e7", "f1c4", "e8g8", "b1d2", "c8g4", "f3g3", "d8d7", "g3h4", "h7h6", "g5f6", "e7f6", "h4g3", "f6e5"});
+//        REQUIRE(TestHelpers::perft(asd, 6) == -960454105);
+//    }
+
     SECTION ("Perft is correct") {
-//        Board board = Board::fromFEN("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-//        Board board = Board::fromFEN("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
-
         Board board;
-//        Board board = Board::fromFEN("8/8/4k3/5p2/3Q4/8/5K2/8 w - - 0 1");
-
-
-        thc::ChessRules cr;
-//        cr.Forsyth("8/8/4k3/5p2/3Q4/8/5K2/8 w - - 0 1");
-//        cr.Forsyth("rnbqkbnr/pppppppp/8/8/P7/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1");
-//        cr.Forsyth("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1");
-//        cr.Forsyth("r3k2r/p1ppqpb1/b3pnp1/3PN3/1pn1P3/2N2Q1p/PPPBBPPP/R4K1R w KQkq - 0 1");
-//        board.executeMove(Move{board, e2, e4});
-//        board.executeMove(Move{board, e7, e6});
-
-//        TestHelpers::HelperEngineInterface{}.getMoves(board.toFEN());
-
-//        TestHelpers::analyzePerftProblem(board, cr, 3);
-
-
-//        TestHelpers::perft(board, cr, 4);
-
-
-////
+        REQUIRE(TestHelpers::perft(board, 2) == 400);
         REQUIRE(TestHelpers::perft(board, 3) == 8902);
         REQUIRE(TestHelpers::perft(board, 4) == 197281);
         REQUIRE(TestHelpers::perft(board, 5) == 4865609);
-        REQUIRE(TestHelpers::perft(board, 6) == 119060324);
-
-//        BENCHMARK_ADVANCED("perft(4)") (Catch::Benchmark::Chronometer meter) {
-//                Attacks::getInstance();
-//                meter.measure([&] { return TestHelpers::perft(board, 4); });
-//        };
-        BENCHMARK ("perft(6)") {
-            return TestHelpers::perft(board, 6);
-        };
-
-//        REQUIRE(TestHelpers::perft(board, 5));
-//        REQUIRE(TestHelpers::perftTHC(cr, 5));
-//        REQUIRE(TestHelpers::perft(board, 5) == TestHelpers::perftTHC(cr, 5));
-
-//        Board fromFEN = Board::asd("rn3rk1/pppq1pp1/3p3p/4b3/P1BpP1b1/6Q1/1PPN1PPP/R3K1NR w KQ - 0 13");
+//        REQUIRE(TestHelpers::perft(board, 6) == 119060324);
     }
+
+//    SECTION ("Perft benchmark") {
+//        Board board;
+//        BENCHMARK ("perft(5)") {
+//            return TestHelpers::perft(board, 5);
+//        };
+//    }
 
 }

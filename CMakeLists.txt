@@ -6,8 +6,8 @@ set(CMAKE_PREFIX_PATH $CMAKE_PREFIX_PATH $CMAKE_CURRENT_SOURCE_DIR/lib)
 set(CMAKE_CXX_STANDARD 23)
 
 #set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og  -Wall -Wextra -fconcepts -DDEBUG=1")
-set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}  -Wall -Wextra -fconcepts -O0 -DDEBUG=1")
-set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}  -Wall -Wextra -Wno-unused-variable -fconcepts -O3 -flto -DDEBUG=0")
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}  -Wall -Wextra -O0 -DDEBUG=1")
+set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Wextra  -O3 -flto -DDEBUG=0 -ferror-limit=20000")
 
 #set (CMAKE_BUILD_TYPE RELEASE)
 
@@ -21,7 +21,7 @@ add_executable(shakki3
         src/BoardAnalysis.cpp src/BoardAnalysis.h src/TerminalColors.h src/InBetween.cpp src/InBetween.h
         src/CastlingStatus.cpp src/CastlingStatus.h src/ai/BoardEvaluator.cpp src/ai/BoardEvaluator.h src/ai/Search.cpp
         src/ai/Search.h src/ZobristHash.cpp src/ZobristHash.h src/ai/TranspositionTable.cpp src/ai/TranspositionTable.h
-        src/Runner.cpp src/Runner.h src/Player.cpp src/Player.h src/ui/UI.h src/ui/UI.cpp src/ui/HTTPUI.cpp src/ui/HTTPUI.h
+        src/Runner.cpp src/Runner.h src/Player.cpp src/Player.h src/ui/UI.h src/ui/UI.cpp
         src/ai/eval/PieceSquareTables.cpp src/ai/eval/PieceSquareTables.h
         src/ui/UndoException.cpp src/ui/UndoException.h lib/include/thc/thc.h lib/include/thc/thc.cpp tests/TestHelpers.h tests/TestHelpers.cpp)
 

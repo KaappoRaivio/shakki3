@@ -6,6 +6,7 @@
 #include <memory>
 #include <cstring>
 #include <regex>
+#include <algorithm>
 #include "Board.h"
 #include "BoardAnalysis.h"
 #include "ZobristHash.h"
@@ -58,6 +59,11 @@ std::ostream& operator<< (std::ostream& os, const Board& board) {
             }
             os << std::endl;
         }
+
+        std::string FEN = board.toFEN();
+        std::replace(FEN.begin(), FEN.end(), ' ', '_');
+
+        os << std::endl << "https://lichess.org/editor/" << FEN << "?" << (board.getTurn() == WHITE ? "color=white" : "color=black");
     }
 
 

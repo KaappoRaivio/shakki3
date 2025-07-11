@@ -24,6 +24,7 @@ namespace TestHelpers {
         }
     }
 
+
 //
 //    std::string vectorToString (const MOVES& moves) {
 //
@@ -31,46 +32,19 @@ namespace TestHelpers {
     void verifyMoveList (const std::unordered_set<std::string>& movesString, const Board& context, int index, bool captureOnly) {
         std::unordered_set<std::string> correctMoves = TestHelpers::HelperEngineInterface{}.getMoves(context.toFEN(), captureOnly);
 
-//        if (correctMoves != supposedMoves) {
-//            std::cerr << "TESTCASE FAIL " << index << ": " << std::endl;
-//            std::vector<std::string> a;
-//            for (const auto& supposedlyGeneratedMove : supposedMoves) {
-//                if (!correctMoves.contains(supposedlyGeneratedMove)) {
-////                    std::cerr << '\t' << supposedlyGeneratedMove << std::endl;
-//                    a.push_back(supposedlyGeneratedMove);
-//                }
-//            }
-//            if (!a.empty()) {
-//                std::cerr << "following moves are included in the testcase, even though they shouldn't be:" << std::endl;
-//                std::cerr << vectorToString(a, "\t") << std::endl;
-//            }
-//
-//            std::vector<std::string> b;
-//            for (const auto& generatedMove : correctMoves) {
-//                if (!supposedMoves.contains(generatedMove)) {
-////                    std::cerr << '\t' << generatedMove << std::endl;
-//                    b.push_back(generatedMove);
-//                }
-//            }
-//
-//            if (!b.empty()) {
-//                std::cerr << "following moves should be included in the testcase, but are not:" << std::endl;
-//                std::cerr << vectorToString(b, "\t") << std::endl;
-//            }
-//
-////            std::cerr << "context: " << std::endl << context << std::endl;
-////            std::cerr << context.toFEN() << std::endl;
-////            REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves);
-//        }
-        if (std::unordered_set<std::string>{movesString.begin(), movesString.end()} != correctMoves) {
+        std::unordered_set<std::string> lowercase;
+        std::transform(movesString.begin(), movesString.end(), std::inserter(lowercase, lowercase.begin()), [] (auto vittu) {
+            std::string paska{vittu};
+            std::transform(vittu.begin(), vittu.end(), paska.begin(), ::tolower);
+            return paska;
+        });
 
-//        if (std::unordered_set<std::string>{movesString.begin(), movesString.end()} != supposedMoves) {
+        if (std::unordered_set<std::string>{lowercase.begin(), lowercase.end()} != correctMoves) {
             std::cerr << "FAIL " << index << ": " << std::endl;
-
 
             std::vector<std::string> a;
             for (const auto& supposedlyGeneratedMove : correctMoves) {
-                if (!movesString.contains(supposedlyGeneratedMove)) {
+                if (!lowercase.contains(supposedlyGeneratedMove)) {
 //                    std::cerr << '\t' << supposedlyGeneratedMove << std::endl;
                     a.push_back(supposedlyGeneratedMove);
                 }
@@ -81,7 +55,7 @@ namespace TestHelpers {
             }
 
             std::vector<std::string> b;
-            for (const auto& generatedMove : movesString) {
+            for (const auto& generatedMove : lowercase) {
                 if (!correctMoves.contains(generatedMove)) {
 //                    std::cerr << '\t' << generatedMove << std::endl;
                     b.push_back(generatedMove);
@@ -95,14 +69,10 @@ namespace TestHelpers {
 
             std::cerr << "context: " << std::endl << context << std::endl;
             std::cerr << context.toFEN() << std::endl;
-            REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} != correctMoves);
-//            FAIL();
+            REQUIRE(std::unordered_set<std::string>{lowercase.begin(), lowercase.end()} != correctMoves);
         }
-//        else {
-//            SUCCEED();
-//        }
 
-        REQUIRE(std::unordered_set<std::string>{movesString.begin(), movesString.end()} == correctMoves);
+        REQUIRE(std::unordered_set<std::string>{lowercase.begin(), lowercase.end()} == correctMoves);
     }
 
     void verifyMoveList (const MOVES& moves, const Board& context, int index, bool captureOnly) {
@@ -204,7 +174,7 @@ namespace TestHelpers {
                 }
             }
             auto str = mv.TerseOut();
-            std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+            std::transform(str.begin(), str.end(), str.begin(), ::tolower);
 
             if (captureOnly) {
                 if (board.getPieceAt(Square{mv.dst}.asColorFlip(BLACK)) != Pieces::NO_PIECE) {
